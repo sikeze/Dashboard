@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/dashboard/db" VERSION="20161220" COMMENT="XMLDB file for Moodle local/dashboard"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="dashboard_users_config" COMMENT="Dashboard user configuration">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="the moodle user id"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="id" TYPE="primary" FIELDS="id" COMMENT="prymary key"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="dashboard_data" COMMENT="hold all the dashboard data hourly">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="time" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="time in unix format"/>
+        <FIELD NAME="sessions" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="session during that hour"/>
+        <FIELD NAME="avgsession" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="average duration of that hour sessions"/>
+        <FIELD NAME="pageviews" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="pageviews for that hour"/>
+        <FIELD NAME="pageviewspersession" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="pageviews per sessions"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="dashboard_resources" COMMENT="Resources of dashboard">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="time" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Resource day"/>
+        <FIELD NAME="resource" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="resource name"/>
+        <FIELD NAME="activity" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="resource activity"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
