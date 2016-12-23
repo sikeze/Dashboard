@@ -33,10 +33,10 @@
 * moodle/site:deleteuser
 * The variable name for the capability definitions array is $capabilities
 *
-* @package mod
-* @subpackage paperattendance
-* @copyright 2016 Jorge Cabané <jcabane@alumnos.uai.cl>
-* @copyright 2016 Hans Jeria <hansjeria@gmail.com>
+* @package local
+* @subpackage dashboard
+* @copyright 2016 Mihail Pozarski <mipozarski@alumnos.uai.cl>
+
 * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 defined('MOODLE_INTERNAL') || die();

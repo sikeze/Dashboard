@@ -20,7 +20,7 @@
 *
 * @package local
 * @subpackage dashboard
-* @copyright 2016 Mihail Pozarski
+* @copyright 2016 Mihail Pozarski <mipozarski@alumnos.uai.cl>
 * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 defined('MOODLE_INTERNAL') || die();
