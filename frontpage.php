@@ -3,6 +3,7 @@
 <head>
 <?php
 	require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+	require_once(dirname(__FILE__) . '/locallib.php');
 	$frontpageurl = new moodle_url('/local/dashboard/frontpage.php');
 ?>
 	<meta charset="UTF-8">
@@ -25,7 +26,7 @@
         <div class="navbar-fixed">
             <nav class="grey lighten-2 blue-text">
                 <div class="nav-wraper">
-                    <a href="<?php $frontpageurl ?>" class="brand-logo"><img  class="responsive-img" src="images/webcursoslogo.gif" style="width:70%"></a>
+                    <a href="<?php $frontpageurl ?>" class="brand-logo"><img  class="responsive-img" src="images/webcursoslogo.gif" style="width:50%"></a>
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
                         <li><a href="badges.html" class=""><i class="material-icons blue-text">edit</i></a></li>
                         <li><a href="collapsible.html" class=""><i class="material-icons blue-text">refresh</i></a></li>
@@ -65,7 +66,15 @@
         <!-- SIDENAV -->
                 <!-- CONTENT -->
         <main class="grey lighten-3">  
-            <div class="row" id="linechart"></div>
+        <div class="row">
+            <div id="userdata" class="col s1 l1 card hoverable widget" overflow: auto;>
+            Sessiones
+			13
+            <div id="sessions"  overflow: auto;></div>
+            </div>
+            <div class ="col s1 l1 card hoverable widget">
+            New users
+            </div>
             <div id="resourcebarchart" class="col s12 l6 card white-text hoverable widget" overflow: auto;></div>
         </main>
         <!-- CONTENT -->
@@ -81,10 +90,6 @@
 </body>
  <script>
         $(document).ready(function () {
-            /**
-             * Load Dashboard on init
-             */
-            $('#content').load('dashboard.html');
             //init sidenav
             $('.button-collapse').sideNav({
                 menuWidth: 250, // Default is 240
@@ -92,6 +97,9 @@
             }
             );
             $('.materialboxed').materialbox();
+            $("#sessions").sparkline([5,6,7,9,9,5,3,2,2,4,6,7], {
+                type: 'line',
+                drawNormalOnTop: false});
             $('.menu-item').click(function () {
                 ref = $(this).attr('href').replace('#', '') + '.html';
                 $('.progress > div').toggleClass('determinate').toggleClass('indeterminate');
