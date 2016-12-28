@@ -24,7 +24,7 @@
 * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 defined('MOODLE_INTERNAL') || die();
-$plugin->version = 2016122709; // The current module version (Date: YYYYMMDDXX).
+$plugin->version = 2016122801; // The current module version (Date: YYYYMMDDXX).
 $plugin->requires = 2013110500; // Requires this Moodle version.
 $plugin->component = 'local_dashboard'; // To check on upgrade, that module sits in correct place.
 $plugin->pluginname = "local_dashboard";
