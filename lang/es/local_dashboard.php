@@ -28,4 +28,7 @@ $string ['home'] = 'Inicio';
 $string ['users'] = 'Usuarios';
 $string ['resources'] = 'Recursos';
 $string ['logout'] = 'Cerrar sesión';
+
+//task
+$string['sessiontask']="Rellenar sesiones";
 ?>

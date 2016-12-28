@@ -29,5 +29,8 @@ $string ['users'] = 'Users';
 $string ['resources'] = 'Resources';
 $string ['logout'] = 'Log Out';
 
+//task
+$string['sessiontask']="Fill sessions";
+
 
 ?>

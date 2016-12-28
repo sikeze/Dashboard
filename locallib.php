@@ -20,10 +20,6 @@
  * @copyright  2016 Juan Luis Cordova (jcordova@alumnos.uai.cl)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-
-
-
 // GET USERS AND IP EVERY TIME THEY CONNECT
 
 function get_users_and_ip ($startdate,$finishdate){
@@ -40,8 +36,6 @@ function get_users_and_ip ($startdate,$finishdate){
 	return $users_and_ip;
 }
 
-
-
 // GET USERS AND DATE WHENEVER THEY CONNECT
 
 function get_users_and_time_conection ($startdate,$finishdate){
@@ -57,8 +51,6 @@ function get_users_and_time_conection ($startdate,$finishdate){
 	
 	return $users_and_conection;
 }
-
-
 
 // AVERAGE OF VIEWED COURSES PER SESION
 
@@ -85,23 +77,27 @@ function get_total_courses_visits_per_sesion ($startdate,$finishdate){
 	
 	};
 	
-	
-	
 // TOTAL SESIONS  
 
-function total_sesions ($startdate,$finishdate){
+function dashboard_totalsesionstoday(){
 	global $DB;
-			$query2=		"SELECT		COUNT(*) as count2
-							FROM 		{logstore_standard_log} as l
-							WHERE 		l.action = ? AND
-							l.timecreated BETWEEN ? AND ?
-					";
-			$total_loggin= $DB->get_record_sql($query2,array('loggedin',$startdate,$finishdate))->count2;
-			return $total_loggin;
+		$time = time();
+		$timebefore = time() - 86400;
+		$query2="SELECT	id,
+				month(FROM_UNIXTIME(timecreated)) as month,
+				day(FROM_UNIXTIME(timecreated)) as day,
+				hour(FROM_UNIXTIME(timecreated)) as hour,
+				timecreated,
+				COUNT(*) as sessions
+				FROM {logstore_standard_log} as l
+				WHERE l.action = ? AND
+				l.timecreated BETWEEN ? AND ? 
+				GROUP BY month(FROM_UNIXTIME(timecreated)),
+				day(FROM_UNIXTIME(timecreated)),
+				hour(FROM_UNIXTIME(timecreated))";
+		$totalloggin= $DB->get_records_sql($query2,array('loggedin', $timebefore,$time ));
+		return $totalloggin;
 }
-
-
-
 
 // TOTAL USERS
 
@@ -114,8 +110,6 @@ function total_users (){
 			
 	return $useramount;
 }
-
-
 
 //AMOUNT OF NEW USERS WITH ACTIVITY IN THE LAST YEAR/MONTH/DAY
 
@@ -144,8 +138,4 @@ function total_pageviews ($startdate,$finishdate){
 	$total_loggin= $DB->get_record_sql($query2,array('view',$startdate,$finishdate))->count;
 	return $total_loggin;
 }
-
-
-
-
 ?>
