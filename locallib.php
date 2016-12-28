@@ -20,6 +20,27 @@
  * @copyright  2016 Juan Luis Cordova (jcordova@alumnos.uai.cl)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+		// FUNCTIONS FOR USERS DATA
+
+// GET USERS AND IP EVERY TIME THEY CONNECT
+// GET USERS AND DATE WHENEVER THEY CONNECT
+// AVERAGE OF VIEWED COURSES PER SESION
+// TOTAL SESIONS
+// TOTAL USERS
+// AMOUNT OF NEW USERS WITH ACTIVITY IN THE LAST DEFINED TIME
+// TOTAL PAGEVIEWS
+
+		// FUNCTIONS FOR RESOURCES DATA
+
+// USE IN TIME FOR TURNITIN
+// USE IN TIME FOR EMARKING
+// USE IN TIME FOR PAPERATENDANCE
+// USE PERCENTAGE FOR EMARKING
+// USE PERCENTAGE FOR TURNITIN
+// USE PERCENTAGE FOR PAPERATENDANCE
+// COSTS OF EMARKING
+// PERCENTAGE OF USE FOR FACEBOOK
+
 // GET USERS AND IP EVERY TIME THEY CONNECT
 
 function get_users_and_ip ($startdate,$finishdate){
@@ -75,9 +96,9 @@ function get_total_courses_visits_per_sesion ($startdate,$finishdate){
 	
 	return $prom;
 	
-	};
+	}
 	
-// TOTAL SESIONS  
+// TOTAL SESIONS    
 
 function dashboard_totalsesionstoday(){
 	global $DB;
@@ -126,11 +147,86 @@ function total_new_users ($defined_new){
 
 function total_pageviews ($startdate,$finishdate){
 	global $DB;
-	$query2=				"SELECT		COUNT(*) as count
-							FROM 		{logstore_standard_log} as l
-							WHERE 		l.action = ? AND
-							l.timecreated BETWEEN ? AND ?";
-	$total_loggin= $DB->get_record_sql($query2,array('view',$startdate,$finishdate))->count;
+		$query2=				"SELECT		COUNT(*) as count
+								FROM 		{logstore_standard_log} as l
+								WHERE 		l.action = ? AND
+								l.timecreated BETWEEN ? AND ?";
+		$total_loggin= $DB->get_record_sql($query2,array('view',$startdate,$finishdate))->count;
 	return $total_loggin;
 }
+// AMOUNT OF USE (IN A TIME) FOR PAPERATENDANCE
+function paperattendance_use ($startdate,$finishdate){
+	global $DB;
+		$query =			"SELECT 	COUNT(*) AS count
+							FROM		{paperattendance_session} AS p
+							WHERE		lastmodified > ? AND
+										lastmodified < ?";
+		$courseswithpaperattendance = $DB->get_record_sql($query,array($startdate,$finishdate))->count;
+
+	return $courseswithpaperattendance;
+
+}
+// USE PERCENTAGE FOR PAPERATENDANCE (PER COURSE)
+function paperattendance_use_percentage ($startdate,$finishdate){
+	global $DB;
+		$query1 =			"SELECT 	COUNT(*) AS count1
+							FROM		{course}
+							WHERE 		startdate > ?";
+		$coursesamount=$DB->get_record_sql($query,array($startdate))->count1;
+	
+		$query2 = 			"SELECT 	COUNT(*) AS count2
+							FROM		{course} AS c
+							INNER JOIN 	{paperattendance_session} AS pas ON (c.id=pas.courseid)
+							WHERE		lastmodified > ? AND
+										lastmodified < ?";
+		$courseswithpaperattendance = $DB->get_record_sql($query,array($startdate,$finishdate))->count2;
+	
+		$paperattendanceuse=$coursesamount/$courseswithpaperattendance*'100';
+
+	return $paperattendanceuse;
+}
+
+// AMOUNT OF USE IN A TIME FOR TURNITIN (HOW MANY TESTS)
+
+function turnitin_use ($startdate,$finishdate){
+	global $DB;
+		$query =			"SELECT 	COUNT(*) AS count
+							FROM		{plagiarism_turnitin_files} AS c
+							WHERE		lastmodified > ? AND
+										lastmodified < ?";
+		$courseswithpaperattendance = $DB->get_record_sql($query,array($startdate,$finishdate))->count;
+	return $courseswithpaperattendance;
+}
+
+// USE PERCENTAGE FOR TURNITIN (TOTAL COURSES/COURSES WITH TURNITIN)
+function turnitine_use_percentage ($startdate,$finishdate){
+	global $DB;
+		$query1 =			"SELECT 	COUNT(*) AS count1
+							FROM		{course}
+							WHERE 		startdate > ?";
+		$coursesamount=$DB->get_record_sql($query,array($startdate))->count1;
+		$query2 = 			"SELECT 	COUNT(*) AS count2
+							FROM		{course} AS c
+							INNER JOIN 	{course_module} AS cm ON (c.id=cm.courseid)
+							INNER JOIN 	{plagiarism_turnitin_files} AS ptf ON (cm.id=ptf.cm)
+							WHERE		ptf.lastmodified > ? AND
+										ptf.lastmodified < ?";
+		$courseswithpaperattendance = $DB->get_record_sql($query,array($startdate,$finishdate))->count2;
+		
+		
+
+}
+// AMOUNT OF USE (IN A TIME) FOR EMARKING
+function emarking_use ($startdate,$finishdate){
+}
+// USE PERCENTAGE FOR EMARKING
+function emarking_use_percentage ($startdate,$finishdate){
+};
+// COSTS OF EMARKING
+function emarking_cost ($startdate,$finishdate){
+};
+// PERCENTAGE OF USE FOR FACEBOOK
+function facebook_use ($startdate,$finishdate){ 
+};
+
 ?>
