@@ -1,0 +1,35 @@
+@CHARSET "UTF-8";
+header, main, footer{
+    padding-left: 255px;
+}
+.main{
+    padding-bottom: 0px;
+}
+.side-nav{
+    margin-top: 64px;
+}
+@media only screen and (max-width : 992px) {
+    header, main, footer{
+        padding-left: 0;
+    }
+    .side-nav{
+        margin-top: 0px;
+    }
+}
+.card {
+    margin-bottom: 0px;
+}
+.card-content{
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+.widget{
+    padding-bottom:5px !important;
+}
+.condensed td{
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+.side-nav a{
+    padding: 0 16px;
+}
