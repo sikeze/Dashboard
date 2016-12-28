@@ -84,17 +84,12 @@ function dashboard_totalsesionstoday(){
 		$time = time();
 		$timebefore = time() - 86400;
 		$query2="SELECT	id,
-				month(FROM_UNIXTIME(timecreated)) as month,
-				day(FROM_UNIXTIME(timecreated)) as day,
-				hour(FROM_UNIXTIME(timecreated)) as hour,
-				timecreated,
+				DATE_FORMAT(FROM_UNIXTIME(timecreated),'%d-%c-%Y %H:00:00') as date,
 				COUNT(*) as sessions
 				FROM {logstore_standard_log} as l
 				WHERE l.action = ? AND
 				l.timecreated BETWEEN ? AND ? 
-				GROUP BY month(FROM_UNIXTIME(timecreated)),
-				day(FROM_UNIXTIME(timecreated)),
-				hour(FROM_UNIXTIME(timecreated))";
+				GROUP BY date";
 		$totalloggin= $DB->get_records_sql($query2,array('loggedin', $timebefore,$time ));
 		return $totalloggin;
 }

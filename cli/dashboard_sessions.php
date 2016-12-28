@@ -39,8 +39,10 @@ cli_heading('Sessions fill');
 	$values = dashboard_totalsesionstoday();
 	$insert = array();
 	foreach($values as $value){
+		
 		$sessions = new stdClass();
-		$sessions->time = $value->timecreated;
+		// + 60*60 because the strtotimestrap sustracts 1 hour.
+		$sessions->time = strtotime($value->date) + 60*60;
 		$sessions->sessions = $value->sessions;
 		$sessions->avgsession	 = 0;
 		$sessions->pageviews = 0;
