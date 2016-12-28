@@ -13,7 +13,7 @@ function drawBasic() {
       ]);
 
       var options = {
-        title: 'Population of Largest U.S. Cities',
+        title: 'Population o Largest U.S. Cities',
         chartArea: {width: '50%'},
         hAxis: {
           title: 'Total Population',
