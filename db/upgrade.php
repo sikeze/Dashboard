@@ -59,5 +59,19 @@ function xmldb_local_dashboard_upgrade($oldversion) {
 		upgrade_plugin_savepoint(true, 2016122901, 'local', 'dashboard');
 	}
 	
+	if ($oldversion < 2016122902) {
+	
+		// Define index time (unique) to be added to dashboard_resources.
+		$table = new xmldb_table('dashboard_resources');
+		$index = new xmldb_index('time', XMLDB_INDEX_UNIQUE, array('time'));
+	
+		// Conditionally launch add index time.
+		if (!$dbman->index_exists($table, $index)) {
+			$dbman->add_index($table, $index);
+		}
+	
+		// Dashboard savepoint reached.
+		upgrade_plugin_savepoint(true, 2016122902, 'local', 'dashboard');
+	}
 	return true;
 	}

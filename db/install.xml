@@ -39,6 +39,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="time" UNIQUE="true" FIELDS="time" COMMENT="time and date"/>
+      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>
