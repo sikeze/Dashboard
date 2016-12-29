@@ -28,6 +28,11 @@ $string ['home'] = 'Home';
 $string ['users'] = 'Users';
 $string ['resources'] = 'Resources';
 $string ['logout'] = 'Log Out';
+$string ['turnitin'] = 'Turnitin';
+$string ['courseresources'] = 'Course Resources';
+$string ['ubication'] = 'Ubication';
+$string ['devices'] = 'Devices';
+$string ['userinfo'] = 'User Information';
 
 //task
 $string['sessiontask']="Fill sessions";

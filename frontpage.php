@@ -78,10 +78,10 @@
         <!-- Text row -->
         <div class="row">
         	<div class="col s6" style="height:15px;">
-        	<h5><b>Turnitin</b></h5>
+        	<h5><b><?php echo get_string('turnitin','local_dashboard'); ?></b></h5>
         	</div>
         	<div class="col s6" style="height:15px;">
-        	<h5><b>Course Resources</b></h5>
+        	<h5><b><?php echo get_string('courseresources','local_dashboard'); ?></b></h5>
         	</div>
         </div>
         
@@ -94,20 +94,20 @@
         <!-- Ubication, devices and user information text -->
         <div class="row">
         	<div class="col s4" style="height:20px;">
-        	<h5><b>Ubication</b></h5>
+        	<h5><b><?php echo get_string('ubication','local_dashboard'); ?></b></h5>
         	</div>
         	<div class="col s5" style="height:20px;">
-        	<h5><b>Devices</b></h5>
+        	<h5><b><?php echo get_string('devices','local_dashboard'); ?></b></h5>
         	</div>
         	<div class="col s3" style="height:20px;">
-        	<h5><b>User information</b></h5>
+        	<h5><b><?php echo get_string('userinfo','local_dashboard'); ?></b></h5>
         	</div>
         </div>
         
         <!-- Ubication, devices and user information charts -->
 		<div class="row">
 			<div id="ubicationmap" class="col s4" style="height:300px;" overflow:auto;></div>
-			<div id="deviceschart" class="col s5 progress card hoverable widget" style="height:300px;" overflow:auto;></div>
+			<div id="deviceschart" class="col s5 card hoverable widget" style="height:300px;" overflow:auto;></div>
 			<div id="userinfo" class="col s3" overflow:auto;></div>
         </div>
         <!-- Facebook data -->
