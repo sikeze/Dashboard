@@ -29,6 +29,7 @@
 	<script type="text/javascript" src="js/jquery.sparkline.js"></script>
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/1.0.0/dist/progressbar.js"></script>
 </head>
 <body>
 <!-- TOP NAV -->
@@ -75,6 +76,16 @@
         <!-- SIDENAV -->
                 <!-- CONTENT -->
         <main class="grey lighten-3">
+        <!-- Data buttons (year, month, week or day) -->
+        <div class="right-align row">
+          <ul id="dropdown" class="dropdown-content">
+    		<li><a href="#!" class="center-align"><span class="blue-text">Anual</span></a></li>
+    		<li><a href="#!" class="center-align"><span class="blue-text">Mensual</span></a></li>
+    		<li><a href="#!" class="center-align"><span class="blue-text">Semanal</span></a></li>
+    		<li><a href="#!" class="center-align"><span class="blue-text">Diario</span></a></li>
+  		  </ul>
+  		  <a class="blue btn dropdown-button" href="#!" data-activates="dropdown">Opciones de dispersión<i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
+        </div>
         <!-- Text row -->
         <div class="row">
         	<div class="col s6" style="height:15px;">
@@ -99,7 +110,7 @@
         	<div class="col s5" style="height:20px;">
         	<h5><b><?php echo get_string('devices','local_dashboard'); ?></b></h5>
         	</div>
-        	<div class="col s3" style="height:20px;">
+        	<div class="col s3" style="height:45px;">
         	<h5><b><?php echo get_string('userinfo','local_dashboard'); ?></b></h5>
         	</div>
         </div>
@@ -107,7 +118,7 @@
         <!-- Ubication, devices and user information charts -->
 		<div class="row">
 			<div id="ubicationmap" class="col s4" style="height:300px;" overflow:auto;></div>
-			<div id="deviceschart" class="col s5 card hoverable widget" style="height:300px;" overflow:auto;></div>
+			<div id="deviceschart" class="col s5 card hoverable widget" style="height:250px;width:40%;" overflow:auto;></div>
 			<div id="userinfo" class="col s3" overflow:auto;></div>
         </div>
         <!-- Facebook data -->
