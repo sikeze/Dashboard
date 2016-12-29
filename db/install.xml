@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/dashboard/db" VERSION="20161220" COMMENT="XMLDB file for Moodle local/dashboard"
+<XMLDB PATH="local/dashboard/db" VERSION="20161229" COMMENT="XMLDB file for Moodle local/dashboard"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -25,6 +25,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="time" UNIQUE="true" FIELDS="time" COMMENT="time and date"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="dashboard_resources" COMMENT="Resources of dashboard">
       <FIELDS>
@@ -36,6 +39,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="time" UNIQUE="true" FIELDS="time" COMMENT="time and date"/>
+      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>
