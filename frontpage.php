@@ -24,6 +24,7 @@
 	<!--Let browser know website is optimized for mobile-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<!--Import jQuery before materialize.js-->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery.sparkline.js"></script>
 	<script type="text/javascript" src="js/materialize.min.js"></script>
@@ -77,39 +78,37 @@
         <!-- Text row -->
         <div class="row">
         	<div class="col s6" style="height:15px;">
-        	<h5><b>Users information</b></h5>
+        	<h5><b>Turnitin</b></h5>
         	</div>
         	<div class="col s6" style="height:15px;">
         	<h5><b>Course Resources</b></h5>
         	</div>
         </div>
         
-        <!-- User information and course resources charts -->
+        <!-- Turnitin and course resources charts -->
         <div class="row">
-        	<div id= "userinfo" class="col s6"></div>
+        	<div id="turnitinchart" class="col s6 card white-text hoverable widget" overflow:auto;></div>
             <div id="resourcebarchart" class="col s6 l6 card white-text hoverable widget" style="width:50%;" overflow: auto;></div>
         </div>
         
-        <!-- Ubication, devices and turnitin text -->
+        <!-- Ubication, devices and user information text -->
         <div class="row">
-        	<div class="col s3" style="height:20px;">
+        	<div class="col s4" style="height:20px;">
         	<h5><b>Ubication</b></h5>
         	</div>
-        	<div class="col s3" style="height:20px;">
+        	<div class="col s5" style="height:20px;">
         	<h5><b>Devices</b></h5>
         	</div>
-        	<div class="col s6" style="height:20px;">
-        	<h5><b>Turnitin</b></h5>
+        	<div class="col s3" style="height:20px;">
+        	<h5><b>User information</b></h5>
         	</div>
         </div>
         
-        <!-- Ubication, devices and turnitin charts -->
+        <!-- Ubication, devices and user information charts -->
 		<div class="row">
-			<div id="ubicationmap" class="col s3" style="height:300px;" overflow:auto;></div>
-			<div id="devices" class="col s3" style="height:308px;" overflow:auto;>
-				<div id="deviceschart" class="col s12 card white-text hoverable widget" overflow:auto;></div>
-			</div><br><br>
-			<div id="turnitinchart" class="col s6 l6 card white-text hoverable widget" overflow:auto;></div>
+			<div id="ubicationmap" class="col s4" style="height:300px;" overflow:auto;></div>
+			<div id="deviceschart" class="col s5 progress card hoverable widget" style="height:300px;" overflow:auto;></div>
+			<div id="userinfo" class="col s3" overflow:auto;></div>
         </div>
         <!-- Facebook data -->
         <div class="row"></div>
@@ -135,6 +134,7 @@
             $('.materialboxed').materialbox();
             $( "#userinfo" ).load( "userinformation.php" );
             $( "#ubicationmap" ).load( "ubicationmap.php" );
+            $( "#deviceschart" ).load( "deviceschart.php" );
             $('.menu-item').click(function () {
                 ref = $(this).attr('href').replace('#', '') + '.html';
                 $('.progress > div').toggleClass('determinate').toggleClass('indeterminate');
@@ -144,7 +144,6 @@
             }); 
         });
     </script>
-    <script src="js/resourcebarchart.js"></script>
-    <script src="js/devicesbarchart.js"></script>
     <script src="js/turnitinchart.js"></script>
+    <script src="js/resourcebarchart.js"></script>
 </html>
