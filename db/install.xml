@@ -24,7 +24,7 @@
         <FIELD NAME="time" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="time in unix format"/>
         <FIELD NAME="sessions" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="session during that hour"/>
         <FIELD NAME="avgsessiontime" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="average duration of that hour sessions"/>
-        <FIELD NAME="pageviews" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="pageviews for that hour"/>
+        <FIELD NAME="courseviews" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="pageviews for that hour"/>
         <FIELD NAME="users" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="amount of users logged"/>
         <FIELD NAME="newusers" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="amount of new users"/>
         <FIELD NAME="windows" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Windows OS users"/>
@@ -47,6 +47,7 @@
         <FIELD NAME="time" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Resource day"/>
         <FIELD NAME="resourceid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="resource name"/>
         <FIELD NAME="activity" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="resource activity"/>
+        <FIELD NAME="amountcreated" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="amount of resources created"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
