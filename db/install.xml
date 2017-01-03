@@ -8,6 +8,11 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="the moodle user id"/>
+        <FIELD NAME="country" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="user country"/>
+        <FIELD NAME="region" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="user region"/>
+        <FIELD NAME="city" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="lat" TYPE="number" LENGTH="20" NOTNULL="false" SEQUENCE="false" DECIMALS="10"/>
+        <FIELD NAME="long" TYPE="number" LENGTH="20" NOTNULL="false" SEQUENCE="false" DECIMALS="10"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="id" TYPE="primary" FIELDS="id" COMMENT="prymary key"/>
