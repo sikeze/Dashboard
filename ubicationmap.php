@@ -1,7 +1,3 @@
-<div id="buttons" style="height:20px;">	
-	<a class="btn btn-flat white blue-text tooltipped waves-effect waves-blue" onclick="changeSantiago()" style="padding:0.1rem;"><font size="2">Santiago</font></a>
-	<a class="btn btn-flat white blue-text tooltipped waves-effect waves-blue" onclick="changeVina()" style="padding:0.1rem;"><font size="2">Viña del Mar</font></a>
-</div><br>
 <div id="map" class="card hoverable widget" style="height:265px;" overflow:auto;></div>
 
 <script>

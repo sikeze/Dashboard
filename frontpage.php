@@ -8,6 +8,8 @@
 		require_once(dirname(__FILE__) . '/locallib.php');
 	
 		$frontpageurl = new moodle_url('/local/dashboard/frontpage.php');
+		$usersurl = new moodle_url('/local/dashboard/users.php');
+		$resourcesurl = new moodle_url('/local/dashboard/resources.php');
 	
 		require_login();
 		if (isguestuser()) {
@@ -36,7 +38,7 @@
         <div class="navbar-fixed">
             <nav class="grey lighten-2 blue-text">
                 <div class="nav-wraper">
-                    <a href="<?php $frontpageurl ?>" class="brand-logo"><img class="responsive-img" src="images/webcursoslogo.gif" style="width:60%"></a>
+                    <a href="<?php $frontpageurl; ?>" class="brand-logo"><img class="responsive-img" src="images/webcursoslogo.gif" style="width:60%"></a>
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
                         <li><a href="badges.html" class=""><i class="material-icons blue-text">edit</i></a></li>
                         <li><a href="collapsible.html" class=""><i class="material-icons blue-text">refresh</i></a></li>
@@ -69,13 +71,14 @@
                     </div>
                 </div>
             </li>
-            <li><a href="#home" class="white-text menu-item"><?php echo get_string('home', 'local_dashboard'); ?><i class="material-icons white-text">home</i></a></li>
-            <li><a href="#users" class="white-text menu-item"><?php echo get_string('users', 'local_dashboard'); ?><i class="material-icons white-text">supervisor_account</i></a></li>
-            <li><a href="#resource" class="white-text menu-item"><?php echo get_string('resources', 'local_dashboard'); ?><i class="material-icons white-text">description</i></a></li>
+            <li><a href="frontpage.php" class="white-text menu-item"><?php echo get_string('home', 'local_dashboard'); ?><i class="material-icons white-text">home</i></a></li>
+            <li><a href="users.php" class="white-text menu-item"><?php echo get_string('users', 'local_dashboard'); ?><i class="material-icons white-text">supervisor_account</i></a></li>
+            <li><a href="resources.php" class="white-text menu-item"><?php echo get_string('resources', 'local_dashboard'); ?><i class="material-icons white-text">description</i></a></li>
         </ul>
         <!-- SIDENAV -->
-                <!-- CONTENT -->
+        <!-- CONTENT -->
         <main class="grey lighten-3">
+        
         <!-- Data buttons (year, month, week or day) -->
         <div class="right-align row">
           <ul id="dropdown" class="dropdown-content">
@@ -86,6 +89,7 @@
   		  </ul>
   		  <a class="blue btn dropdown-button" href="#!" data-activates="dropdown">Opciones de dispersión<i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         </div>
+        
         <!-- Text row -->
         <div class="row">
         	<div class="col s6" style="height:15px;">
@@ -98,7 +102,7 @@
         
         <!-- Turnitin and course resources charts -->
         <div class="row">
-        	<div id="turnitinchart" class="col s6 card white-text hoverable widget" overflow:auto;></div>
+        	<div id="turnitinchart" class="col s6 l6 card white-text hoverable widget" overflow:auto;></div>
             <div id="resourcebarchart" class="col s6 l6 card white-text hoverable widget" style="width:50%;" overflow: auto;></div>
         </div>
         
@@ -117,12 +121,22 @@
         
         <!-- Ubication, devices and user information charts -->
 		<div class="row">
-			<div id="ubicationmap" class="col s4" style="height:300px;" overflow:auto;></div>
-			<div id="deviceschart" class="col s5 card hoverable widget" style="height:250px;width:40%;" overflow:auto;></div>
+			<div id="ubicationmap" class="col s4" overflow:auto;></div>
+			<div id="deviceschart" class="col s5 card hoverable widget" style="height:265px;" overflow:auto;></div>
 			<div id="userinfo" class="col s3" overflow:auto;></div>
         </div>
-        <!-- Facebook data -->
-        <div class="row"></div>
+        
+        <!-- Map buttons -->
+        <div class="row">
+        	<div id="buttons" class="col s4">	
+				<a class="btn btn-flat white blue-text waves-effect waves-blue" onclick="changeSantiago()" style="padding:0.1rem;"><font size="2">Santiago</font></a>
+				<a class="btn btn-flat white blue-text waves-effect waves-blue" onclick="changeVina()" style="padding:0.1rem;"><font size="2">Viña del Mar</font></a>
+			</div>
+        </div>
+        
+        <!-- Facebok data -->
+        <div class="row">
+        </div>
         </main>
         <!-- CONTENT -->
         <!-- FOOTER -->
@@ -134,6 +148,7 @@
             </div>
           </div>
         </footer>
+        <!-- FOOTER -->
 </body>
  <script>
         $(document).ready(function () {
