@@ -158,9 +158,9 @@
                 edge: 'left' // Choose the horizontal origin
             });
             $('.materialboxed').materialbox();
-            $( "#userinfo" ).load( "userinformation.php" );
-            $( "#ubicationmap" ).load( "ubicationmap.php" );
-            $( "#deviceschart" ).load( "deviceschart.php" );
+            $( "#userinfo" ).load( "charts/userfrontinfo.php" );
+            $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
+            $( "#deviceschart" ).load( "charts/deviceschart.php" );
             $('.menu-item').click(function () {
                 ref = $(this).attr('href').replace('#', '') + '.html';
                 $('.progress > div').toggleClass('determinate').toggleClass('indeterminate');

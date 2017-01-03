@@ -16,6 +16,7 @@
 			die();
 		}
 	?>
+	
 	<!--Import Google Icon Font-->
 	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<!--Import materialize.css-->
@@ -89,10 +90,13 @@
   		  <a class="blue btn dropdown-button" href="#!" data-activates="dropdown">Opciones de dispersión<i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         </div>
         
-        <!-- Text row -->
+        <!-- Users text row -->
         <div class="row">
-        	<div class="col s12">
+        	<div class="col s8">
         		<h5><b>Visitas del usuario</b></h5>
+        	</div>
+        	<div class="col s4" style="margin-top:20px;">
+        		<b>Opciones: </b><i class="material-icons prefix blue-text md-24">file_download</i>
         	</div>
         </div>
         
@@ -133,8 +137,23 @@
         
         <!-- Users sparkline charts -->
         <div class="row">
+        	<div class="col s12" style="margin-left:15px;">
+        		<b>Opciones: </b><i class="material-icons prefix blue-text md-24">file_download</i>
+        	</div>
         	<div id="userinfo" class="col s12" overflow:auto;></div>
         </div>
+        
+        <!-- Location text row-->
+        <div class="row">
+        	<div class="col s8">
+        		<h5><b>Ubicación</b></h5>
+        	</div>
+        	<div class="col s4" style="margin-top:20px;">
+        		<b>Opciones: </b><i class="material-icons prefix blue-text md-24">file_download</i>
+        	</div>
+        </div>
+        
+        <!--  -->
         
         </main>
         <!-- CONTENT -->
@@ -158,7 +177,7 @@ $(document).ready(function () {
         edge: 'left' // Choose the horizontal origin
     });
     $('.materialboxed').materialbox();
-    $( "#userinfo" ).load( "userinformation.php" );
+    $( "#userinfo" ).load( "charts/usersinfo.php" );
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
         selectYears: 15 // Creates a dropdown of 15 years to control year
