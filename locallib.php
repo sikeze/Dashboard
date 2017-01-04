@@ -43,6 +43,46 @@
 
 // GET USERS AND IP EVERY TIME THEY CONNECT
 
+function dashboard_filldatatable (){
+	global $DB;
+	//date_default_timezone_set('Chile/Continental');
+	//$timebefore = date("d-m-Y H:00:00", time()-86400);
+	$time = time();
+	$timebefore = $time - 86400;
+	$fillingtime = $timebefore - ($timebefore % 3600);
+
+	$insert = array();
+	while($fillingtime <= $time){
+		$sessions = new stdClass();
+		// + 60*60 because the strtotimestrap sustracts 1 hour.
+		$sessions->time = $fillingtime;
+		$sessions->sessions = 0;
+		$sessions->avgsessiontime = 0;
+		$sessions->courseviews = 0;
+		$sessions->users = 0;
+		$sessions->newusers = 0;
+		$sessions->windows = 0;
+		$sessions->linux = 0;
+		$sessions->macintosh = 0;
+		$sessions->ios = 0;
+		$sessions->android = 0;
+		$insert[]=$sessions;
+		
+		$fillingtime = $fillingtime + (60*60);
+	}
+	
+	if($DB->insert_records('dashboard_data', $insert)){
+		echo "insert completed";
+	}else{
+		echo "insert failed";
+	}
+	
+	
+	
+}
+
+// GET USERS AND IP EVERY TIME THEY CONNECT
+
 function get_users_and_ip ($startdate,$finishdate){
 	global $DB;
 	$query = 		'SELECT l.id AS id,
@@ -75,27 +115,39 @@ function get_users_and_time_conection ($startdate,$finishdate){
 
 // AVERAGE OF VIEWED COURSES PER SESION
 
-function get_total_courses_visits_per_sesion ($startdate,$finishdate){
+function dashboard_gettotalcourseviews(){
 	global $DB;
-			$query1=		"SELECT 	COUNT(*) as count1
-							FROM 		{logstore_standard_log} as l
-							WHERE		l.action = ? AND
-										l.target = ? AND
-										l.timecreated BETWEEN ? AND ?
-					";
-			$total_course_visits= $DB->get_record_sql($query1,array('viewed','course',$startdate,$finishdate))->count1;
+	
+	$time = time();
+	$timebefore = time() - 86400;
 			
-			$query2=		"SELECT		COUNT(*) as count2
-							FROM 		{logstore_standard_log} as l
-							WHERE 		l.action = ? AND
-							l.timecreated BETWEEN ? AND ?
-					";
-			$total_loggin= $DB->get_record_sql($query2,array('loggedin',$startdate,$finishdate))->count2;
-	
-	$prom=$total_course_visits/$total_loggin;
-	
-	return $prom;
-	
+			$params = array(
+					'viewed',
+					$timebefore,
+					$time
+			);
+			$query=		"SELECT COUNT(*) as courseviews,
+						DATE_FORMAT(FROM_UNIXTIME(timecreated),'%d-%c-%Y %H:00:00') as date
+						FROM {logstore_standard_log} as l
+						WHERE l.action = ? AND
+						l.timecreated BETWEEN ? AND ?
+					    GROUP BY date";
+			$totalcoursevisits= $DB->get_records_sql($query,$params);
+			foreach($totalcoursevisits as $totalvisits){
+					
+				$params= array(
+						$totalvisits->courseviews,
+						strtotime($totalvisits->date)
+				);
+			
+				$query="UPDATE {dashboard_data}
+					SET courseviews = ?
+					WHERE time = ?";
+					
+				if($DB->execute($query,$params)){
+					echo 'Courseviews updated ';
+				}
+			}
 	}
 	
 // TOTAL SESIONS    
@@ -111,36 +163,88 @@ function dashboard_totalsesionstoday(){
 				WHERE l.action = ? AND
 				l.timecreated BETWEEN ? AND ? 
 				GROUP BY date";
-		$totalloggin= $DB->get_records_sql($query2,array('loggedin', $timebefore,$time ));
-		return $totalloggin;
+		$totalloggins= $DB->get_records_sql($query2,array('loggedin', $timebefore,$time ));
+		foreach($totalloggins as $totalloggin){
+			
+			$params= array(
+					$totalloggin->sessions,
+					strtotime($totalloggin->date)
+			);
+		
+			$query="UPDATE {dashboard_data}
+					SET sessions = ?
+					WHERE time = ?";
+			
+			if($DB->execute($query,$params)){
+				echo 'Sessions updated ';
+			}
+		}
 }
 
 // TOTAL USERS
 
-function total_users (){
+function dashboard_totalusers(){
 	global $DB;
-	$query = 		"SELECT 	COUNT(*) AS count
-					FROM 		{user} AS u";
-	$result=$DB->get_record_sql($query);
-	$usersamount=$result->count;
-			
-	return $useramount;
+	$time = time();
+	$timebefore = time() - 86400;
+	$query ="SELECT	id,
+			DATE_FORMAT(FROM_UNIXTIME(u.lastaccess),'%d-%c-%Y %H:00:00') as date,
+			COUNT(*) as users
+			FROM {user} as u
+			WHERE u.lastaccess BETWEEN ? AND ? 
+			GROUP BY date";
+	if($users=$DB->get_records_sql($query, array($timebefore, $time))){
+		foreach($users as $user){
+				
+			$params= array(
+					$user->users,
+					strtotime($user->date)
+			);
+		
+			$query="UPDATE {dashboard_data}
+					SET users = ?
+					WHERE time = ?";
+				
+			if($DB->execute($query,$params)){
+				echo 'users updated ';
+			}
+		}
+	}else{
+		echo"user update failed";
+	}
 }
 
 //AMOUNT OF NEW USERS WITH ACTIVITY IN THE LAST YEAR/MONTH/DAY
 
-function total_new_users ($defined_new){
+function dashboard_newusers(){
 	global $DB;
-	$query = 		"SELECT 	COUNT(*) AS count
-					FROM 		{user} AS u
-					WHERE		u.lastlogin > ?";
-	$time_condition=time()-strtotime($defined_new);
-	$result=$DB->get_record_sql($query,array($time_condition));
+	$time = time();
+	$timebefore = time() - 86400;
+	$query ="SELECT	id,
+			DATE_FORMAT(FROM_UNIXTIME(u.lastaccess),'%d-%c-%Y %H:00:00') as date,
+			COUNT(*) as users
+			FROM {user} as u
+			WHERE u.firstaccess BETWEEN ? AND ?
+			GROUP BY date";
+	if($users=$DB->get_records_sql($query, array($timebefore, $time))){
+		foreach($users as $user){
 	
-	$active_users=$result->count;
+			$params= array(
+					$user->users,
+					strtotime($user->date)
+			);
 	
-	return $active_users;
+			$query="UPDATE {dashboard_data}
+					SET newusers = ?
+					WHERE time = ?";
 	
+			if($DB->execute($query,$params)){
+				echo 'new users updated ';
+			}
+		}
+	}else{
+		echo"user update failed";
+	}
 }
 
 // TOTAL PAGEVIEWS

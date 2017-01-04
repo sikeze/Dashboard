@@ -36,20 +36,15 @@ require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 cli_heading('Sessions fill');
 	global $DB;
 
-	$values = dashboard_totalsesionstoday();
-	$insert = array();
-	foreach($values as $value){
-		
-		$sessions = new stdClass();
-		// + 60*60 because the strtotimestrap sustracts 1 hour.
-		$sessions->time = strtotime($value->date) + 60*60;
-		$sessions->sessions = $value->sessions;
-		$sessions->avgsession	 = 0;
-		$sessions->pageviews = 0;
-		$sessions->pageviewspersession = 0;
-		$insert[]=$sessions;
-	}
+	//dashboard_filldatatable();
+	
+	dashboard_totalsesionstoday();
+	
+	dashboard_gettotalcourseviews();
+	
+	dashboard_totalusers();
+	
+	dashboard_newusers();
 
-	$DB->insert_records('dashboard_data', $insert);
 	
 exit(0); // 0 means success
