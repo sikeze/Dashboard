@@ -101,13 +101,12 @@
 		<div class="row">
 			<div class="col s4">
         		<ul id="datadropdown" class="dropdown-content"> <!-- Change list options -->
-    				<li><a href="#!" class="center-align"><span class="blue-text">Sesiones</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Sesiones promedio</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Usuarios</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Usuarios promedio</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Usuarios nuevos</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Tiempos de sesión</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Tiempos de sesión promedio</span></a></li>
+    				<li><a href="#!" class="center-align"><span class="blue-text">Todos</span></a></li>
+    				<li><a href="#!" class="center-align"><span class="blue-text">Turnitin</span></a></li>
+    				<li><a href="#!" class="center-align"><span class="blue-text">Paper Attendance</span></a></li>
+    				<li><a href="#!" class="center-align"><span class="blue-text">PDF</span></a></li>
+    				<li><a href="#!" class="center-align"><span class="blue-text">Tareas</span></a></li>
+    				<li><a href="#!" class="center-align"><span class="blue-text">eMarking</span></a></li>
   		  		</ul>
   		  		<a class="blue btn dropdown-button" href="#!" data-activates="datadropdown">Selección de datos<i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         	</div>
@@ -129,6 +128,53 @@
 		<div class="row">
 			<div id="utimechart" class="col s12 card white-text hoverable widget" style="height:270px;"></div>
 		</div>
+		
+		<!-- Divider line -->
+		<div class="row">
+       		<hr width=95% align="middle" color="black">
+        </div>
+        
+        <!-- Resources and costs texts and charts-->
+        <div class="row">
+        	<div class="col s6">
+        		<div class="col s12">
+        			<h5><b>Recursos v/s % de Utilización</b></h5>
+        		</div>
+        		<div id="uresources" class="col s12 card white-text hoverable widget" style="height:262px;" overflow:auto;></div>
+        	</div>
+        	<div class="col s6">
+        		<div class="col s12">
+        			<h5><b>Costo eMarking</b></h5>
+        		</div>
+        		<!-- eMarking costs panels -->
+        		<div class="col s12">
+        			<div class="col s4 m4">
+        				<div class="card-panel blue white-text center-align hoverable widget">
+        				Largo promedio prueba: 3
+        				</div>
+        			</div>
+        			<div class="col s4 m4">
+        				<div class="card-panel blue white-text center-align hoverable widget">
+        				Páginas impresas: 829
+        				</div>
+        			</div>
+        			<div class="col s4 m4">
+        				<div class="card-panel blue white-text center-align hoverable widget">
+        				Costo total impresiones: $0
+        				</div>
+        			</div>
+        		</div>
+        		<div class="col s12">
+        			<h5><b>Usuarios linkeados a Facebook</b></h5>
+        		</div>
+        		<!-- Facebook users chart -->
+        		<div id="facebookusers" class="col s12 card hoverable widget" style="height:100px;">
+        		</div>
+        	</div>
+        </div>
+        
+        <div class="row">
+        </div>
 	</main>
 <!-- CONTENT -->
 <!-- FOOTER -->
@@ -155,6 +201,7 @@ $(document).ready(function () {
         selectMonths: true, // Creates a dropdown to control month
         selectYears: 15 // Creates a dropdown of 15 years to control year
       });
+    $( "#facebookusers" ).load( "charts/fbusers.php" );
     $('.menu-item').click(function () {
         ref = $(this).attr('href').replace('#', '') + '.html';
         $('.progress > div').toggleClass('determinate').toggleClass('indeterminate');
@@ -165,4 +212,5 @@ $(document).ready(function () {
 });
 </script>
 <script src="js/utimechart.js"></script>
+<script src="js/uresources.js"></script>
 </html>
