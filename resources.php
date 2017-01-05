@@ -26,9 +26,9 @@
 	<!--Let browser know website is optimized for mobile-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<!--Import jQuery before materialize.js-->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery.sparkline.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/1.0.0/dist/progressbar.js"></script>
@@ -100,13 +100,13 @@
 		<!-- Data select and datepicker -->
 		<div class="row">
 			<div class="col s4">
-        		<ul id="datadropdown" class="dropdown-content"> <!-- Change list options -->
-    				<li><a href="#!" class="center-align"><span class="blue-text">Todos</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Turnitin</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Paper Attendance</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">PDF</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Tareas</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">eMarking</span></a></li>
+        		<ul id="datadropdown" class="dropdown-content">
+    				<li value="0"><a href="#" class="center-align"><span class="blue-text">Todos</span></a></li>
+    				<li value="1"><a href="#" class="center-align"><span class="blue-text">Turnitin</span></a></li>
+    				<li value="2"><a href="#" class="center-align"><span class="blue-text">Paper Attendance</span></a></li>
+    				<li	value="3"><a href="#" class="center-align"><span class="blue-text">PDF</span></a></li>
+    				<li value="4"><a href="#" class="center-align"><span class="blue-text">Tareas</span></a></li>
+    				<li value="5"><a href="#" class="center-align"><span class="blue-text">eMarking</span></a></li>
   		  		</ul>
   		  		<a class="blue btn dropdown-button" href="#!" data-activates="datadropdown">Selección de datos<i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         	</div>
@@ -189,6 +189,8 @@
 <!-- FOOTER -->
 </body>
 
+<script src="js/utimechart.js"></script>
+<script src="js/uresources.js"></script>
 <script>
 $(document).ready(function () {
     //init sidenav
@@ -201,6 +203,17 @@ $(document).ready(function () {
         selectMonths: true, // Creates a dropdown to control month
         selectYears: 15 // Creates a dropdown of 15 years to control year
       });
+    $("#datadropdown li").click(function () { //Change div of charts
+    	var data = $(this).val();
+        $.ajax({
+            url: 'changechart.php',
+            data: {"select": data},
+            method: 'POST',
+            success: function (output) {
+                $('#utimechart').html(output);
+            }
+      });
+    });
     $( "#facebookusers" ).load( "charts/fbusers.php" );
     $('.menu-item').click(function () {
         ref = $(this).attr('href').replace('#', '') + '.html';
@@ -211,6 +224,4 @@ $(document).ready(function () {
     }); 
 });
 </script>
-<script src="js/utimechart.js"></script>
-<script src="js/uresources.js"></script>
 </html>

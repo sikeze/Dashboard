@@ -27,9 +27,9 @@
 	<!--Let browser know website is optimized for mobile-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<!--Import jQuery before materialize.js-->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery.sparkline.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/1.0.0/dist/progressbar.js"></script>
@@ -190,6 +190,7 @@
 <!-- FOOTER -->
 </body>
 
+<script src="js/userschart.js"></script>
 <script>
 $(document).ready(function () {
     //init sidenav
@@ -215,6 +216,5 @@ $(document).ready(function () {
     }); 
 });
 </script>
-<script src="js/userschart.js"></script>
 
 </html>

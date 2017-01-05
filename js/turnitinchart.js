@@ -1,6 +1,5 @@
 google.charts.load('current', {packages: ['corechart', 'bar']});
 google.charts.setOnLoadCallback(drawBasic);
-
 function drawBasic() {
 
       var data = new google.visualization.DataTable();
@@ -39,4 +38,4 @@ function drawBasic() {
         document.getElementById('turnitinchart'));
 
       chart.draw(data, options);
-    }
+}
