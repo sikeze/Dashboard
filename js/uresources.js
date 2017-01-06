@@ -13,7 +13,7 @@ function drawBasic() {
       ]);
 
       var options = {
-        title: 'Population o Largest U.S. Cities',
+        title: 'Population of Largest U.S. Cities',
         chartArea: {width: '50%'},
         hAxis: {
           title: 'Total Population',
@@ -24,7 +24,9 @@ function drawBasic() {
         }
       };
 
-      var chart = new google.visualization.BarChart(document.getElementById('resourcebarchart'));
+      var chart = new google.visualization.BarChart(document.getElementById('uresources'));
 
-      chart.draw(data, options);
-    }
+      chart.draw(data,options);
+      
+}
+
