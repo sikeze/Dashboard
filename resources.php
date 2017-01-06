@@ -81,13 +81,13 @@
 	
 		<!-- Data buttons (month, week or day) -->
     	<div class="right-align row">
+    		<a class="blue btn dropdown-button" href="#!" data-activates="dropdown"><span id="selected">Opciones de dispersión</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         	<ul id="dropdown" class="dropdown-content">
         		<li><a href="#!" class="center-align"><span class="blue-text">Anual</span></a></li>
     			<li><a href="#!" class="center-align"><span class="blue-text">Mensual</span></a></li>
     			<li><a href="#!" class="center-align"><span class="blue-text">Semanal</span></a></li>
     			<li><a href="#!" class="center-align"><span class="blue-text">Diario</span></a></li>
   		  	</ul>
-  		  	<a class="blue btn dropdown-button" href="#!" data-activates="dropdown">Opciones de dispersión<i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
 		</div>
 		
 		<!-- Utilization vs time text row -->
@@ -100,6 +100,7 @@
 		<!-- Data select and datepicker -->
 		<div class="row">
 			<div class="col s4">
+				<a class="blue btn dropdown-button" href="#!" data-activates="datadropdown"><span id="selected2">Selección de datos</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         		<ul id="datadropdown" class="dropdown-content">
     				<li value="0"><a href="#" class="center-align"><span class="blue-text">Todos</span></a></li>
     				<li value="1"><a href="#" class="center-align"><span class="blue-text">Turnitin</span></a></li>
@@ -108,7 +109,6 @@
     				<li value="4"><a href="#" class="center-align"><span class="blue-text">Tareas</span></a></li>
     				<li value="5"><a href="#" class="center-align"><span class="blue-text">eMarking</span></a></li>
   		  		</ul>
-  		  		<a class="blue btn dropdown-button" href="#!" data-activates="datadropdown">Selección de datos<i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         	</div>
         	<div class="col s8">
         		<div class="input-field col s6"> <!-- CHANGE COLOR TO CALENDAR!!! -->
@@ -199,6 +199,12 @@ $(document).ready(function () {
         edge: 'left' // Choose the horizontal origin
     });
     $('.materialboxed').materialbox();
+    $('#dropdown a').click(function(){
+        $('#selected').text($(this).text());
+      });
+    $('#datadropdown a').click(function(){
+        $('#selected2').text($(this).text());
+      });
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
         selectYears: 15 // Creates a dropdown of 15 years to control year

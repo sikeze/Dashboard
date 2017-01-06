@@ -81,12 +81,12 @@
         
 	<!-- Data buttons (month, week or day) -->
     	<div class="right-align row">
+    		<a class="blue btn dropdown-button" href="#!" data-activates="dropdown"><span id="selected">Opciones de dispersión</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         	<ul id="dropdown" class="dropdown-content">
     			<li><a href="#!" class="center-align"><span class="blue-text">Mensual</span></a></li>
     			<li><a href="#!" class="center-align"><span class="blue-text">Semanal</span></a></li>
     			<li><a href="#!" class="center-align"><span class="blue-text">Diario</span></a></li>
   		  	</ul>
-  		  	<a class="blue btn dropdown-button" href="#!" data-activates="dropdown">Opciones de dispersión<i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
 		</div>
         
 	<!-- Users text row -->
@@ -114,6 +114,7 @@
         			<label class="active" for="datepickertwo">Elija segunda fecha</label>
         		</div>
         		<div class="center-align col s12">
+        		<a class="blue btn dropdown-button" href="#!" data-activates="datadropdown"><span id="selected2">Selección de datos</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         		<ul id="datadropdown" class="dropdown-content">
     				<li><a href="#!" class="center-align"><span class="blue-text">Sesiones</span></a></li>
     				<li><a href="#!" class="center-align"><span class="blue-text">Sesiones promedio</span></a></li>
@@ -123,7 +124,6 @@
     				<li><a href="#!" class="center-align"><span class="blue-text">Tiempos de sesión</span></a></li>
     				<li><a href="#!" class="center-align"><span class="blue-text">Tiempos de sesión promedio</span></a></li>
   		  		</ul>
-  		  		<a class="blue btn dropdown-button" href="#!" data-activates="datadropdown">Selección de datos<i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         		</div>
         	</div>
 		</div>
@@ -199,6 +199,12 @@ $(document).ready(function () {
         edge: 'left' // Choose the horizontal origin
     });
     $('.materialboxed').materialbox();
+    $('#dropdown a').click(function(){
+        $('#selected').text($(this).text());
+      });
+    $('#datadropdown a').click(function(){
+        $('#selected2').text($(this).text());
+      });
     $( "#userinfo" ).load( "charts/usersinfo.php" );
     $( "#locationtable" ).load( "charts/locationtable.php" );
     $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
