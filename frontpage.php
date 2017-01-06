@@ -79,13 +79,13 @@
 	<main class="grey lighten-3">
     <!-- Data buttons (year, month, week or day) -->
     	<div class="right-align row">
+		  <a class="blue btn dropdown-button" href="#!" data-activates="dropdown"><span id="selected">Opciones de dispersión</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
           <ul id="dropdown" class="dropdown-content">
     		<li><a href="#!" class="center-align"><span class="blue-text">Anual</span></a></li>
     		<li><a href="#!" class="center-align"><span class="blue-text">Mensual</span></a></li>
     		<li><a href="#!" class="center-align"><span class="blue-text">Semanal</span></a></li>
     		<li><a href="#!" class="center-align"><span class="blue-text">Diario</span></a></li>
   		  </ul>
-  		  <a class="blue btn dropdown-button" href="#!" data-activates="dropdown">Opciones de dispersión<i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         </div>
 
 	<!-- Text row -->
@@ -158,6 +158,9 @@
                 edge: 'left' // Choose the horizontal origin
             });
             $('.materialboxed').materialbox();
+            $('.dropdown-content a').click(function(){
+                $('#selected').text($(this).text());
+              });
             $( "#userinfo" ).load( "charts/userfrontinfo.php" );
             $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
             $( "#deviceschart" ).load( "charts/deviceschart.php" );
