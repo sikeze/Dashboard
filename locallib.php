@@ -20,66 +20,7 @@
  * @copyright  2016 Juan Luis Cordova (jcordova@alumnos.uai.cl)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-		// FUNCTIONS FOR USERS DATA
 
-// GET USERS AND IP EVERY TIME THEY CONNECT
-// GET USERS AND DATE WHENEVER THEY CONNECT
-// AVERAGE OF VIEWED COURSES PER SESION
-// TOTAL SESIONS
-// TOTAL USERS
-// AMOUNT OF NEW USERS WITH ACTIVITY IN THE LAST DEFINED TIME
-// TOTAL PAGEVIEWS
-
-		// FUNCTIONS FOR RESOURCES DATA
-
-// USE IN TIME FOR TURNITIN
-// USE IN TIME FOR EMARKING
-// USE IN TIME FOR PAPERATENDANCE
-// USE PERCENTAGE FOR EMARKING
-// USE PERCENTAGE FOR TURNITIN
-// USE PERCENTAGE FOR PAPERATENDANCE
-// COSTS OF EMARKING
-// PERCENTAGE OF USE FOR FACEBOOK
-
-// GET USERS AND IP EVERY TIME THEY CONNECT
-
-function dashboard_filldatatable (){
-	global $DB;
-	//date_default_timezone_set('Chile/Continental');
-	//$timebefore = date("d-m-Y H:00:00", time()-86400);
-	$time = time();
-	$timebefore = $time - 86400;
-	$fillingtime = $timebefore - ($timebefore % 3600);
-
-	$insert = array();
-	while($fillingtime <= $time){
-		$sessions = new stdClass();
-		// + 60*60 because the strtotimestrap sustracts 1 hour.
-		$sessions->time = $fillingtime;
-		$sessions->sessions = 0;
-		$sessions->avgsessiontime = 0;
-		$sessions->courseviews = 0;
-		$sessions->users = 0;
-		$sessions->newusers = 0;
-		$sessions->windows = 0;
-		$sessions->linux = 0;
-		$sessions->macintosh = 0;
-		$sessions->ios = 0;
-		$sessions->android = 0;
-		$insert[]=$sessions;
-		
-		$fillingtime = $fillingtime + (60*60);
-	}
-	
-	if($DB->insert_records('dashboard_data', $insert)){
-		echo "insert completed";
-	}else{
-		echo "insert failed";
-	}
-	
-	
-	
-}
 
 // GET USERS AND IP EVERY TIME THEY CONNECT
 
@@ -117,38 +58,79 @@ function get_users_and_time_conection ($startdate,$finishdate){
 
 function dashboard_gettotalcourseviews(){
 	global $DB;
-	
 	$time = time();
-	$timebefore = time() - 86400;
-			
-			$params = array(
-					'viewed',
-					$timebefore,
-					$time
-			);
-			$query=		"SELECT COUNT(*) as courseviews,
-						DATE_FORMAT(FROM_UNIXTIME(timecreated),'%d-%c-%Y %H:00:00') as date
-						FROM {logstore_standard_log} as l
-						WHERE l.action = ? AND
-						l.timecreated BETWEEN ? AND ?
-					    GROUP BY date";
-			$totalcoursevisits= $DB->get_records_sql($query,$params);
-			foreach($totalcoursevisits as $totalvisits){
-					
-				$params= array(
-						$totalvisits->courseviews,
-						strtotime($totalvisits->date)
-				);
-			
-				$query="UPDATE {dashboard_data}
-					SET courseviews = ?
-					WHERE time = ?";
-					
-				if($DB->execute($query,$params)){
-					echo 'Courseviews updated ';
+	$lasttime = $DB->get_record_sql("SELECT MAX(time) as time FROM {dashboard_data}");
+	$params = array(
+			'viewed',
+			$lasttime->time,
+			$time
+	);
+	$query=	"SELECT id, COUNT(*) as courseviews,
+			DATE_FORMAT(FROM_UNIXTIME(timecreated),'%d-%c-%Y %H:00:00') as date
+			FROM {logstore_standard_log} as l
+			WHERE l.action = ? AND
+			l.timecreated BETWEEN ? AND ?
+	    	GROUP BY date";
+	if($totalcoursevisits= $DB->get_records_sql($query,$params)){
+		$arrayupdate = array();
+		$params = array(
+				$lasttime->time,
+				$time
+		);
+		$query=	"SELECT id, time
+			FROM {dashboard_data} as d
+			WHERE time BETWEEN ? AND ?";
+		if($exists=$DB->get_records_sql($query,$params)){
+			foreach($exists as $existkey => $exist){
+				foreach($totalcoursevisits as $totalvisitskey => $totalvisits){
+					if($exist->time == strtotime($totalvisits->date)){
+						$arrayupdate[$totalvisits->date] = $totalvisits->courseviews;
+						unset($totalcoursevisits[$totalvisitskey]);
+					}
 				}
 			}
+		}
+		foreach($arrayupdate as $key => $update){
+			$params= array(
+					$update,
+					strtotime($key)
+			);
+		
+			$query="UPDATE {dashboard_data}
+				SET courseviews = ?
+				WHERE time = ?";
+				
+			if($DB->execute($query,$params)){
+				echo 'Courseviews updated ';
+			}
+		}
+		foreach($totalcoursevisits as $totalvisits){
+				$sessions = new stdClass();
+				// + 60*60 because the strtotimestrap sustracts 1 hour.
+				$sessions->time = strtotime($totalvisits->date);
+				$sessions->sessions = 0;
+				$sessions->avgsessiontime = 0;
+				$sessions->courseviews = $totalvisits->courseviews;
+				$sessions->users = 0;
+				$sessions->newusers = 0;
+				$sessions->windows = 0;
+				$sessions->linux = 0;
+				$sessions->macintosh = 0;
+				$sessions->ios = 0;
+				$sessions->android = 0;
+				$insert[]=$sessions;
+		}
+		if(count($totalcoursevisits)>0){
+			if($DB->insert_records('dashboard_data', $insert)){
+				echo "insert completed";
+			}
+		}
+			
 	}
+	
+}
+
+
 	
 // TOTAL SESIONS    
 
@@ -187,13 +169,15 @@ function dashboard_totalusers(){
 	global $DB;
 	$time = time();
 	$timebefore = time() - 86400;
-	$query ="SELECT	id,
-			DATE_FORMAT(FROM_UNIXTIME(u.lastaccess),'%d-%c-%Y %H:00:00') as date,
-			COUNT(*) as users
-			FROM {user} as u
-			WHERE u.lastaccess BETWEEN ? AND ? 
+	$query ="SELECT y.date, COUNT(y.users) as users FROM(SELECT	id,
+			DATE_FORMAT(FROM_UNIXTIME(l.timecreated),'%d-%c-%Y %H:00:00') as date,
+			userid as users
+			FROM {logstore_standard_log} as l
+			WHERE l.action = ? AND l.timecreated BETWEEN ? AND ? 
+			GROUP BY date,userid) as y
 			GROUP BY date";
-	if($users=$DB->get_records_sql($query, array($timebefore, $time))){
+	if($users=$DB->get_records_sql($query, array('loggedin',$timebefore, $time))){
+		
 		foreach($users as $user){
 				
 			$params= array(
@@ -209,6 +193,7 @@ function dashboard_totalusers(){
 				echo 'users updated ';
 			}
 		}
+		
 	}else{
 		echo"user update failed";
 	}
@@ -249,14 +234,57 @@ function dashboard_newusers(){
 
 // TOTAL PAGEVIEWS
 
-function total_pageviews ($startdate,$finishdate){
+function dashboard_avgsessiontime(){
 	global $DB;
-		$query2=				"SELECT		COUNT(*) as count
-								FROM 		{logstore_standard_log} as l
-								WHERE 		l.action = ? AND
-								l.timecreated BETWEEN ? AND ?";
-		$total_loggin= $DB->get_record_sql($query2,array('view',$startdate,$finishdate))->count;
-	return $total_loggin;
+	$time = time();
+	$timebefore = time() - 86400;
+		$query="SELECT id,userid, action, DATE_FORMAT(FROM_UNIXTIME(timecreated),'%d-%c-%Y %H:00:00') as date , timecreated as time
+				FROM {logstore_standard_log} 
+				WHERE action IN (?,?) AND timecreated BETWEEN ? AND ?
+				ORDER BY userid, date DESC";
+		if($totallogged= $DB->get_records_sql($query,array('loggedin','loggedout',$timebefore,$time))){
+			$previousaction = null;
+			$previousdate = null;
+			$previoususer = null;
+			$previoustime = null;
+			$timesaver = array();
+			$avgtime = array();
+			foreach($totallogged as $logged){
+				if($previoususer == $logged->userid && $previousdate == $logged->date && $previousaction == 'loggedout' && $logged->action == 'loggedin'){
+					$time = $previoustime - $logged->time;
+					$timesaver[$logged->date][] = $time;
+					//echo "$previoususer = $logged->userid -- $previousaction = $logged->action -- $previousdate = $logged->date <br>";
+				}
+				
+				$previousaction = $logged->action;
+				$previousdate = $logged->date;
+				$previoususer = $logged->userid;
+				$previoustime = $logged->time;
+			}
+			$sum = 0;
+			$count = 0;
+			$arrayplace = 0;
+			$previousdate = null;
+			foreach($timesaver as $key => $times){
+				$arraylenght = count($times) - 1;
+				$avgtime = array_sum($times)/count($times);
+				$arrayavg[$key] = $avgtime;
+			}
+			foreach($arrayavg as $key => $avg){
+				$params= array(
+						$avg,
+						strtotime($key)
+				);
+				
+				$query="UPDATE {dashboard_data}
+					SET avgsessiontime = ?
+					WHERE time = ?";
+					
+				if($DB->execute($query,$params)){
+					echo 'avgsessionstime updated ';
+				}
+			}
+			}
 }
 // AMOUNT OF USE (IN A TIME) FOR PAPERATENDANCE
 function paperattendance_use ($startdate,$finishdate){

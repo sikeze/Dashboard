@@ -36,15 +36,15 @@ require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 cli_heading('Sessions fill');
 	global $DB;
 
-	//dashboard_filldatatable();
-	
-	dashboard_totalsesionstoday();
+	//dashboard_totalsesionstoday();
 	
 	dashboard_gettotalcourseviews();
 	
-	dashboard_totalusers();
+	//dashboard_totalusers();
 	
-	dashboard_newusers();
+	//dashboard_newusers();
+	
+	//dashboard_avgsessiontime();
 
 	
 exit(0); // 0 means success
