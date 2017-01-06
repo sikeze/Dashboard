@@ -1,17 +1,17 @@
 <style>
 #containerone {
-  width: 125px;
-  height: 110px;
+  width: 33%;
+  height: 30%;
   position: relative;
 }
 #containertwo {
-  width: 125px;
-  height: 100px;
+  width: 33%;
+  height: 30%;
   position: relative;
 }
 #containerthree {
-  width: 125px;
-  height: 110px;
+  width: 33%;
+  height: 30%;
   position: relative;
 }
 </style>
