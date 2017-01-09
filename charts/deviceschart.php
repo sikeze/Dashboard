@@ -1,17 +1,14 @@
 <style>
 #containerone {
   width: 33%;
-  height: 30%;
   position: relative;
 }
 #containertwo {
   width: 33%;
-  height: 30%;
   position: relative;
 }
 #containerthree {
   width: 33%;
-  height: 30%;
   position: relative;
 }
 </style>
