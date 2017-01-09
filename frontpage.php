@@ -36,7 +36,7 @@
 <body>
 <!-- TOP NAV -->
 	<div class="navbar-fixed">
-    	<nav class="grey lighten-2 blue-text">
+    	<nav class="grey lighten-1 blue-text">
         	<div class="nav-wraper">
             	<a href="<?php echo $frontpageurl; ?>" class="brand-logo"><img class="responsive-img" src="images/webcursoslogo.gif" style="width:60%"></a>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -73,18 +73,19 @@
          <li><a href="<?php echo $frontpageurl; ?>" class="white-text menu-item"><?php echo get_string('home', 'local_dashboard'); ?><i class="material-icons white-text">home</i></a></li>
          <li><a href="<?php echo $usersurl; ?>" class="white-text menu-item"><?php echo get_string('users', 'local_dashboard'); ?><i class="material-icons white-text">supervisor_account</i></a></li>
          <li><a href="<?php echo $resourcesurl; ?>" class="white-text menu-item"><?php echo get_string('resources', 'local_dashboard'); ?><i class="material-icons white-text">description</i></a></li>
+         <li><a href="/moodle/my/" class="white-text menu-item">Volver a Moodle<i class="material-icons white-text">undo</i></a></li>
 	</ul>
 <!-- SIDENAV -->
 <!-- CONTENT -->
 	<main class="grey lighten-3">
     <!-- Data buttons (year, month, week or day) -->
-    	<div class="right-align row">
+    	<div class="center-align row">
 		  <a class="blue btn dropdown-button" href="#!" data-activates="dropdown"><span id="selected">Opciones de dispersión</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
           <ul id="dropdown" class="dropdown-content">
-    		<li><a href="#!" class="center-align"><span class="blue-text">Anual</span></a></li>
     		<li><a href="#!" class="center-align"><span class="blue-text">Mensual</span></a></li>
     		<li><a href="#!" class="center-align"><span class="blue-text">Semanal</span></a></li>
     		<li><a href="#!" class="center-align"><span class="blue-text">Diario</span></a></li>
+    		<li><a href="#!" class="center-align"><span class="blue-text">Hora</span></a></li>
   		  </ul>
         </div>
 
