@@ -87,6 +87,7 @@
     			<li><a href="#!" class="center-align"><span class="blue-text">Mensual</span></a></li>
     			<li><a href="#!" class="center-align"><span class="blue-text">Semanal</span></a></li>
     			<li><a href="#!" class="center-align"><span class="blue-text">Diario</span></a></li>
+    			<li><a href="#!" class="center-align"><span class="blue-text">Hora</span></a></li>
   		  	</ul>
 		</div>
         

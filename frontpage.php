@@ -82,10 +82,10 @@
     	<div class="center-align row">
 		  <a class="blue btn dropdown-button" href="#!" data-activates="dropdown"><span id="selected">Opciones de dispersión</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
           <ul id="dropdown" class="dropdown-content">
-    		<li><a href="#!" class="center-align"><span class="blue-text">Anual</span></a></li>
     		<li><a href="#!" class="center-align"><span class="blue-text">Mensual</span></a></li>
     		<li><a href="#!" class="center-align"><span class="blue-text">Semanal</span></a></li>
     		<li><a href="#!" class="center-align"><span class="blue-text">Diario</span></a></li>
+    		<li><a href="#!" class="center-align"><span class="blue-text">Hora</span></a></li>
   		  </ul>
         </div>
 
