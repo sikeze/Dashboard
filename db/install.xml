@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/dashboard/db" VERSION="20161220" COMMENT="XMLDB file for Moodle local/dashboard"
+<XMLDB PATH="local/dashboard/db" VERSION="20170103" COMMENT="XMLDB file for Moodle local/dashboard"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="dashboard_users_config" COMMENT="Dashboard user configuration">
+    <TABLE NAME="dashboard_users_location" COMMENT="Dashboard user location information">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="the moodle user id"/>
+        <FIELD NAME="country" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="user country"/>
+        <FIELD NAME="region" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="user region"/>
+        <FIELD NAME="city" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="lat" TYPE="number" LENGTH="20" NOTNULL="false" SEQUENCE="false" DECIMALS="10"/>
+        <FIELD NAME="long" TYPE="number" LENGTH="20" NOTNULL="false" SEQUENCE="false" DECIMALS="10"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="id" TYPE="primary" FIELDS="id" COMMENT="prymary key"/>
@@ -18,23 +23,35 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="time" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="time in unix format"/>
         <FIELD NAME="sessions" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="session during that hour"/>
-        <FIELD NAME="avgsession" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="average duration of that hour sessions"/>
-        <FIELD NAME="pageviews" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="pageviews for that hour"/>
-        <FIELD NAME="pageviewspersession" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="pageviews per sessions"/>
+        <FIELD NAME="avgsessiontime" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="average duration of that hour sessions"/>
+        <FIELD NAME="courseviews" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="pageviews for that hour"/>
+        <FIELD NAME="users" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="amount of users logged"/>
+        <FIELD NAME="newusers" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="amount of new users"/>
+        <FIELD NAME="windows" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Windows OS users"/>
+        <FIELD NAME="linux" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="linux OS users"/>
+        <FIELD NAME="macintosh" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="apple OS users"/>
+        <FIELD NAME="ios" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="ios users"/>
+        <FIELD NAME="android" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="number of android users"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="time" UNIQUE="true" FIELDS="time" COMMENT="time and date"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="dashboard_resources" COMMENT="Resources of dashboard">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="course id of the activity"/>
         <FIELD NAME="time" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Resource day"/>
-        <FIELD NAME="resource" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="resource name"/>
+        <FIELD NAME="resourceid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="resource name"/>
         <FIELD NAME="activity" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="resource activity"/>
+        <FIELD NAME="amountcreated" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="amount of resources created"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id" COMMENT="course id of the activity"/>
       </KEYS>
     </TABLE>
   </TABLES>
