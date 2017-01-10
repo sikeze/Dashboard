@@ -90,6 +90,20 @@
     			<li><a href="#!" class="center-align"><span class="blue-text">Hora</span></a></li>
   		  	</ul>
 		</div>
+	
+	<!-- Select date calendar -->
+		<div class="row">
+			<div class="input-field col s6"> <!-- CHANGE COLOR TO CALENDAR!!! -->
+        		<i class="material-icons prefix blue-text">date_range</i>
+        		<input type="date" class="datepicker" id="datepickerone">
+        		<label class="active" for="datepickerone">Elija primera fecha</label>
+       		</div>
+        	<div class="input-field col s6">
+        		<i class="material-icons prefix blue-text">date_range</i>
+        		<input type="date" class="datepicker" id="datepickertwo">
+        		<label class="active" for="datepickertwo">Elija segunda fecha</label>
+        	</div>
+        </div>
         
 	<!-- Users text row -->
     	<div class="row">
@@ -99,35 +113,23 @@
         	<div class="col s4" style="margin-top:20px;">
         		<b>Opciones: </b><i class="material-icons prefix blue-text md-24">file_download</i>
         	</div>
+        	<div class="left-align col s12">
+        		<a class="blue btn dropdown-button" href="#!" data-activates="datadropdown"><span id="selected2">Selección de datos</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
+        			<ul id="datadropdown" class="dropdown-content">
+    					<li><a href="#!" class="center-align"><span class="blue-text">Sesiones</span></a></li>
+    					<li><a href="#!" class="center-align"><span class="blue-text">Sesiones promedio</span></a></li>
+    					<li><a href="#!" class="center-align"><span class="blue-text">Usuarios</span></a></li>
+    					<li><a href="#!" class="center-align"><span class="blue-text">Usuarios promedio</span></a></li>
+    					<li><a href="#!" class="center-align"><span class="blue-text">Usuarios nuevos</span></a></li>
+    					<li><a href="#!" class="center-align"><span class="blue-text">Tiempos de sesión</span></a></li>
+    					<li><a href="#!" class="center-align"><span class="blue-text">Tiempos de sesión promedio</span></a></li>
+  		  			</ul>
+        	</div>
         </div>
         
-	<!-- Users information chart and datepicker -->
+	<!-- Users information chart-->
     	<div class="row">
-        	<div id="userschart" class="col s8 l8 card white-text hoverable widget" overflow:auto;></div>
-        	<div class="col s4">
-        		<div class="input-field col s12"> <!-- CHANGE COLOR TO CALENDAR!!! -->
-        			<i class="material-icons prefix blue-text">date_range</i>
-        			<input type="date" class="datepicker" id="datepickerone">
-        			<label class="active" for="datepickerone">Elija primera fecha</label>
-        		</div>
-        		<div class="input-field col s12">
-        			<i class="material-icons prefix blue-text">date_range</i>
-        			<input type="date" class="datepicker" id="datepickertwo">
-        			<label class="active" for="datepickertwo">Elija segunda fecha</label>
-        		</div>
-        		<div class="center-align col s12">
-        		<a class="blue btn dropdown-button" href="#!" data-activates="datadropdown"><span id="selected2">Selección de datos</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
-        		<ul id="datadropdown" class="dropdown-content">
-    				<li><a href="#!" class="center-align"><span class="blue-text">Sesiones</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Sesiones promedio</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Usuarios</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Usuarios promedio</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Usuarios nuevos</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Tiempos de sesión</span></a></li>
-    				<li><a href="#!" class="center-align"><span class="blue-text">Tiempos de sesión promedio</span></a></li>
-  		  		</ul>
-        		</div>
-        	</div>
+        	<div id="userschart" class="col s12 l12 card white-text hoverable widget" overflow:auto;"></div>
 		</div>
 
 	<!-- Divider line -->
@@ -192,7 +194,6 @@
 <!-- FOOTER -->
 </body>
 
-<script src="js/userschart.js"></script>
 <script>
 $(document).ready(function () {
     //init sidenav
@@ -207,7 +208,26 @@ $(document).ready(function () {
     $('#datadropdown a').click(function(){
         $('#selected2').text($(this).text());
       });
-    $( "#userinfo" ).load( "charts/usersinfo.php" );
+	//Send function tu userschart and fill the chart
+	var data = <?php echo json_encode(users_sessions_dates()) ;?> ;
+    $.ajax({
+        url: 'charts/userschart.php',
+        data: {"param": data},
+        method: 'POST',
+        success: function (output) {
+        	$( "#userschart" ).html(output);
+        }
+  	});
+    var users_data = <?php echo json_encode(users_info()) ;?>;
+    var users_labels = <?php echo json_encode(users_info_labels()) ;?>;
+    $.ajax({
+        url: 'charts/usersinfo.php',
+        data: {users: users_data, labels: users_labels},
+        method: 'POST',
+        success: function (output) {
+        	$( "#userinfo" ).html(output);
+        }
+  	});
     $( "#locationtable" ).load( "charts/locationtable.php" );
     $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
     $( "#devicestable" ).load( "charts/devicestable.php" );
