@@ -116,13 +116,11 @@
         	<div class="left-align col s12">
         		<a class="blue btn dropdown-button" href="#!" data-activates="datadropdown"><span id="selected2">Selección de datos</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
         			<ul id="datadropdown" class="dropdown-content">
-    					<li><a href="#!" class="center-align"><span class="blue-text">Sesiones</span></a></li>
-    					<li><a href="#!" class="center-align"><span class="blue-text">Sesiones promedio</span></a></li>
-    					<li><a href="#!" class="center-align"><span class="blue-text">Usuarios</span></a></li>
-    					<li><a href="#!" class="center-align"><span class="blue-text">Usuarios promedio</span></a></li>
-    					<li><a href="#!" class="center-align"><span class="blue-text">Usuarios nuevos</span></a></li>
-    					<li><a href="#!" class="center-align"><span class="blue-text">Tiempos de sesión</span></a></li>
-    					<li><a href="#!" class="center-align"><span class="blue-text">Tiempos de sesión promedio</span></a></li>
+    					<li value="0"><a href="#!" class="center-align"><span class="blue-text">Sesiones</span></a></li>
+    					<li value="1"><a href="#!" class="center-align"><span class="blue-text">Tiempos Promedio Sesión</span></a></li>
+    					<li value="2"><a href="#!" class="center-align"><span class="blue-text">Usuarios</span></a></li>
+    					<li value="3"><a href="#!" class="center-align"><span class="blue-text">Usuarios nuevos</span></a></li>
+    					<li value="4"><a href="#!" class="center-align"><span class="blue-text">Cursos vistos</span></a></li>
   		  			</ul>
         	</div>
         </div>
@@ -174,8 +172,8 @@
         
 	<!-- Devices table -->
         <div class="row">
-        	<div id="devicestable" class="col s9 hoverable widget" overflow:auto;></div>
-        	<div class="col s3" style="margin-top:10px;" overflow:auto;>
+        	<div id="devicestable" class="col s10 hoverable widget" overflow:auto;></div>
+        	<div class="col s2" style="margin-top:10px;" overflow:auto;>
         		<b>Opciones: </b><i class="material-icons prefix blue-text md-24">file_download</i>
         	</div>
         </div>
@@ -195,6 +193,15 @@
 </body>
 
 <script>
+//Send function tu userschart and fill the chart
+var users_sessions = <?php echo json_encode(users_sessions_dates());?>;
+var users_avgtime = <?php echo json_encode(users_avgsessions_dates());?>;
+var users_dates = <?php echo json_encode(users_dates());?>;
+var newusers_dates = <?php echo json_encode(newusers_dates());?>;
+var course_dates = <?php echo json_encode(courseview_dates());?>;
+var users_info = <?php echo json_encode(users_info());?>;
+var users_labels = <?php echo json_encode(users_info_labels());?>;
+var users_devices = <?php echo json_encode(users_devices_table());?>;
 $(document).ready(function () {
     //init sidenav
     $('.button-collapse').sideNav({
@@ -202,39 +209,54 @@ $(document).ready(function () {
         edge: 'left' // Choose the horizontal origin
     });
     $('.materialboxed').materialbox();
+    $('.datepicker').pickadate({
+        selectMonths: true, // Creates a dropdown to control month
+        selectYears: 15, // Creates a dropdown of 15 years to control year
+        format: 'yy-mm-dd'
+      });
     $('#dropdown a').click(function(){
         $('#selected').text($(this).text());
       });
     $('#datadropdown a').click(function(){
         $('#selected2').text($(this).text());
       });
-	//Send function tu userschart and fill the chart
-	var data = <?php echo json_encode(users_sessions_dates()) ;?> ;
     $.ajax({
         url: 'charts/userschart.php',
-        data: {"param": data},
+        data: {param: users_sessions},
         method: 'POST',
         success: function (output) {
         	$( "#userschart" ).html(output);
         }
   	});
-    var users_data = <?php echo json_encode(users_info()) ;?>;
-    var users_labels = <?php echo json_encode(users_info_labels()) ;?>;
+    $("#datadropdown li").click(function () { //Change div of charts
+    	var data = $(this).val();
+        $.ajax({
+            url: 'changeuserschart.php',
+            data: {select: data, sessions: users_sessions, avgtime: users_avgtime, users: users_dates, newusers: newusers_dates, courseviews: course_dates},
+            method: 'POST',
+            success: function (output) {
+                $('#userschart').html(output);
+            }
+      });
+    });
     $.ajax({
         url: 'charts/usersinfo.php',
-        data: {users: users_data, labels: users_labels},
+        data: {users: users_info, labels: users_labels},
         method: 'POST',
         success: function (output) {
         	$( "#userinfo" ).html(output);
         }
   	});
+    $.ajax({
+        url: 'charts/devicestable.php',
+        data: {system: users_devices, labels: users_labels},
+        method: 'POST',
+        success: function (output) {
+        	$( "#devicestable" ).html(output);
+        }
+  	});
     $( "#locationtable" ).load( "charts/locationtable.php" );
     $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
-    $( "#devicestable" ).load( "charts/devicestable.php" );
-    $('.datepicker').pickadate({
-        selectMonths: true, // Creates a dropdown to control month
-        selectYears: 15 // Creates a dropdown of 15 years to control year
-      });
     $('.menu-item').click(function () {
         ref = $(this).attr('href').replace('#', '') + '.html';
         $('.progress > div').toggleClass('determinate').toggleClass('indeterminate');

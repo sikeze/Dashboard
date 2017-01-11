@@ -2,7 +2,7 @@
 $usersinfo  = $_POST['users'];
 $labels = $_POST['labels'];
 ?>
-
+<!-- Labels array index represent the info that we need for every sparkline -->
 <div class="col s12">
 <div class="col s4 l4 card hoverable widget" overflow: auto;>
 Sesiones<br>
@@ -10,12 +10,12 @@ Sesiones<br>
 <div id="sessions"  overflow: auto;></div>
 </div>
 <div class="col s4 l4 card hoverable widget" overflow: auto;>
-Avg Session Duration <br>
-<?php echo $labels[1];?>
+Tiempo Promedio Sesión <br>
+<?php echo gmdate("H:i:s",$labels[1]);?> <!-- No toma más de 86400 segundos -->
 <div id="sessionduration"  overflow: auto;></div>
 </div>
 <div class ="col s4 l4 card hoverable widget" overflow:auto;>
-New Users <br>
+Nuevos Usuarios <br>
 <?php echo $labels[2];?>
 <div id="newusers"  overflow: auto;></div>
 </div>
@@ -28,12 +28,12 @@ Usuarios<br>
 <div id="users"  overflow: auto;></div>
 </div>
 <div class ="col s4 l4 card hoverable widget" overflow:auto;>
-Course views<br>
+Cursos vistos<br>
 <?php echo $labels[4];?>
 <div id="courseviews"  overflow: auto;></div>
 </div>
 <div class ="col s4 l4 card hoverable widget" overflow:auto;>
-Course/session <br>
+Curso/sesión <br>
 <?php echo $labels[5];?>
 <div id="coursesession"  overflow: auto;></div>
 </div>
@@ -41,29 +41,30 @@ Course/session <br>
 
 
 <script>
-var datos =  <?php echo json_encode($usersinfo);?>;
+var data =  <?php echo json_encode($usersinfo);?>;
+//Data array index represent if the info we need is for sessions or courseviews, etc.
 $(document).ready(function () {
-	$("#sessions").sparkline(datos[0], {
+	$("#sessions").sparkline(data[0], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: true});
-	$("#users").sparkline(datos[2], {
+	$("#users").sparkline(data[2], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#courseviews").sparkline(datos[3], {
+	$("#courseviews").sparkline(data[3], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#coursesession").sparkline(datos[4], {
+	$("#coursesession").sparkline(data[4], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#sessionduration").sparkline(datos[1], {
+	$("#sessionduration").sparkline(data[1], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#newusers").sparkline(datos[5], {
+	$("#newusers").sparkline(data[5], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});

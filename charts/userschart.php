@@ -8,7 +8,7 @@ google.charts.setOnLoadCallback(drawBasic);
 function drawBasic() {
 	var data = new google.visualization.DataTable();
 	data.addColumn('string', 'X');
-	data.addColumn('number', 'Alumnos');
+	data.addColumn('number', 'Sesiones');
 
 	var datos =  <?php echo json_encode($userschart);?>;
 	$.each(datos, function( key, value ) {
@@ -19,10 +19,11 @@ function drawBasic() {
 
 	var options = {
 		hAxis: {
-			title: 'Fecha'
+			title: 'Fecha',
+			textStyle: {fontSize: 9}
 		},
 		vAxis: {
-			title: 'Visitas'
+			title: 'Sesiones'
 		}
 	};
 

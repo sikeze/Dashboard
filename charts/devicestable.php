@@ -1,31 +1,28 @@
-<table class="striped bordered responsive-table">
-	<thead>
-    	<tr>
-       		<th data-field="opsystem">Sistema Operativo</th>
-        	<th data-field="sessions">Sesiones</th>
-        	<th data-field="newsessions">% New Sessions</th>
-        	<th data-field="newusers">New Users</th>
-        </tr>
-   	</thead>
-        			
+<?php
+$labels = $_POST['labels'];
+$devices_info = $_POST['system'];
+echo "<body>
+<table class='striped bordered responsive-table'>		
     <tbody>
     	<tr>
-       		<td></td>
-        	<td><font size="3">3.338</font><br><font size="2">% of total: 100%</font></td>
-        	<td><font size="3">7,79 %</font><br><font size="2">Avg for view: 7,79%</font></td>
-        	<td><font size="3">260</font><br><font size="2">% of total: 100%</font></td>
-        </tr>
-        <tr>
-        	<td>Windows</td>
-       		<td><font size="3">3.002</font><font size="2"> (89,93 %)</font></td>
-        	<td><font size="3">5,20 %</font></td>
-        	<td><font size="3">156</font><font size="2"> (60,00 %)</font></td>
-        </tr>
-        <tr>
+    		<th data-field='opsystem'>Sistema Operativo</th>
+    		<td></td>
+    		<td>Windows</td>
+        	<td>Linux</td>
+        	<td>Macintosh</td>
         	<td>iOS</td>
-        	<td><font size="3">248</font><font size="2"> (7,43 %)</font></td>
-        	<td><font size="3">23,79 %</font></td>
-        	<td><font size="3">59</font><font size="2"> (22,69 %)</font></td>
+        	<td>Android</td>
         </tr>
+        <tr>
+        	<th data-field='sessions'>Sesiones</th>
+        	<td><font size='3'>".$labels[0]."</font><br><font size='2'>% del total: 100%</font></td>";
+        	//Devices_info array always will get 2 data: sessions (index 0) and the porcentage (index 1)
+        	//The one that changes determinate the operative system such as windows, linux, etc.
+        	for ($i=0;$i<count($devices_info);$i++) {
+        		echo "<td><font size='3'>".$devices_info[$i][0]."</font><font size='2'> (".$devices_info[$i][1]."%)</font></td>";
+        	}   		
+        echo "</tr>
   	</tbody>
 </table>
+</body>";
+?>
