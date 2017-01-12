@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/dashboard/db" VERSION="20170103" COMMENT="XMLDB file for Moodle local/dashboard"
+<XMLDB PATH="local/dashboard/db" VERSION="20170111" COMMENT="XMLDB file for Moodle local/dashboard"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -11,8 +11,8 @@
         <FIELD NAME="country" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="user country"/>
         <FIELD NAME="region" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="user region"/>
         <FIELD NAME="city" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="lat" TYPE="number" LENGTH="20" NOTNULL="false" SEQUENCE="false" DECIMALS="10"/>
-        <FIELD NAME="long" TYPE="number" LENGTH="20" NOTNULL="false" SEQUENCE="false" DECIMALS="10"/>
+        <FIELD NAME="latitude" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="longitude" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="id" TYPE="primary" FIELDS="id" COMMENT="prymary key"/>
