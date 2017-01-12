@@ -291,3 +291,31 @@ function users_devices_table() {
 	);
 	return $devices;
 }
+
+//FILL USERS PAGE BY DAY
+function users_day() {
+	global $DB;
+	
+	$sessions = $DB->get_records_sql("SELECT SUM(sessions) as totalsessions, DATE_FORMAT(FROM_UNIXTIME(time),'%d %b, %Y') as times 
+									  FROM {dashboard_data} 
+									  GROUP BY times");
+	$timevalues = $DB->get_record_sql("SELECT MAX(DATE_FORMAT(FROM_UNIXTIME(time),'%d %b, %Y')) as maxtime, MIN(DATE_FORMAT(FROM_UNIXTIME(time),'%d %b, %Y')) as mintime
+									   FROM {dashboard_data}");
+	
+	$positioncount = 0;
+	$time = $timevalues->mintime;
+	$sessionsdata = array();
+	
+	while($time<=$timevalues->maxtime) {
+		if(array_key_exists($time,$sessions)) {
+			$sessionsdata[$positioncount][0] = $time;
+			$sessionsdata[$positioncount][1] = (int)$sessions[$time]->totalsessions;
+		} else {
+			$sessionsdata[$positioncount][0] = $time;
+			$sessionsdata[$positioncount][1] = (int)0;
+		}
+		$time = strtotime($time.'+1 day');
+		$positioncount++;
+	}
+	return $sessionsdata;
+}
