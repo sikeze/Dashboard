@@ -32,10 +32,14 @@ require (dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 $CFG->debug = (E_ALL | E_STRICT);   // === DEBUG_DEVELOPER - NOT FOR PRODUCTION SERVERS!
 $CFG->debugdisplay = 1;             // NOT FOR PRODUCTION SERVERS!
 require_once ($CFG->libdir . '/clilib.php'); // cli only functions
-require_once(dirname(dirname(__FILE__)) . '/locallib.php');
+require_once(dirname(dirname(__FILE__)) . '/tasklocallib.php');
 cli_heading('Sessions fill');
 	global $DB;
+	$user_object = $DB->get_record('user',array('id'=>2));
 
+	dashboard_test($user_object);
+	
+	dashboard_getosandbrowser();
 	dashboard_getusersdata();
 
 	

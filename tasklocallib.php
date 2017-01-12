@@ -54,7 +54,120 @@ function get_users_and_time_conection ($startdate,$finishdate){
 	return $users_and_conection;
 }
 */
+function dashboard_getosandbrowser(){
+
+	$user_agent     =   $_SERVER['HTTP_USER_AGENT'];
+	
+	function getOS($user_agent) {
+	
+
+		$os_platform    =   "Unknown OS Platform";
+	
+		$os_array       =   array(
+				'/Windows NT 10.0/i'     =>  'Windows 10',
+				'/windows nt 6.3/i'     =>  'Windows 8.1',
+				'/windows nt 6.2/i'     =>  'Windows 8',
+				'/windows nt 6.1/i'     =>  'Windows 7',
+				'/windows nt 6.0/i'     =>  'Windows Vista',
+				'/windows nt 5.2/i'     =>  'Windows Server 2003/XP x64',
+				'/windows nt 5.1/i'     =>  'Windows XP',
+				'/windows xp/i'         =>  'Windows XP',
+				'/windows nt 5.0/i'     =>  'Windows 2000',
+				'/windows me/i'         =>  'Windows ME',
+				'/win98/i'              =>  'Windows 98',
+				'/win95/i'              =>  'Windows 95',
+				'/win16/i'              =>  'Windows 3.11',
+				'/macintosh|mac os x/i' =>  'Mac OS X',
+				'/mac_powerpc/i'        =>  'Mac OS 9',
+				'/linux/i'              =>  'Linux',
+				'/ubuntu/i'             =>  'Ubuntu',
+				'/iphone/i'             =>  'iPhone',
+				'/ipod/i'               =>  'iPod',
+				'/ipad/i'               =>  'iPad',
+				'/android/i'            =>  'Android',
+				'/blackberry/i'         =>  'BlackBerry',
+				'/webos/i'              =>  'Mobile'
+		);
+	
+		foreach ($os_array as $regex => $value) {
+	
+			if (preg_match($regex, $user_agent)) {
+				$os_platform    =   $value;
+			}
+	
+		}
+	
+		return $os_platform;
+	
+	}
+	
+	function getBrowser($user_agent) {
+	
+		$user_agent     =   $_SERVER['HTTP_USER_AGENT'];
+	
+		$browser        =   "Unknown Browser";
+	
+		$browser_array  =   array(
+				'/msie/i'       =>  'Internet Explorer',
+				'/firefox/i'    =>  'Firefox',
+				'/safari/i'     =>  'Safari',
+				'/chrome/i'     =>  'Chrome',
+				'/edge/i'       =>  'Edge',
+				'/opera/i'      =>  'Opera',
+				'/netscape/i'   =>  'Netscape',
+				'/maxthon/i'    =>  'Maxthon',
+				'/konqueror/i'  =>  'Konqueror',
+				'/mobile/i'     =>  'Handheld Browser'
+		);
+	
+		foreach ($browser_array as $regex => $value) {
+	
+			if (preg_match($regex, $user_agent)) {
+				$browser    =   $value;
+			}
+	
+		}
+	
+		return $browser;
+	
+	}
+	
+	
+	$user_os        =   getOS($user_agent);
+	$user_browser   =   getBrowser($user_agent);
+	
+	$device_details =   "<strong>Browser: </strong>".$user_browser."<br /><strong>Operating System: </strong>".$user_os."";
+	
+	print_r($device_details);
+	
+}
 // AVERAGE OF VIEWED COURSES PER SESION
+function dashboard_test($user){
+	global $DB, $USER;
+	
+	$curl = curl_init();
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($curl, CURLOPT_URL, 'freegeoip.net/'.$user->lastip);
+	$result = curl_exec($curl);
+	curl_close($curl);
+	if(!is_string($result)){
+		$userlocation = json_decode($result);
+		
+		$userinsert = new stdClass();
+		$userinsert->userid = $user->id;
+		$userinsert->country = $userlocation->country_name;
+		$userinsert->region = $userlocation->region_name;
+		$userinsert->city = $userlocation->city;
+		$userinsert->latitude = $userlocation->latitude;
+		$userinsert->longitude =  $userlocation->longitude;
+		if($DB->insert_record('dashboard_users_location', $userinsert)){
+			return true;
+		}
+	}else{
+		return false;
+	}
+}
 
 function dashboard_getusersdata(){
 	global $DB;
@@ -75,7 +188,8 @@ function dashboard_getusersdata(){
 					FROM {logstore_standard_log} as l
 					WHERE l.action = ? AND
 					l.timecreated BETWEEN ? AND ? 
-					GROUP BY time";
+					GROUP BY time
+					ORDER BY time ASC";
 	if($data= $DB->get_records_sql($sessionsquery,$sessionsparams)){
 		$courseviewsparams = array(
 				'viewed',
@@ -88,7 +202,8 @@ function dashboard_getusersdata(){
 							FROM {logstore_standard_log} as l
 							WHERE l.action = ? AND l.target = ? AND
 							l.timecreated BETWEEN ? AND ?
-	    					GROUP BY time";
+	    					GROUP BY time
+							ORDER BY time ASC";
 		if($courseviews= $DB->get_records_sql($courseviewsquery,$courseviewsparams)){
 			foreach($courseviews as $views){
 				if(array_key_exists($views->time, $data)){
@@ -113,7 +228,8 @@ function dashboard_getusersdata(){
 					FROM {logstore_standard_log} as l
 					WHERE l.action = ? AND l.timecreated BETWEEN ? AND ?
 					GROUP BY time,userid) as y
-					GROUP BY time";
+					GROUP BY time
+					ORDER BY time ASC";
 		if($users=$DB->get_records_sql($usersquery, $usersparams)){
 			foreach($users as $user){
 				if(array_key_exists($user->time, $data)){
@@ -137,7 +253,8 @@ function dashboard_getusersdata(){
 			COUNT(*) as newusers
 			FROM {user} as u
 			WHERE u.firstaccess BETWEEN ? AND ?
-			GROUP BY time";
+			GROUP BY time
+			ORDER BY time ASC";
 		if($newusers=$DB->get_records_sql($newusersquery, $newusersparams)){
 			foreach($newusers as $newuser){
 				if(array_key_exists($newuser->time, $data)){
@@ -166,7 +283,7 @@ function dashboard_getusersdata(){
 				timecreated as time
 				FROM {logstore_standard_log}
 				WHERE action IN (?,?) AND timecreated BETWEEN ? AND ?
-				ORDER BY userid, time DESC";
+				ORDER BY userid, time ASC";
 		if($avgsessionstime = $DB->get_records_sql($avgsessionstimequery,$avgsessionstimeparams)){
 			$previousaction = null;
 			$previousdate = null;
@@ -238,6 +355,7 @@ function dashboard_getusersdata(){
 				$data[$key] = $dataobj;
 			}
 			$data = array_values($data);
+		
 			$update = $data[0];
 			unset($data[0]);
 		}
