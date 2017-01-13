@@ -342,7 +342,8 @@ function users_sessions_disperssion($disperssion) {
 			$positioncount++;
 		}
 		else {
-			
+			$time = date("d-M-Y",strtotime($time."+1day"));
+			$positioncount++;
 		}
 	}
 	return $sessionsdata;
