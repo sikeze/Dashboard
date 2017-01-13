@@ -171,17 +171,22 @@ function dashboard_test($user){
 
 function dashboard_getusersdata(){
 	global $DB;
+	//date_default_timezone_set('Chile/Continental');
 	$time = time();
 	$lasttime = $DB->get_record_sql("SELECT MAX(time) as time FROM {dashboard_data}");
 	if($lasttime->time == null){
-		$lasttime->time = 0;
+		$lasttime = 0;
+	}else{
+		$lasttime = (int)$lasttime->time;
 	}
-	var_dump($lasttime);
+	echo $lasttime;
+	echo time();
 	
 	$sessionsparams = array(
 			'loggedin',
-			$lasttime->time,
-			$time 
+			$lasttime,
+			$time
+
 	);
 	$sessionsquery="SELECT DATE_FORMAT(FROM_UNIXTIME(timecreated),'%d-%c-%Y %H:00:00') as time,
 					COUNT(*) as sessions
@@ -194,7 +199,7 @@ function dashboard_getusersdata(){
 		$courseviewsparams = array(
 				'viewed',
 				'course',
-				$lasttime->time,
+				$lasttime,
 				$time
 		);
 		$courseviewsquery=	"SELECT  DATE_FORMAT(FROM_UNIXTIME(timecreated),'%d-%c-%Y %H:00:00') as time,
@@ -219,7 +224,7 @@ function dashboard_getusersdata(){
 		}
 		$usersparams = array(
 				'loggedin',
-				$lasttime->time,
+				$lasttime,
 				$time
 		);
 		$usersquery ="SELECT y.time as time, COUNT(y.users) as users FROM(SELECT	id,
@@ -245,7 +250,7 @@ function dashboard_getusersdata(){
 			}
 		}
 		$newusersparams = array(
-				$lasttime->time,
+				$lasttime,
 				$time
 		);
 		$newusersquery ="SELECT	id,
@@ -273,7 +278,7 @@ function dashboard_getusersdata(){
 		$avgsessionstimeparams = array(
 				'loggedin',
 				'loggedout',
-				$lasttime->time,
+				$lasttime,
 				$time
 		);
 		$avgsessionstimequery="SELECT id,
@@ -293,7 +298,7 @@ function dashboard_getusersdata(){
 			$avgtime = array();
 			foreach($avgsessionstime as $avgsessiontime){
 				if($previoususer == $avgsessiontime->userid && $previousdate == $avgsessiontime->date && $previousaction == 'loggedout' && $avgsessiontime->action == 'loggedin'){
-					$time = $previoustime - $avgsessiontime->time;
+					$time = $avgsessiontime->time - $previoustime;
 					$timesaver[$avgsessiontime->date][] = $time;
 					//echo "$previoususer = $logged->userid -- $previousaction = $logged->action -- $previousdate = $logged->date <br>";
 				}
@@ -327,6 +332,7 @@ function dashboard_getusersdata(){
 					$data[$key] = $dataobj;
 				}
 			}
+			$arrayupdate = array();
 			foreach($data as $key => $thisdata){
 				if(!property_exists($thisdata, "avgsessiontime")){
 					$thisdata->avgsessiontime = 0;
@@ -341,55 +347,66 @@ function dashboard_getusersdata(){
 					$thisdata->users = 0;
 				}
 				$dataobj = new stdClass();
-				$dataobj->time = strtotime($thisdata->time) + 60*60;
-				$dataobj->sessions = $thisdata->sessions;
-				$dataobj->courseviews = $thisdata->courseviews;
-				$dataobj->users = $thisdata->users;
-				$dataobj->newusers = $thisdata->newusers;
-				$dataobj->avgsessiontime = $thisdata->avgsessiontime;
+				$dataobj->time = (int)strtotime($thisdata->time) ;
+				$dataobj->sessions = (int)$thisdata->sessions;
+				$dataobj->courseviews = (int)$thisdata->courseviews;
+				$dataobj->users = (int)$thisdata->users;
+				$dataobj->newusers = (int)$thisdata->newusers;
+				$dataobj->avgsessiontime = (int)$thisdata->avgsessiontime;
 				$dataobj->windows = 0;
 				$dataobj->linux = 0;
 				$dataobj->macintosh = 0;
 				$dataobj->ios = 0;
 				$dataobj->android = 0;
-				$data[$key] = $dataobj;
+
+				if($dataobj->time == 0){
+					$dataobj->time = $key;
+
+				}
+				if($dataobj->time == $lasttime){
+					$arrayupdate[$key] = $dataobj;
+					unset($data[$key]);
+
+				}else{
+					$data[$key] = $dataobj;
+				}
 			}
-			$data = array_values($data);
-		
-			$update = $data[0];
-			unset($data[0]);
 		}
+		var_dump($data);
 		if(count($data)>0){
 			if($DB->insert_records('dashboard_data', $data)){
-				echo "insert completed";
+				echo "insert completed ";
 			}
 		}
-		$params= array(
-				$update->sessions,
-				$update->courseviews,
-				$update->users,
-				$update->newusers,
-				$update->avgsessiontime,
-				$update->windows,
-				$update->linux,
-				$update->macintosh,
-				$update->ios,
-				$update->android,
-				$update->time
-		);
-		
-		$query="UPDATE {dashboard_data}
-				SET sessions = ?,
-				courseviews = ?,
-				users = ?,newusers = ?,
-				avgsessiontime = ?,
-				windows = ?,linux = ?,
-				macintosh = ?, ios = ?,
-				android = ?
-				WHERE time = ?";
-		
-		if($DB->execute($query,$params)){
-			echo 'update completed';
+		foreach($arrayupdate as $update){
+			
+			$params= array(
+					$update->sessions,
+					$update->courseviews,
+					$update->users,
+					$update->newusers,
+					$update->avgsessiontime,
+					$update->windows,
+					$update->linux,
+					$update->macintosh,
+					$update->ios,
+					$update->android,
+					$update->time
+			);
+			
+			$query="UPDATE {dashboard_data}
+					SET sessions = ?,
+					courseviews = ?,
+					users = ?,newusers = ?,
+					avgsessiontime = ?,
+					windows = ?,linux = ?,
+					macintosh = ?, ios = ?,
+					android = ?
+					WHERE time = ?";
+			
+			if($DB->execute($query,$params)){
+				echo 'update completed';
+			}
 		}
 	}
 }
