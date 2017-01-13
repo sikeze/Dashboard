@@ -37,7 +37,7 @@ cli_heading('Sessions fill');
 	global $DB;
 	
 
-	dashboard_test();
+	dashboard_getip();
 	
 	dashboard_getusersdata();
 

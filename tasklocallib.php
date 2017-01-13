@@ -142,7 +142,7 @@ function dashboard_getosandbrowser(){
 	
 }
 // AVERAGE OF VIEWED COURSES PER SESION
-function dashboard_test(){
+function dashboard_getip(){
 	global $DB, $USER;
 	$lasttime = $DB->get_record_sql("SELECT MAX(timecreated) as time FROM {dashboard_users_location}");
 	if($lasttime->time == null){

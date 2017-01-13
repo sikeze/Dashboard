@@ -31,7 +31,7 @@ class dashboard_sessions extends \core\tasks\scheduled_tasks {
 		global $DB;
 		require_once(dirname(__FILE__) . '/locallib.php');
 		
-		
+		dashboard_getip();
 		dashboard_getusersdata();
 		
 
