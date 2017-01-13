@@ -30,18 +30,10 @@ class dashboard_sessions extends \core\tasks\scheduled_tasks {
 	public function execute() {
 		global $DB;
 		require_once(dirname(__FILE__) . '/locallib.php');
-		$values = dashboard_totalsesionstoday();
-		$insert = array();
-		foreach($values as $value){
-			$sessions = new stdClass();
-			$sessions->time = $value->timecreated;
-			$sessions->sessions = $value->sessions;
-			$sessions->avgsessions = 0;
-			$sessions->pageviews = 0;
-			$sessions->pageviewspersession = 0;
-			$insert[]=$sessions;
-		}
 		
-		$DB->insert_records($table, $dataobjects);
+		dashboard_getip();
+		dashboard_getusersdata();
+		
+
 	}
 }
