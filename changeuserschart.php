@@ -7,7 +7,6 @@ $users_avgtime  = $_POST['avgtime'];
 $users_dates  = $_POST['users'];
 $newusers_dates  = $_POST['newusers'];
 $courseviews_dates  = $_POST['courseviews'];
-
 switch ($select) {
 	case 0:
 		echo "<script>

@@ -1,5 +1,5 @@
-<?php
-$userschart  = $_POST['param']; 
+<?php 
+$users_sessions = $_POST['sessions'];
 ?>
 <script>
 google.charts.load('current', {packages: ['corechart', 'line']});
@@ -10,7 +10,7 @@ function drawBasic() {
 	data.addColumn('string', 'X');
 	data.addColumn('number', 'Sesiones');
 
-	var datos =  <?php echo json_encode($userschart);?>;
+	var datos =  <?php echo json_encode($users_sessions);?>;
 	$.each(datos, function( key, value ) {
 		  value[1]= parseFloat(value[1]);
 		});

@@ -39,12 +39,19 @@
 	<div class="navbar-fixed">
     	<nav class="grey lighten-2 blue-text">
         	<div class="nav-wraper">
-            	<a href="<?php echo $frontpageurl; ?>" class="brand-logo"><img class="responsive-img" src="images/webcursoslogo.gif" style="width:60%"></a>
+            	<div class="col s4"><a href="<?php echo $frontpageurl; ?>" class="brand-logo"><img class="responsive-img" src="images/webcursoslogo.gif" style="width:60%"></a></div>
+               		<!-- Data buttons (month, week or day) -->
+        			<ul id="dropdown" class="dropdown-content">
+        				<li><a href="#!" class="center-align"><span class="blue-text">Mensual</span></a></li>
+    					<li><a href="#!" class="center-align"><span class="blue-text">Semanal</span></a></li>
+    					<li><a href="#!" class="center-align"><span class="blue-text">Diario</span></a></li>
+    					<li><a href="#!" class="center-align"><span class="blue-text">Hora</span></a></li>
+  		  			</ul>
                	<ul id="nav-mobile" class="right hide-on-med-and-down">
+               		<li><a class="blue btn dropdown-button" href="#!" data-activates="dropdown"><span id="selected">Opciones de dispersión</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a></li>
                 	<li><a href="badges.html" class=""><i class="material-icons blue-text">edit</i></a></li>
                     <li><a href="collapsible.html" class=""><i class="material-icons blue-text">refresh</i></a></li>
                     <li><a href="mobile.html" class=""><i class="material-icons blue-text">help</i></a></li>
-                </ul>
 			</div>
             <a href="#" data-activates="slide-out" class="button-collapse left grey-text"><i class="material-icons">menu</i></a>
             <div class="progress">
@@ -78,19 +85,7 @@
 	</ul>
 <!-- SIDENAV -->
 <!-- CONTENT -->
-	<main class="grey lighten-3">
-        
-	<!-- Data buttons (month, week or day) -->
-    	<div class="center-align row">
-    		<a class="blue btn dropdown-button" href="#!" data-activates="dropdown"><span id="selected">Opciones de dispersión</span><i class="mdi-navigation-arrow-drop-down right" style="margin:auto;"></i></a>
-        	<ul id="dropdown" class="dropdown-content">
-    			<li><a href="#!" class="center-align"><span class="blue-text">Mensual</span></a></li>
-    			<li><a href="#!" class="center-align"><span class="blue-text">Semanal</span></a></li>
-    			<li><a href="#!" class="center-align"><span class="blue-text">Diario</span></a></li>
-    			<li><a href="#!" class="center-align"><span class="blue-text">Hora</span></a></li>
-  		  	</ul>
-		</div>
-	
+	<main class="grey lighten-3">	
 	<!-- Select date calendar -->
 		<div class="row">
 			<div class="input-field col s6"> <!-- CHANGE COLOR TO CALENDAR!!! -->
@@ -212,7 +207,7 @@ $(document).ready(function () {
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
         selectYears: 15, // Creates a dropdown of 15 years to control year
-        format: 'yy-mm-dd'
+        format: 'dd-mm-yy'
       });
     $('#dropdown a').click(function(){
         $('#selected').text($(this).text());
@@ -222,7 +217,7 @@ $(document).ready(function () {
       });
     $.ajax({
         url: 'charts/userschart.php',
-        data: {param: users_sessions},
+        data: {sessions: users_sessions},
         method: 'POST',
         success: function (output) {
         	$( "#userschart" ).html(output);
@@ -266,5 +261,4 @@ $(document).ready(function () {
     }); 
 });
 </script>
-
 </html>

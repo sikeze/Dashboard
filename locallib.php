@@ -171,36 +171,43 @@ function users_info() {
 	
 	$sessions = $DB->get_records_sql('SELECT time, sessions
 									  FROM {dashboard_data}
-									  ORDER BY time ASC');
+									  ORDER BY time ASC
+									  LIMIT 30');
 	
 	$avgsessions = $DB->get_records_sql('SELECT time, avgsessiontime
 										 FROM {dashboard_data}
-										 ORDER BY time ASC');
+										 ORDER BY time ASC
+										 LIMIT 30');
 	
 	$users = $DB->get_records_sql('SELECT time, users
 								   FROM {dashboard_data}
-								   ORDER BY time ASC');
+								   ORDER BY time ASC
+								   LIMIT 30');
 	
 	$courseview = $DB->get_records_sql('SELECT time, courseviews
 										FROM {dashboard_data}
-										ORDER BY time ASC');
+										ORDER BY time ASC
+										LIMIT 30');
 	
 	$coursepersession = $DB->get_records_sql('SELECT time, sessions, courseviews
 											  FROM {dashboard_data}
-											  ORDER BY time ASC');
+											  ORDER BY time ASC
+											  LIMIT 30');
 	
 	$newusers = $DB->get_records_sql('SELECT time, newusers
 									  FROM mdl_dashboard_data
-									  ORDER BY time ASC');
+									  ORDER BY time ASC
+									  LIMIT 30');
 	
 	$timevalues = $DB->get_record_sql('SELECT MAX(time) as maxtime, MIN(time) as mintime
-									   FROM {dashboard_data}');
+									   FROM {dashboard_data}
+									   LIMIT 30');
 	
-	$positioncount = 0;
-	$time = $timevalues->mintime;
+	$positioncount = 30;
+	$time = $timevalues->maxtime;
 	$usersdata = array();
 	
-	while($time<=$timevalues->maxtime) {
+	for($i=0;$i<31;$i++) {
 		if(array_key_exists($time,$sessions)) {
 			$usersdata[0][$positioncount]= (int)$sessions[$time]->sessions;
 		} else {
@@ -231,8 +238,8 @@ function users_info() {
 		} else {
 			$usersdata[5][$positioncount]= (int)0;
 		}
-		$time = $time + 60*60;
-		$positioncount++;
+		$time = $time - 60*60;
+		$positioncount--;
 	}
 	return $usersdata;
 }
@@ -293,13 +300,18 @@ function users_devices_table() {
 }
 
 //FILL USERS PAGE BY DAY
-function users_day() {
+function users_sessions_disperssion($disperssion) {
 	global $DB;
 	
-	$sessions = $DB->get_records_sql("SELECT SUM(sessions) as totalsessions, DATE_FORMAT(FROM_UNIXTIME(time),'%d %b, %Y') as times 
+	$sessions_day = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'%d-%b-%Y') as times, SUM(sessions) as totalsessions  
 									  FROM {dashboard_data} 
 									  GROUP BY times");
-	$timevalues = $DB->get_record_sql("SELECT MAX(DATE_FORMAT(FROM_UNIXTIME(time),'%d %b, %Y')) as maxtime, MIN(DATE_FORMAT(FROM_UNIXTIME(time),'%d %b, %Y')) as mintime
+	
+	$sessions_month = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'%b-%Y') as times, SUM(sessions) as totalsessions  
+									  FROM {dashboard_data} 
+									  GROUP BY times");
+	 
+	$timevalues = $DB->get_record_sql("SELECT MAX(DATE_FORMAT(FROM_UNIXTIME(time),'%d-%b-%Y')) as maxtime, MIN(DATE_FORMAT(FROM_UNIXTIME(time),'%d-%b-%Y')) as mintime
 									   FROM {dashboard_data}");
 	
 	$positioncount = 0;
@@ -307,15 +319,31 @@ function users_day() {
 	$sessionsdata = array();
 	
 	while($time<=$timevalues->maxtime) {
-		if(array_key_exists($time,$sessions)) {
-			$sessionsdata[$positioncount][0] = $time;
-			$sessionsdata[$positioncount][1] = (int)$sessions[$time]->totalsessions;
-		} else {
-			$sessionsdata[$positioncount][0] = $time;
-			$sessionsdata[$positioncount][1] = (int)0;
+		if ($disperssion == 1) {
+			if(array_key_exists($time,$sessions_month)) {
+				$sessionsdata[$positioncount][0] = $time;
+				$sessionsdata[$positioncount][1] = (int)$sessions_month[$time]->totalsessions;
+			} else {
+				$sessionsdata[$positioncount][0] = $time;
+				$sessionsdata[$positioncount][1] = (int)0;
+			}
+			$time = date("M-Y",strtotime($time."+1month"));
+			$positioncount++;
 		}
-		$time = strtotime($time.'+1 day');
-		$positioncount++;
+		else if ($disperssion == 3) {
+			if(array_key_exists($time,$sessions_day)) {
+				$sessionsdata[$positioncount][0] = $time;
+				$sessionsdata[$positioncount][1] = (int)$sessions_day[$time]->totalsessions;
+			} else {
+				$sessionsdata[$positioncount][0] = $time;
+				$sessionsdata[$positioncount][1] = (int)0;
+			}
+			$time = date("d-M-Y",strtotime($time."+1day"));
+			$positioncount++;
+		}
+		else {
+			
+		}
 	}
 	return $sessionsdata;
 }
