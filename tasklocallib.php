@@ -142,30 +142,48 @@ function dashboard_getosandbrowser(){
 	
 }
 // AVERAGE OF VIEWED COURSES PER SESION
-function dashboard_test($user){
+function dashboard_test(){
 	global $DB, $USER;
-	
-	$curl = curl_init();
-	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($curl, CURLOPT_URL, 'freegeoip.net/'.$user->lastip);
-	$result = curl_exec($curl);
-	curl_close($curl);
-	if(!is_string($result)){
-		$userlocation = json_decode($result);
-		
-		$userinsert = new stdClass();
-		$userinsert->userid = $user->id;
-		$userinsert->country = $userlocation->country_name;
-		$userinsert->region = $userlocation->region_name;
-		$userinsert->city = $userlocation->city;
-		$userinsert->latitude = $userlocation->latitude;
-		$userinsert->longitude =  $userlocation->longitude;
-		if($DB->insert_record('dashboard_users_location', $userinsert)){
-			return true;
-		}
+	$lasttime = $DB->get_record_sql("SELECT MAX(timecreated) as time FROM {dashboard_users_location}");
+	if($lasttime->time == null){
+		$lasttime = 0;
 	}else{
-		return false;
+		$lasttime = (int)$lasttime->time;
+	}
+	$query = "SELECT id,lastaccess, lastip
+			FROM {user}
+			WHERE lastaccess > ?";
+	if($users= $DB->get_records_sql($query,array($lasttime))){
+		$insertarray = array();
+		foreach($users as $user){
+			$curl = curl_init();
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_URL, 'freegeoip.net/json/'.$user->lastip);
+			$result = curl_exec($curl);
+			curl_close($curl);
+			$result = json_decode($result);
+			
+			if($result->latitude !== 0 && $result->longitude !== 0){
+				$userlocation = $result;
+				
+				$userinsert = new stdClass();
+				$userinsert->userid = $user->id;
+				$userinsert->userid = $user->lastaccess;
+				$userinsert->country = $userlocation->country_name;
+				$userinsert->region = $userlocation->region_name;
+				$userinsert->city = $userlocation->city;
+				$userinsert->latitude = $userlocation->latitude;
+				$userinsert->longitude =  $userlocation->longitude;
+				var_dump($userinsert);
+				$insertarray[] = $userinsert;
+			}
+		}
+		if(count($insertarray) > 0){
+			if($DB->insert_records('dashboard_data', $data)){
+				echo "user insert completed ";
+			}
+		}
 	}
 }
 
