@@ -55,43 +55,43 @@ function users_info() {
 	
 	$sessions = $DB->get_records_sql('SELECT time, sessions
 									  FROM {dashboard_data}
-									  ORDER BY time ASC
-									  LIMIT 30');
+									  ORDER BY time DESC
+									  LIMIT 80');
 	
 	$avgsessions = $DB->get_records_sql('SELECT time, avgsessiontime
 										 FROM {dashboard_data}
-										 ORDER BY time ASC
-										 LIMIT 30');
+										 ORDER BY time DESC
+										 LIMIT 80');
 	
 	$users = $DB->get_records_sql('SELECT time, users
 								   FROM {dashboard_data}
-								   ORDER BY time ASC
-								   LIMIT 30');
+								   ORDER BY time DESC
+								   LIMIT 80');
 	
 	$courseview = $DB->get_records_sql('SELECT time, courseviews
 										FROM {dashboard_data}
-										ORDER BY time ASC
-										LIMIT 30');
+										ORDER BY time DESC
+										LIMIT 80');
 	
 	$coursepersession = $DB->get_records_sql('SELECT time, sessions, courseviews
 											  FROM {dashboard_data}
-											  ORDER BY time ASC
-											  LIMIT 30');
+											  ORDER BY time DESC
+											  LIMIT 80');
 	
 	$newusers = $DB->get_records_sql('SELECT time, newusers
 									  FROM mdl_dashboard_data
-									  ORDER BY time ASC
-									  LIMIT 30');
+									  ORDER BY time DESC
+									  LIMIT 80');
 	
 	$timevalues = $DB->get_record_sql('SELECT MAX(time) as maxtime, MIN(time) as mintime
 									   FROM {dashboard_data}
-									   LIMIT 30');
+									   LIMIT 80');
 	
-	$positioncount = 30;
+	$positioncount = 80;
 	$time = $timevalues->maxtime;
 	$usersdata = array();
 	
-	for($i=0;$i<31;$i++) {
+	for($i=81;$i>0;$i--) {
 		if(array_key_exists($time,$sessions)) {
 			$usersdata[0][$positioncount]= (int)$sessions[$time]->sessions;
 		} else {
@@ -154,35 +154,6 @@ function users_info_labels() {
 	return $labels;
 }
 
-//FILL DEVICES TABLE USERS PAGE
-function users_devices_table() {
-	global $DB;
-	
-	$windows = $DB->get_record_sql('SELECT SUM(windows) AS sessionswindows, ROUND((SUM(windows)*100)/SUM(sessions),2) AS porcentaje
-									FROM {dashboard_data}');
-	
-	$linux = $DB->get_record_sql('SELECT SUM(linux) AS sessionslinux, ROUND((SUM(linux)*100)/SUM(sessions),2) AS porcentaje
-								  FROM {dashboard_data}');
-	
-	$macintosh = $DB->get_record_sql('SELECT SUM(macintosh) AS sessionsmacintosh, ROUND((SUM(macintosh)*100)/SUM(sessions),2) AS porcentaje
-								  FROM {dashboard_data}');
-	
-	$ios = $DB->get_record_sql('SELECT SUM(ios) AS sessionsios, ROUND((SUM(ios)*100)/SUM(sessions),2) AS porcentaje
-								  FROM {dashboard_data}');
-	
-	$android = $DB->get_record_sql('SELECT SUM(android) AS sessionsandroid, ROUND((SUM(android)*100)/SUM(sessions),2) AS porcentaje
-								  FROM {dashboard_data}');
-	
-	$devices = array(
-					array($windows->sessionswindows, $windows->porcentaje),
-					array($linux->sessionslinux, $linux->porcentaje),
-					array($macintosh->sessionsmacintosh, $macintosh->porcentaje),
-					array($ios->sessionsios, $ios->porcentaje),
-					array($android->sessionsandroid, $android->porcentaje)
-	);
-	return $devices;
-}
-
 //FILL USERS SESSIONS/DATES CHART WITH ANY DISPERSSION
 function users_sessions_disperssion($disperssion) {
 	global $DB;
@@ -211,14 +182,14 @@ function users_sessions_disperssion($disperssion) {
 
 	 
 	$timevalues = $DB->get_record_sql("SELECT 
-										MAX(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as maxtime,
-										MIN(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as mintime
+										DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
+										DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 									    FROM {dashboard_data}");
 	$positioncount = 0;
 	$time = $timevalues->mintime;
-	$sessionsdata = array();
 	
-	while($time<=$timevalues->maxtime) {
+	$sessionsdata = array();
+	while(strtotime($time)<=strtotime($timevalues->maxtime)) {
 			if(array_key_exists($time,$sessions)) {
 				$sessionsdata[$positioncount][0] = $time;
 				$sessionsdata[$positioncount][1] = (int)$sessions[$time]->totalsessions;
@@ -261,15 +232,15 @@ function users_avgsessions_disperssion($disperssion) {
 	$avgtime = $DB->get_records_sql($query);
 	
 	$timevalues = $DB->get_record_sql("SELECT 
-										MAX(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as maxtime,
-										MIN(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as mintime
+										DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
+										DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 									    FROM {dashboard_data}");
 
 	$positioncount = 0;
 	$time = $timevalues->mintime;
 	$avgtimedata = array();
 
-	while($time<=$timevalues->maxtime) {
+	while(strtotime($time)<=strtotime($timevalues->maxtime)) {
 		if(array_key_exists($time,$avgtime)) {
 			$avgtimedata[$positioncount][0] = $time;
 			$avgtimedata[$positioncount][1] = (int)$avgtime[$time]->avgtime;
@@ -311,15 +282,15 @@ function users_dates_disperssion($disperssion) {
 	$users = $DB->get_records_sql($query);
 	
 	$timevalues = $DB->get_record_sql("SELECT 
-										MAX(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as maxtime,
-										MIN(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as mintime
+										DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
+										DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 									    FROM {dashboard_data}");
 
 	$positioncount = 0;
 	$time = $timevalues->mintime;
 	$usersdata = array();
 
-	while($time<=$timevalues->maxtime) {
+	while(strtotime($time)<=strtotime($timevalues->maxtime)) {
 		if(array_key_exists($time,$users)) {
 			$usersdata[$positioncount][0] = $time;
 			$usersdata[$positioncount][1] = (int)$users[$time]->totalusers;
@@ -361,15 +332,15 @@ function newusers_dates_disperssion($disperssion) {
 	$newusers = $DB->get_records_sql($query);
 	
 	$timevalues = $DB->get_record_sql("SELECT 
-										MAX(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as maxtime,
-										MIN(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as mintime
+										DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
+										DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 									    FROM {dashboard_data}");
 
 	$positioncount = 0;
 	$time = $timevalues->mintime;
 	$newusersdata = array();
 
-	while($time<=$timevalues->maxtime) {
+	while(strtotime($time)<=strtotime($timevalues->maxtime)) {
 		if(array_key_exists($time,$newusers)) {
 			$newusersdata[$positioncount][0] = $time;
 			$newusersdata[$positioncount][1] = (int)$newusers[$time]->totalnewusers;
@@ -411,15 +382,15 @@ function courseview_dates_disperssion($disperssion) {
 	$courseviews = $DB->get_records_sql($query);
 	
 	$timevalues = $DB->get_record_sql("SELECT 
-										MAX(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as maxtime,
-										MIN(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as mintime
+										DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
+										DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 									    FROM {dashboard_data}");
 
 	$positioncount = 0;
 	$time = $timevalues->mintime;
 	$courseviewsdata = array();
 
-	while($time<=$timevalues->maxtime) {
+	while(strtotime($time)<=strtotime($timevalues->maxtime)) {
 		if(array_key_exists($time,$courseviews)) {
 			$courseviewsdata[$positioncount][0] = $time;
 			$courseviewsdata[$positioncount][1] = (int)$courseviews[$time]->totalcourseviews;

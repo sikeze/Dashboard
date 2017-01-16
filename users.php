@@ -171,7 +171,6 @@
 var users_sessions = <?php echo json_encode(users_sessions_dates());?>;
 var users_info = <?php echo json_encode(users_info());?>;
 var users_labels = <?php echo json_encode(users_info_labels());?>;
-var users_devices = <?php echo json_encode(users_devices_table());?>;
 $(document).ready(function () {
     //init sidenav
     $('.button-collapse').sideNav({
