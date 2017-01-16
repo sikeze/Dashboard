@@ -175,13 +175,12 @@ function dashboard_getip(){
 				$userinsert->city = $userlocation->city;
 				$userinsert->latitude = $userlocation->latitude;
 				$userinsert->longitude =  $userlocation->longitude;
-				var_dump($userinsert);
 				$insertarray[] = $userinsert;
 			}
 		}
 		if(count($insertarray) > 0){
-			if($DB->insert_records('dashboard_data', $data)){
-				echo "user insert completed ";
+			if($DB->insert_records('dashboard_data', $insertarray)){
+				mtrace("user insert completed ");
 			}
 		}
 	}
@@ -197,8 +196,6 @@ function dashboard_getusersdata(){
 	}else{
 		$lasttime = (int)$lasttime->time;
 	}
-	echo $lasttime;
-	echo time();
 	
 	$sessionsparams = array(
 			'loggedin',
@@ -318,7 +315,6 @@ function dashboard_getusersdata(){
 				if($previoususer == $avgsessiontime->userid && $previousdate == $avgsessiontime->date && $previousaction == 'loggedout' && $avgsessiontime->action == 'loggedin'){
 					$time = $avgsessiontime->time - $previoustime;
 					$timesaver[$avgsessiontime->date][] = $time;
-					//echo "$previoususer = $logged->userid -- $previousaction = $logged->action -- $previousdate = $logged->date <br>";
 				}
 		
 				$previousaction = $avgsessiontime->action;
@@ -390,8 +386,6 @@ function dashboard_getusersdata(){
 				}
 			}
 		}
-		
-		var_dump($data);
 		if(count($data)>0){
 			if($DB->insert_records('dashboard_data', $data)){
 				echo "insert completed ";
