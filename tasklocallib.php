@@ -273,7 +273,7 @@ function dashboard_getusersdata(){
 			DATE_FORMAT(FROM_UNIXTIME(u.lastaccess),'%d-%c-%Y %H:00:00') as time,
 			COUNT(*) as newusers
 			FROM {user} as u
-			WHERE u.firstaccess BETWEEN ? AND ?
+			WHERE u.firstaccess BETWEEN ? AND ? AND u.lastaccess != 0
 			GROUP BY time
 			ORDER BY time ASC";
 		if($newusers=$DB->get_records_sql($newusersquery, $newusersparams)){
