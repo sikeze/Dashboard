@@ -163,23 +163,24 @@ function dashboard_getip(){
 			$result = curl_exec($curl);
 			curl_close($curl);
 			$result = json_decode($result);
-			
 			if($result->latitude !== 0 && $result->longitude !== 0){
 				$userlocation = $result;
 				
 				$userinsert = new stdClass();
 				$userinsert->userid = $user->id;
-				$userinsert->userid = $user->lastaccess;
+				$userinsert->timecreated = $user->lastaccess;
 				$userinsert->country = $userlocation->country_name;
 				$userinsert->region = $userlocation->region_name;
 				$userinsert->city = $userlocation->city;
 				$userinsert->latitude = $userlocation->latitude;
 				$userinsert->longitude =  $userlocation->longitude;
 				$insertarray[] = $userinsert;
+
 			}
+
 		}
 		if(count($insertarray) > 0){
-			if($DB->insert_records('dashboard_data', $insertarray)){
+			if($DB->insert_records('dashboard_users_location', $insertarray)){
 				mtrace("user insert completed ");
 			}
 		}
@@ -388,7 +389,7 @@ function dashboard_getusersdata(){
 		}
 		if(count($data)>0){
 			if($DB->insert_records('dashboard_data', $data)){
-				echo "insert completed ";
+				mtrace("user insert completed ");
 			}
 		}
 		foreach($arrayupdate as $update){
@@ -418,7 +419,7 @@ function dashboard_getusersdata(){
 					WHERE time = ?";
 			
 			if($DB->execute($query,$params)){
-				echo 'update completed';
+				mtrace("user update completed ");
 			}
 		}
 	}
