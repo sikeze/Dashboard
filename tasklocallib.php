@@ -159,27 +159,28 @@ function dashboard_getip(){
 			$curl = curl_init();
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_URL, 'freegeoip.net/json/'.$user->lastip);
+			curl_setopt($curl, CURLOPT_URL, 'freegeoip.net/json/52.28.221.96');
 			$result = curl_exec($curl);
 			curl_close($curl);
 			$result = json_decode($result);
-			
 			if($result->latitude !== 0 && $result->longitude !== 0){
 				$userlocation = $result;
 				
 				$userinsert = new stdClass();
 				$userinsert->userid = $user->id;
-				$userinsert->userid = $user->lastaccess;
+				$userinsert->timecreated = $user->lastaccess;
 				$userinsert->country = $userlocation->country_name;
 				$userinsert->region = $userlocation->region_name;
 				$userinsert->city = $userlocation->city;
 				$userinsert->latitude = $userlocation->latitude;
 				$userinsert->longitude =  $userlocation->longitude;
 				$insertarray[] = $userinsert;
+
 			}
+
 		}
 		if(count($insertarray) > 0){
-			if($DB->insert_records('dashboard_data', $insertarray)){
+			if($DB->insert_records('dashboard_users_location', $insertarray)){
 				mtrace("user insert completed ");
 			}
 		}
