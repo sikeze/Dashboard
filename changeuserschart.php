@@ -1,14 +1,11 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require_once(dirname(__FILE__) . '/locallib.php');
 
 $select = $_POST['select'];
-$users_sessions  = $_POST['sessions'];
-$users_avgtime  = $_POST['avgtime'];
-$users_dates  = $_POST['users'];
-$newusers_dates  = $_POST['newusers'];
-$courseviews_dates  = $_POST['courseviews'];
+$disperssion = $_POST['disperssion'];
 switch ($select) {
-	case 0:
+	case 1:
 		echo "<script>
 				google.charts.load('current', {packages: ['corechart', 'line']});
 				google.charts.setOnLoadCallback(drawBasic);
@@ -18,7 +15,7 @@ switch ($select) {
 					data.addColumn('string', 'X');
 					data.addColumn('number', 'Sesiones');
 
-					var datos =".json_encode($users_sessions)."
+					var datos =".json_encode(users_sessions_disperssion($disperssion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -42,40 +39,6 @@ switch ($select) {
 			</script>";
 	break;
 	
-	case 1:
-		echo "<script>
-				google.charts.load('current', {packages: ['corechart', 'line']});
-				google.charts.setOnLoadCallback(drawBasic);
-
-				function drawBasic() {
-					var data = new google.visualization.DataTable();
-					data.addColumn('string', 'X');
-					data.addColumn('number', 'Segundos');
-
-					var datos =".json_encode($users_avgtime)."
-					$.each(datos, function( key, value ) {
-		  				value[1]= parseFloat(value[1]);
-					});
-
-					data.addRows(datos);
-
-					var options = {
-						hAxis: {
-							title: 'Fecha',
-							textStyle: {fontSize: 9}
-						},
-						vAxis: {
-							title: 'Tiempo Promedio Sesión'
-						}
-					};
-
-					var chart = new google.visualization.LineChart(document.getElementById('userschart'));
-
-					chart.draw(data, options);
-				}
-			</script>";
-	break;
-	
 	case 2:
 		echo "<script>
 				google.charts.load('current', {packages: ['corechart', 'line']});
@@ -84,9 +47,43 @@ switch ($select) {
 				function drawBasic() {
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', 'X');
-					data.addColumn('number', 'Alumnos');
+					data.addColumn('number', 'Sesiones');
 	
-					var datos =".json_encode($users_dates)."
+					var datos =".json_encode(users_avgsessions_disperssion($disperssion))."
+					$.each(datos, function( key, value ) {
+		  				value[1]= parseFloat(value[1]);
+					});
+	
+					data.addRows(datos);
+	
+					var options = {
+						hAxis: {
+							title: 'Fecha',
+							textStyle: {fontSize: 9}
+						},
+						vAxis: {
+							title: 'Tiempo Promedio de Sesiones'
+						}
+					};
+	
+					var chart = new google.visualization.LineChart(document.getElementById('userschart'));
+	
+					chart.draw(data, options);
+				}
+			</script>";
+	break;
+	
+	case 3:
+		echo "<script>
+				google.charts.load('current', {packages: ['corechart', 'line']});
+				google.charts.setOnLoadCallback(drawBasic);
+	
+				function drawBasic() {
+					var data = new google.visualization.DataTable();
+					data.addColumn('string', 'X');
+					data.addColumn('number', 'Sesiones');
+	
+					var datos =".json_encode(users_dates_disperssion($disperssion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -108,73 +105,73 @@ switch ($select) {
 					chart.draw(data, options);
 				}
 			</script>";
-		break;
-	
-	case 3:
-		echo "<script>
-			google.charts.load('current', {packages: ['corechart', 'line']});
-			google.charts.setOnLoadCallback(drawBasic);
-		
-			function drawBasic() {
-				var data = new google.visualization.DataTable();
-				data.addColumn('string', 'X');
-				data.addColumn('number', 'Alumnos');
-		
-				var datos =".json_encode($newusers_dates)."
-				$.each(datos, function( key, value ) {
-		 			value[1]= parseFloat(value[1]);
-				});
-		
-				data.addRows(datos);
-		
-				var options = {
-					hAxis: {
-						title: 'Fecha',
-						textStyle: {fontSize: 9}
-					},
-					vAxis: {
-						title: 'Nuevos Usuarios'
-					}
-				};
-		
-				var chart = new google.visualization.LineChart(document.getElementById('userschart'));
-		
-				chart.draw(data, options);
-			}
-		</script>";
 	break;
-		
+	
 	case 4:
 		echo "<script>
-			google.charts.load('current', {packages: ['corechart', 'line']});
-			google.charts.setOnLoadCallback(drawBasic);
-		
-			function drawBasic() {
-				var data = new google.visualization.DataTable();
-				data.addColumn('string', 'X');
-				data.addColumn('number', 'Cursos');
-		
-				var datos =".json_encode($courseviews_dates)."
-				$.each(datos, function( key, value ) {
-	  				value[1]= parseFloat(value[1]);
-				});
-		
-				data.addRows(datos);
-		
-				var options = {
-					hAxis: {
-						title: 'Fecha',
-						textStyle: {fontSize: 9}
-					},
-					vAxis: {
-						title: 'Cursos Vistos'
-					}
-				};
-		
-				var chart = new google.visualization.LineChart(document.getElementById('userschart'));
-		
-				chart.draw(data, options);
-			}
-		</script>";
+				google.charts.load('current', {packages: ['corechart', 'line']});
+				google.charts.setOnLoadCallback(drawBasic);
+	
+				function drawBasic() {
+					var data = new google.visualization.DataTable();
+					data.addColumn('string', 'X');
+					data.addColumn('number', 'Sesiones');
+	
+					var datos =".json_encode(newusers_dates_disperssion($disperssion))."
+					$.each(datos, function( key, value ) {
+		  				value[1]= parseFloat(value[1]);
+					});
+	
+					data.addRows(datos);
+	
+					var options = {
+						hAxis: {
+							title: 'Fecha',
+							textStyle: {fontSize: 9}
+						},
+						vAxis: {
+							title: 'Nuevos Usuarios'
+						}
+					};
+	
+					var chart = new google.visualization.LineChart(document.getElementById('userschart'));
+	
+					chart.draw(data, options);
+				}
+			</script>";
+	break;
+	
+	case 5:
+		echo "<script>
+				google.charts.load('current', {packages: ['corechart', 'line']});
+				google.charts.setOnLoadCallback(drawBasic);
+	
+				function drawBasic() {
+					var data = new google.visualization.DataTable();
+					data.addColumn('string', 'X');
+					data.addColumn('number', 'Sesiones');
+	
+					var datos =".json_encode(courseview_dates_disperssion($disperssion))."
+					$.each(datos, function( key, value ) {
+		  				value[1]= parseFloat(value[1]);
+					});
+	
+					data.addRows(datos);
+	
+					var options = {
+						hAxis: {
+							title: 'Fecha',
+							textStyle: {fontSize: 9}
+						},
+						vAxis: {
+							title: 'Cursos Vistos'
+						}
+					};
+	
+					var chart = new google.visualization.LineChart(document.getElementById('userschart'));
+	
+					chart.draw(data, options);
+				}
+			</script>";
 	break;
 }

@@ -35,7 +35,7 @@ function users_sessions_dates() {
 	$sessionsdata = array();
 	
 	while($time<=$timevalues->maxtime) {
-		$date = date("j M, Y H:i",$time);
+		$date = date("d M, Y H:i",$time);
 		if(array_key_exists($time,$sessions)) {
 			$sessionsdata[$positioncount][0] = $date;
 			$sessionsdata[$positioncount][1] = (int)$sessions[$time]->sessions;
@@ -47,122 +47,6 @@ function users_sessions_dates() {
 		$positioncount++;
 	}
 	return $sessionsdata;
-}
-
-//FILL USERS AVG TIME SESSIONS/DATES CHART USERS PAGE
-function users_avgsessions_dates() {
-	global $DB;
-	
-	$avgtime = $DB->get_records_sql('SELECT time, avgsessiontime
-									  FROM {dashboard_data}
-									  ORDER BY time ASC');
-	$timevalues = $DB->get_record_sql('SELECT MAX(time) as maxtime, MIN(time) as mintime
-									   FROM {dashboard_data}');
-	
-	$positioncount = 0;
-	$time = $timevalues->mintime;
-	$avgtimedata = array();
-	
-	while($time<=$timevalues->maxtime) {
-		$date = date("j M, Y H:i",$time);
-		if(array_key_exists($time,$avgtime)) {
-			$avgtimedata[$positioncount][0] = $date;
-			$avgtimedata[$positioncount][1] = (int)$avgtime[$time]->avgsessiontime;
-		} else {
-			$avgtimedata[$positioncount][0] = $date;
-			$avgtimedata[$positioncount][1] = (int)0;
-		}
-		$time = $time + 60*60;
-		$positioncount++;
-	}
-	return $avgtimedata;
-}
-
-//FILL USERS/DATES CHART USERS PAGE
-function users_dates() {
-	global $DB;
-	
-	$users = $DB->get_records_sql('SELECT time, users
-									  FROM {dashboard_data}
-									  ORDER BY time ASC');
-	$timevalues = $DB->get_record_sql('SELECT MAX(time) as maxtime, MIN(time) as mintime
-									   FROM {dashboard_data}');
-	
-	$positioncount = 0;
-	$time = $timevalues->mintime;
-	$usersdata = array();
-	
-	while($time<=$timevalues->maxtime) {
-		$date = date("j M, Y H:i",$time);
-		if(array_key_exists($time,$users)) {
-			$usersdata[$positioncount][0] = $date;
-			$usersdata[$positioncount][1] = (int)$users[$time]->users;
-		} else {
-			$usersdata[$positioncount][0] = $date;
-			$usersdata[$positioncount][1] = (int)0;
-		}
-		$time = $time + 60*60;
-		$positioncount++;
-	}
-	return $usersdata;
-}
-
-//FILL NEW USERS/DATES CHART USERS PAGE
-function newusers_dates() {
-	global $DB;
-	
-	$newusers = $DB->get_records_sql('SELECT time, newusers
-									  FROM {dashboard_data}
-									  ORDER BY time ASC');
-	$timevalues = $DB->get_record_sql('SELECT MAX(time) as maxtime, MIN(time) as mintime
-									   FROM {dashboard_data}');
-	
-	$positioncount = 0;
-	$time = $timevalues->mintime;
-	$newusersdata = array();
-	
-	while($time<=$timevalues->maxtime) {
-		$date = date("j M, Y H:i",$time);
-		if(array_key_exists($time,$newusers)) {
-			$newusersdata[$positioncount][0] = $date;
-			$newusersdata[$positioncount][1] = (int)$newusers[$time]->newusers;
-		} else {
-			$newusersdata[$positioncount][0] = $date;
-			$newusersdata[$positioncount][1] = (int)0;
-		}
-		$time = $time + 60*60;
-		$positioncount++;
-	}
-	return $newusersdata;
-}
-
-//FILL COURSE VIEWS/DATES CHART USERS PAGE
-function courseview_dates() {
-	global $DB;
-	
-	$courseviews = $DB->get_records_sql('SELECT time, courseviews
-									  FROM {dashboard_data}
-									  ORDER BY time ASC');
-	$timevalues = $DB->get_record_sql('SELECT MAX(time) as maxtime, MIN(time) as mintime
-									   FROM {dashboard_data}');
-	
-	$positioncount = 0;
-	$time = $timevalues->mintime;
-	$courseviewsdata = array();
-	
-	while($time<=$timevalues->maxtime) {
-		$date = date("j M, Y H:i",$time);
-		if(array_key_exists($time,$courseviews)) {
-			$courseviewsdata[$positioncount][0] = $date;
-			$courseviewsdata[$positioncount][1] = (int)$courseviews[$time]->courseviews;
-		} else {
-			$courseviewsdata[$positioncount][0] = $date;
-			$courseviewsdata[$positioncount][1] = (int)0;
-		}
-		$time = $time + 60*60;
-		$positioncount++;
-	}
-	return $courseviewsdata;
 }
 
 //FILL USERS INFO SPARKLINES CHARTS USERS PAGE
@@ -299,52 +183,252 @@ function users_devices_table() {
 	return $devices;
 }
 
-//FILL USERS PAGE BY DAY
+//FILL USERS SESSIONS/DATES CHART WITH ANY DISPERSSION
 function users_sessions_disperssion($disperssion) {
 	global $DB;
+	if($disperssion == 1){
+		$datetypesql = '%b-%Y';
+		$dateadd = "+1 month";
+		$datetypephp = "M-Y";
+	} elseif($disperssion == 2){ //STAND BY POR MIENTRAS
+		$datetypesql = "%V-%Y";
+		$dateadd = "+1";
+		$datetypephp = "W-Y";
+	} elseif($disperssion == 3){
+		$datetypesql = '%d-%b-%Y';
+		$dateadd = "+1 day";
+		$datetypephp = "d-M-Y";
+	} else{
+		$datetypesql = '%d-%b-%Y %H:00:00';
+		$dateadd = "+1 hour";
+		$datetypephp = "d-M-Y H:00:00";
+	}
 	
-	$sessions_day = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'%d-%b-%Y') as times, SUM(sessions) as totalsessions  
+	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, SUM(sessions) as totalsessions  
 									  FROM {dashboard_data} 
-									  GROUP BY times");
-	
-	$sessions_month = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'%b-%Y') as times, SUM(sessions) as totalsessions  
-									  FROM {dashboard_data} 
-									  GROUP BY times");
+										GROUP BY times";
+	$sessions = $DB->get_records_sql($query);
+
 	 
-	$timevalues = $DB->get_record_sql("SELECT MAX(DATE_FORMAT(FROM_UNIXTIME(time),'%d-%b-%Y')) as maxtime, MIN(DATE_FORMAT(FROM_UNIXTIME(time),'%d-%b-%Y')) as mintime
-									   FROM {dashboard_data}");
-	
+	$timevalues = $DB->get_record_sql("SELECT 
+										MAX(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as maxtime,
+										MIN(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as mintime
+									    FROM {dashboard_data}");
 	$positioncount = 0;
 	$time = $timevalues->mintime;
 	$sessionsdata = array();
 	
 	while($time<=$timevalues->maxtime) {
-		if ($disperssion == 1) {
-			if(array_key_exists($time,$sessions_month)) {
+			if(array_key_exists($time,$sessions)) {
 				$sessionsdata[$positioncount][0] = $time;
-				$sessionsdata[$positioncount][1] = (int)$sessions_month[$time]->totalsessions;
+				$sessionsdata[$positioncount][1] = (int)$sessions[$time]->totalsessions;
 			} else {
 				$sessionsdata[$positioncount][0] = $time;
 				$sessionsdata[$positioncount][1] = (int)0;
+				
 			}
-			$time = date("M-Y",strtotime($time."+1month"));
+			$time = date($datetypephp,strtotime($time.$dateadd));
 			$positioncount++;
-		}
-		else if ($disperssion == 3) {
-			if(array_key_exists($time,$sessions_day)) {
-				$sessionsdata[$positioncount][0] = $time;
-				$sessionsdata[$positioncount][1] = (int)$sessions_day[$time]->totalsessions;
-			} else {
-				$sessionsdata[$positioncount][0] = $time;
-				$sessionsdata[$positioncount][1] = (int)0;
-			}
-			$time = date("d-M-Y",strtotime($time."+1day"));
-			$positioncount++;
-		}
-		else {
-			$time = date("d-M-Y",strtotime($time."+1day"));
-			$positioncount++;
-		}
 	}
 	return $sessionsdata;
+}
+
+//FILL USERS AVG TIME SESSIONS/DATES CHART USERS PAGE WITH ANY DISPERSSION
+function users_avgsessions_disperssion($disperssion) {
+	global $DB;
+	if($disperssion == 1){
+		$datetypesql = '%b-%Y';
+		$dateadd = "+1 month";
+		$datetypephp = "M-Y";
+	} elseif($disperssion == 2){ //STAND BY POR MIENTRAS
+		$datetypesql = "%V-%Y";
+		$dateadd = "+1";
+		$datetypephp = "W-Y";
+	} elseif($disperssion == 3){
+		$datetypesql = '%d-%b-%Y';
+		$dateadd = "+1 day";
+		$datetypephp = "d-M-Y";
+	} else{
+		$datetypesql = '%d-%b-%Y %H:00:00';
+		$dateadd = "+1 hour";
+		$datetypephp = "d-M-Y H:00:00";
+	}
+	
+	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, ROUND(AVG(avgsessiontime),0) as avgtime
+									  FROM {dashboard_data} 
+									  GROUP BY times";
+
+	$avgtime = $DB->get_records_sql($query);
+	
+	$timevalues = $DB->get_record_sql("SELECT 
+										MAX(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as maxtime,
+										MIN(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as mintime
+									    FROM {dashboard_data}");
+
+	$positioncount = 0;
+	$time = $timevalues->mintime;
+	$avgtimedata = array();
+
+	while($time<=$timevalues->maxtime) {
+		if(array_key_exists($time,$avgtime)) {
+			$avgtimedata[$positioncount][0] = $time;
+			$avgtimedata[$positioncount][1] = (int)$avgtime[$time]->avgtime;
+		} else {
+			$avgtimedata[$positioncount][0] = $time;
+			$avgtimedata[$positioncount][1] = (int)0;
+		}
+		$time = date($datetypephp,strtotime($time.$dateadd));
+		$positioncount++;
+	}
+	return $avgtimedata;
+}
+
+//FILL USERS/DATES CHART USERS PAGE WITH ANY DISPERSSION
+function users_dates_disperssion($disperssion) {
+	global $DB;
+	if($disperssion == 1){
+		$datetypesql = '%b-%Y';
+		$dateadd = "+1 month";
+		$datetypephp = "M-Y";
+	} elseif($disperssion == 2){ //STAND BY POR MIENTRAS
+		$datetypesql = "%V-%Y";
+		$dateadd = "+1";
+		$datetypephp = "W-Y";
+	} elseif($disperssion == 3){
+		$datetypesql = '%d-%b-%Y';
+		$dateadd = "+1 day";
+		$datetypephp = "d-M-Y";
+	} else{
+		$datetypesql = '%d-%b-%Y %H:00:00';
+		$dateadd = "+1 hour";
+		$datetypephp = "d-M-Y H:00:00";
+	}
+
+	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, SUM(users) as totalusers
+									  FROM {dashboard_data} 
+									  GROUP BY times";
+	
+	$users = $DB->get_records_sql($query);
+	
+	$timevalues = $DB->get_record_sql("SELECT 
+										MAX(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as maxtime,
+										MIN(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as mintime
+									    FROM {dashboard_data}");
+
+	$positioncount = 0;
+	$time = $timevalues->mintime;
+	$usersdata = array();
+
+	while($time<=$timevalues->maxtime) {
+		if(array_key_exists($time,$users)) {
+			$usersdata[$positioncount][0] = $time;
+			$usersdata[$positioncount][1] = (int)$users[$time]->totalusers;
+		} else {
+			$usersdata[$positioncount][0] = $time;
+			$usersdata[$positioncount][1] = (int)0;
+		}
+		$time = date($datetypephp,strtotime($time.$dateadd));
+		$positioncount++;
+	}
+	return $usersdata;
+}
+
+//FILL NEW USERS/DATES CHART USERS PAGE WITH ANY DISPERSSION
+function newusers_dates_disperssion($disperssion) {
+	global $DB;
+	if($disperssion == 1){
+		$datetypesql = '%b-%Y';
+		$dateadd = "+1 month";
+		$datetypephp = "M-Y";
+	} elseif($disperssion == 2){ //STAND BY POR MIENTRAS
+		$datetypesql = "%V-%Y";
+		$dateadd = "+1";
+		$datetypephp = "W-Y";
+	} elseif($disperssion == 3){
+		$datetypesql = '%d-%b-%Y';
+		$dateadd = "+1 day";
+		$datetypephp = "d-M-Y";
+	} else{
+		$datetypesql = '%d-%b-%Y %H:00:00';
+		$dateadd = "+1 hour";
+		$datetypephp = "d-M-Y H:00:00";
+	}
+
+	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, SUM(newusers) as totalnewusers
+									  FROM {dashboard_data} 
+									  GROUP BY times";
+	
+	$newusers = $DB->get_records_sql($query);
+	
+	$timevalues = $DB->get_record_sql("SELECT 
+										MAX(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as maxtime,
+										MIN(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as mintime
+									    FROM {dashboard_data}");
+
+	$positioncount = 0;
+	$time = $timevalues->mintime;
+	$newusersdata = array();
+
+	while($time<=$timevalues->maxtime) {
+		if(array_key_exists($time,$newusers)) {
+			$newusersdata[$positioncount][0] = $time;
+			$newusersdata[$positioncount][1] = (int)$newusers[$time]->totalnewusers;
+		} else {
+			$newusersdata[$positioncount][0] = $time;
+			$newusersdata[$positioncount][1] = (int)0;
+		}
+		$time = date($datetypephp,strtotime($time.$dateadd));
+		$positioncount++;
+	}
+	return $newusersdata;
+}
+
+//FILL COURSE VIEWS/DATES CHART USERS PAGE WITH ANY DISPERSSION
+function courseview_dates_disperssion($disperssion) {
+	global $DB;
+	if($disperssion == 1){
+		$datetypesql = '%b-%Y';
+		$dateadd = "+1 month";
+		$datetypephp = "M-Y";
+	} elseif($disperssion == 2){ //STAND BY POR MIENTRAS
+		$datetypesql = "%V-%Y";
+		$dateadd = "+1";
+		$datetypephp = "W-Y";
+	} elseif($disperssion == 3){
+		$datetypesql = '%d-%b-%Y';
+		$dateadd = "+1 day";
+		$datetypephp = "d-M-Y";
+	} else{
+		$datetypesql = '%d-%b-%Y %H:00:00';
+		$dateadd = "+1 hour";
+		$datetypephp = "d-M-Y H:00:00";
+	}
+
+	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, SUM(courseviews) as totalcourseviews
+									  FROM {dashboard_data} 
+									  GROUP BY times";
+	
+	$courseviews = $DB->get_records_sql($query);
+	
+	$timevalues = $DB->get_record_sql("SELECT 
+										MAX(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as maxtime,
+										MIN(DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."')) as mintime
+									    FROM {dashboard_data}");
+
+	$positioncount = 0;
+	$time = $timevalues->mintime;
+	$courseviewsdata = array();
+
+	while($time<=$timevalues->maxtime) {
+		if(array_key_exists($time,$courseviews)) {
+			$courseviewsdata[$positioncount][0] = $time;
+			$courseviewsdata[$positioncount][1] = (int)$courseviews[$time]->totalcourseviews;
+		} else {
+			$courseviewsdata[$positioncount][0] = $time;
+			$courseviewsdata[$positioncount][1] = (int)0;
+		}
+		$time = date($datetypephp,strtotime($time.$dateadd));
+		$positioncount++;
+	}
+	return $courseviewsdata;
 }
