@@ -18,6 +18,7 @@ function drawBasic() {
 	data.addRows(datos);
 
 	var options = {
+	
 		hAxis: {
 			title: 'Fecha',
 			textStyle: {fontSize: 9}
