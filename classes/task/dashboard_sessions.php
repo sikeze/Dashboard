@@ -21,8 +21,8 @@
 * @copyright  2016 Mihail Pozarski <mipozarski@alumnos.uai.cl>
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
-namespace local_dashboard\tasks;
-class dashboard_sessions extends \core\tasks\scheduled_tasks {
+namespace local_dashboard\task;
+class dashboard_sessions extends \core\task\scheduled_tasks {
 
 	public function get_name() {
 		return get_string('sessiontask', 'local_dashboard');

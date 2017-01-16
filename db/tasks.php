@@ -22,7 +22,7 @@
 * */
 $tasks = array(
 		array(
-				'classname' => 'local_dashboard\tasks\dashboard_sessions',
+				'classname' => 'local_dashboard\task\dashboard_sessions',
 				'blocking' => '0',
 				'minute' => '0',
 				'hour' => '4',
