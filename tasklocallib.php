@@ -159,7 +159,7 @@ function dashboard_getip(){
 			$curl = curl_init();
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_URL, 'freegeoip.net/json/52.28.221.96');
+			curl_setopt($curl, CURLOPT_URL, 'freegeoip.net/json/'.$user->lastip);
 			$result = curl_exec($curl);
 			curl_close($curl);
 			$result = json_decode($result);
@@ -389,7 +389,7 @@ function dashboard_getusersdata(){
 		}
 		if(count($data)>0){
 			if($DB->insert_records('dashboard_data', $data)){
-				echo "insert completed ";
+				mtrace("user insert completed ");
 			}
 		}
 		foreach($arrayupdate as $update){
@@ -419,7 +419,7 @@ function dashboard_getusersdata(){
 					WHERE time = ?";
 			
 			if($DB->execute($query,$params)){
-				echo 'update completed';
+				mtrace("user update completed ");
 			}
 		}
 	}
