@@ -41,15 +41,15 @@
         	<div class="nav-wraper">
             	<a href="<?php echo $frontpageurl; ?>" class="brand-logo"><img class="responsive-img" src="images/webcursoslogo.gif" style="width:60%"></a>
                	<ul id="nav-mobile" class="right hide-on-med-and-down">
-               		<li class="input-field blue-text">
-               			<i class="material-icons prefix blue-text">date_range</i>
-        				<input type="date" class="datepicker" id="datepickertwo">
-        				<label class="active" for="datepickertwo">Elija primera fecha</label>
-               		</li>
-               		<li class="input-field blue-text">
+               		<li class="input-field">
                			<i class="material-icons prefix blue-text">date_range</i>
         				<input type="date" class="datepicker" id="datepickerone">
-        				<label class="active" for="datepickerone">Elija segunda fecha</label>
+        				<label id="dateone" class="active" for="datepickerone">Elija primera fecha</label>
+               		</li>
+               		<li class="input-field">
+               			<i class="material-icons prefix blue-text">date_range</i>
+        				<input type="date" class="datepicker" id="datepickertwo">
+        				<label id="datetwo" class="active" for="datepickertwo">Elija segunda fecha</label>
         			</li>
                		<li class="input-field blue-text">
     					<select id="dispersionselect">
@@ -182,9 +182,14 @@ $(document).ready(function () {
     $('.materialboxed').materialbox();
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
-        selectYears: 15, // Creates a dropdown of 15 years to control year
-        format: 'dd-mm-yy'
+        selectYears: 15 // Creates a dropdown of 15 years to control year
       });
+    $('#datepickerone').click(function () {
+        $('#dateone').hide();
+    });
+    $('#datepickertwo').click(function () {
+        $('#datetwo').hide();
+    });
     $.ajax({
         url: 'charts/userschart.php',
         data: {sessions: users_sessions},

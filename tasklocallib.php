@@ -377,8 +377,8 @@ function dashboard_getusersdata(){
 				$dataobj->ios = 0;
 				$dataobj->android = 0;
 
-				if($dataobj->time == 0){
-					$dataobj->time = $key;
+				if($dataobj->time == 0 OR is_string($dataobj->time)){
+					unset($data[$key]);
 
 				}
 				if($dataobj->time == $lasttime){
@@ -390,6 +390,7 @@ function dashboard_getusersdata(){
 				}
 			}
 		}
+		
 		var_dump($data);
 		if(count($data)>0){
 			if($DB->insert_records('dashboard_data', $data)){
