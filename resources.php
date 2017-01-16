@@ -213,7 +213,7 @@ $(document).ready(function () {
     $("#datadropdown li").click(function () { //Change div of charts
     	var data = $(this).val();
         $.ajax({
-            url: 'changechart.php',
+            url: 'changeresourceschart.php',
             data: {"select": data},
             method: 'POST',
             success: function (output) {
