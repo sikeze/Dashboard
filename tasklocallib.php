@@ -21,39 +21,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once(dirname(__FILE__) . '/lib.php');
 
-// GET USERS AND IP EVERY TIME THEY CONNECT
 
-/*function get_users_and_ip ($startdate,$finishdate){
-	global $DB;
-	$query = 		'SELECT l.id AS id,
-							l.userid AS userid,
-							l.ip AS ip
-					FROM 	{logstore_standard_log} AS l
-					WHERE	l.action = ? AND
-							l.timecreated BETWEEN ? AND ?
-					GROUP BY l.id';
-	$users_and_ip = $DB->get_records_sql($query,array('loggedin',$startdate,$finishdate));
-	
-	return $users_and_ip;
-}
-
-// GET USERS AND DATE WHENEVER THEY CONNECT
-
-function get_users_and_time_conection ($startdate,$finishdate){
-	global $DB;
-	$query 	= 		"SELECT l.id,
-							l.userid,
-							l.timecreated
-					FROM 	{logstore_standard_log} AS l
-							WHERE 	l.action= ? AND
-							l.timecreated BETWEEN ? AND ?
-					GROUP BY l.id";
-	$users_and_conection=$DB->get_records_sql($query, array ('loggedin',$startdate,$finishdate));
-	
-	return $users_and_conection;
-}
-*/
 function dashboard_getosandbrowser(){
 
 	$user_agent     =   $_SERVER['HTTP_USER_AGENT'];
@@ -163,25 +133,25 @@ function dashboard_getip(){
 			$result = curl_exec($curl);
 			curl_close($curl);
 			$result = json_decode($result);
-			
 			if($result->latitude !== 0 && $result->longitude !== 0){
 				$userlocation = $result;
 				
 				$userinsert = new stdClass();
 				$userinsert->userid = $user->id;
-				$userinsert->userid = $user->lastaccess;
+				$userinsert->timecreated = $user->lastaccess;
 				$userinsert->country = $userlocation->country_name;
 				$userinsert->region = $userlocation->region_name;
 				$userinsert->city = $userlocation->city;
 				$userinsert->latitude = $userlocation->latitude;
 				$userinsert->longitude =  $userlocation->longitude;
-				var_dump($userinsert);
 				$insertarray[] = $userinsert;
+
 			}
+
 		}
 		if(count($insertarray) > 0){
-			if($DB->insert_records('dashboard_data', $data)){
-				echo "user insert completed ";
+			if($DB->insert_records('dashboard_users_location', $insertarray)){
+				mtrace("user insert completed ");
 			}
 		}
 	}
@@ -197,8 +167,6 @@ function dashboard_getusersdata(){
 	}else{
 		$lasttime = (int)$lasttime->time;
 	}
-	echo $lasttime;
-	echo time();
 	
 	$sessionsparams = array(
 			'loggedin',
@@ -275,7 +243,7 @@ function dashboard_getusersdata(){
 			DATE_FORMAT(FROM_UNIXTIME(u.lastaccess),'%d-%c-%Y %H:00:00') as time,
 			COUNT(*) as newusers
 			FROM {user} as u
-			WHERE u.firstaccess BETWEEN ? AND ?
+			WHERE u.firstaccess BETWEEN ? AND ? AND u.lastaccess != 0
 			GROUP BY time
 			ORDER BY time ASC";
 		if($newusers=$DB->get_records_sql($newusersquery, $newusersparams)){
@@ -318,7 +286,6 @@ function dashboard_getusersdata(){
 				if($previoususer == $avgsessiontime->userid && $previousdate == $avgsessiontime->date && $previousaction == 'loggedout' && $avgsessiontime->action == 'loggedin'){
 					$time = $avgsessiontime->time - $previoustime;
 					$timesaver[$avgsessiontime->date][] = $time;
-					//echo "$previoususer = $logged->userid -- $previousaction = $logged->action -- $previousdate = $logged->date <br>";
 				}
 		
 				$previousaction = $avgsessiontime->action;
@@ -390,11 +357,9 @@ function dashboard_getusersdata(){
 				}
 			}
 		}
-		
-		var_dump($data);
 		if(count($data)>0){
 			if($DB->insert_records('dashboard_data', $data)){
-				echo "insert completed ";
+				mtrace("user insert completed ");
 			}
 		}
 		foreach($arrayupdate as $update){
@@ -424,85 +389,177 @@ function dashboard_getusersdata(){
 					WHERE time = ?";
 			
 			if($DB->execute($query,$params)){
-				echo 'update completed';
+				mtrace("user update completed ");
 			}
 		}
 	}
 }
 
-// AMOUNT OF USE (IN A TIME) FOR PAPERATENDANCE
-function paperattendance_use ($startdate,$finishdate){
+//FUNCTION THAT FILL THE NEW TABLE DASHBOARD_RESOURCES DURING THE TASK
+
+function dashboard_resourcesdata (){
 	global $DB;
-		$query =			"SELECT 	COUNT(*) AS count
-							FROM		{paperattendance_session} AS p
-							WHERE		lastmodified > ? AND
-										lastmodified < ?";
-		$courseswithpaperattendance = $DB->get_record_sql($query,array($startdate,$finishdate))->count;
+	$time = time();
+	$arrayupdate = array();
 
-	return $courseswithpaperattendance;
+	//PAPERATTENDANCE
+/*	$lasttimepaperattendance = $DB->get_record_sql( "SELECT 	MAX(time) AS time
+												 		FROM 		{dashboard_resources}
+												 		WHERE 		resourceid = ?", array(RESOURCES_TYPE_PAPERATTENDANCE))->time;
+	if ($lasttimepaperattendance==null){
+		$lasttimepaperattendance=0;
+	}
+	$query="SELECT CONCAT(d.lastmodified,d.courseid),d.lastmodified AS time,d.courseid AS courseid,activity,amountcreated
+			FROM (SELECT count(*) AS activity, courseid, lastmodified
+			FROM (SELECT s.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+			FROM {paperattendance_session} as s
+			UNION ALL
+			SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+			FROM {paperattendance_session} AS s1
+			INNER JOIN {paperattendance_presence} AS p1 ON (s1.id=p1.sessionid)
+			UNION ALL
+			SELECT s2.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p2.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+			FROM {paperattendance_session} AS s2
+			INNER JOIN {paperattendance_presence} AS p2 ON (s2.id=p2.sessionid)
+			INNER JOIN {paperattendance_discussion} AS d2 ON (p2.id=d2.presenceid)
+			UNION ALL
+			SELECT s3.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p3.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+			FROM {paperattendance_session} AS s3
+			INNER JOIN {paperattendance_presence} AS p3 ON (s3.id=p3.sessionid)
+			INNER JOIN {paperattendance_discussion} AS d3 ON (p3.id=d3.presenceid)) AS a
+			GROUP BY courseid,lastmodified) as d
+			LEFT JOIN
+			(SELECT count(*) AS amountcreated,courseid,lastmodified
+			FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+			FROM {paperattendance_session} as s5) as b
+			GROUP BY courseid,lastmodified) AS c ON (c.courseid=d.courseid) AND (c.lastmodified=d.lastmodified)";
+	$paperdata =$DB->get_records_sql($query);
+	var_dump($paperdata);*/
+	//TURNITIN
+
+	//EMARKING
+
+	//IF YOU WANT TO ADD MORE RESOURCES, CHECK THE LIST IN LIB.PHP AND MODIFY THE ARRAY FROM $RESOURCES
+	$resourceslist=array(
+			RESOURCES_TYPE_ASSIGN,
+			RESOURCES_TYPE_ASSIGNMENT,
+			RESOURCES_TYPE_BOOK,
+			RESOURCES_TYPE_CHAT,
+			RESOURCES_TYPE_CHOICE,
+			RESOURCES_TYPE_DATA,
+			RESOURCES_TYPE_FEEDBACK,
+			RESOURCES_TYPE_FOLDER,
+			RESOURCES_TYPE_FORUM,
+			RESOURCES_TYPE_GLOSARY,
+			RESOURCES_TYPE_IMSCP,
+			RESOURCES_TYPE_LABEL,
+			RESOURCES_TYPE_LESSON,
+			RESOURCES_TYPE_LTI,
+			RESOURCES_TYPE_PAGE,
+			RESOURCES_TYPE_QUIZ,
+			RESOURCES_TYPE_RESOURCE,
+			RESOURCES_TYPE_SCORM,
+			RESOURCES_TYPE_SURVEY,
+			RESOURCES_TYPE_URL,
+			RESOURCES_TYPE_WIKI,
+			RESOURCES_TYPE_WORKSHOP
+	);
+	$insertresourcedata = array ();
+	foreach ($resourceslist AS $currentresource) {
+		$lasttimeresources = $DB->get_record_sql( "SELECT 	MAX(time) AS time
+												 		FROM 		{dashboard_resources}
+												 		WHERE 		resourceid = ?", array($currentresource))->time;
+		if ($lasttimeresources==null){
+			$lasttimeresources=0;
+		}
+		$queryresource = "			 SELECT id1, time, courseid, activity, amountcreated
+										 FROM (	SELECT 		l2.id as id1,
+			 												COUNT(l2.id) AS activity,
+			 												cm2.course AS courseid,
+	 														DATE_FORMAT(FROM_UNIXTIME(l2.timecreated),'%d-%c-%Y %H:00:00') as time
+												FROM 		{logstore_standard_log} AS l2
+												INNER JOIN	{course_modules} AS cm2 ON (l2.objectid=cm2.id)
+												INNER JOIN	{modules} AS m2 ON (cm2.module=m2.id)
+												WHERE 	 	m2.id = ? AND
+															 timecreated > ? AND
+															timecreated < ?
+	 											GROUP BY 	time) AS a
+										LEFT JOIN ( SELECT 	l1.id as id2,
+			 												COUNT(l1.id) as amountcreated,
+						 									DATE_FORMAT(FROM_UNIXTIME(l1.timecreated),'%d-%c-%Y %H:00:00') as datenormal1,
+						 									cm1.course as course
+				 									FROM 			{logstore_standard_log} AS l1
+													INNER JOIN		{course_modules} AS cm1 ON (l1.objectid=cm1.id)
+													INNER JOIN		{modules} AS m1 ON (cm1.module=m1.id)
+													WHERE  			m1.id = ? AND
+															 		l1.action= ? AND
+															 		timecreated > ? AND
+																	timecreated < ?
+			 										GROUP BY 		datenormal1) AS b ON (a.id1=b.id2)
+			 							ORDER BY time ASC";
+		$resourcedata =$DB->get_records_sql($queryresource,array($currentresource,$lasttimeresources,$time,$currentresource,'created',$lasttimeresources,$time));
+
+		foreach ($resourcedata AS $data){
+
+
+			$currentdata = new stdClass();
+			$currentdata->courseid=(int)$data->courseid;
+			$currentdata->time=(int)strtotime($data->time)+60*60;
+			$currentdata->resourceid=$currentresource;
+			$currentdata->activity=(int)$data->activity;
+			$currentdata->amountcreated=(int)$data->amountcreated;
+			if(!property_exists($data, "amountcreated")){
+				$currentdata->amountcreated = 0;
+			}
+			if($currentdata->time==$lasttimeresources){
+				$arrayupdate[] = $currentdata;
+					
+			}else{
+				$insertresourcedata[]=$currentdata;
+			}
+
+
+		}
+
+	}
+
+	echo "<br> update data:";
+	var_dump($arrayupdate);
+	echo "<br> insert data:";
+	var_dump($insertresourcedata);
+	$allresourcesdata=array_merge(
+			$insertresourcedata
+			);
+
+	if(count($insertresourcedata)>0){
+		if(	 $DB->insert_records('dashboard_resources',$allresourcesdata)){
+			echo "insert completed";
+		}
+	}
+
+	//we update the data contained in arrayupdate to fill the vacuum time
+	if(count($arrayupdate) >0){
+		foreach($arrayupdate as $update){
+			$params= array(
+					$update->activity,
+					$update->amountcreated,
+					$update->courseid,
+					$update->time,
+					$update->resourceid,
+			);
+			$query="UPDATE {dashboard_resources}
+					 SET activity = ?,
+					 amountcreated = ?
+					 WHERE courseid = ? AND
+					 time = ? AND
+					 resourceid = ?";
+			if($DB->execute($query,$params)){
+				echo 'update completed';
+			}
+		}
+	}
+
 
 }
-// USE PERCENTAGE FOR PAPERATENDANCE (PER COURSE)
-function paperattendance_use_percentage ($startdate,$finishdate){
-	global $DB;
-		$query1 =			"SELECT 	COUNT(*) AS count1
-							FROM		{course}
-							WHERE 		startdate > ?";
-		$coursesamount=$DB->get_record_sql($query,array($startdate))->count1;
-	
-		$query2 = 			"SELECT 	COUNT(*) AS count2
-							FROM		{course} AS c
-							INNER JOIN 	{paperattendance_session} AS pas ON (c.id=pas.courseid)
-							WHERE		lastmodified > ? AND
-										lastmodified < ?";
-		$courseswithpaperattendance = $DB->get_record_sql($query,array($startdate,$finishdate))->count2;
-	
-		$paperattendanceuse=$coursesamount/$courseswithpaperattendance*'100';
-
-	return $paperattendanceuse;
-}
-
-// AMOUNT OF USE IN A TIME FOR TURNITIN (HOW MANY TESTS)
-
-function turnitin_use ($startdate,$finishdate){
-	global $DB;
-		$query =			"SELECT 	COUNT(*) AS count
-							FROM		{plagiarism_turnitin_files} AS c
-							WHERE		lastmodified > ? AND
-										lastmodified < ?";
-		$courseswithpaperattendance = $DB->get_record_sql($query,array($startdate,$finishdate))->count;
-	return $courseswithpaperattendance;
-}
-
-// USE PERCENTAGE FOR TURNITIN (TOTAL COURSES/COURSES WITH TURNITIN)
-function turnitine_use_percentage ($startdate,$finishdate){
-	global $DB;
-		$query1 =			"SELECT 	COUNT(*) AS count1
-							FROM		{course}
-							WHERE 		startdate > ?";
-		$coursesamount=$DB->get_record_sql($query,array($startdate))->count1;
-		$query2 = 			"SELECT 	COUNT(*) AS count2
-							FROM		{course} AS c
-							INNER JOIN 	{course_module} AS cm ON (c.id=cm.courseid)
-							INNER JOIN 	{plagiarism_turnitin_files} AS ptf ON (cm.id=ptf.cm)
-							WHERE		ptf.lastmodified > ? AND
-										ptf.lastmodified < ?";
-		$courseswithpaperattendance = $DB->get_record_sql($query,array($startdate,$finishdate))->count2;
-		
-		
-
-}
-// AMOUNT OF USE (IN A TIME) FOR EMARKING
-function emarking_use ($startdate,$finishdate){
-}
-// USE PERCENTAGE FOR EMARKING
-function emarking_use_percentage ($startdate,$finishdate){
-};
-// COSTS OF EMARKING
-function emarking_cost ($startdate,$finishdate){
-};
-// PERCENTAGE OF USE FOR FACEBOOK
-function facebook_use ($startdate,$finishdate){ 
-};
 
 ?>
