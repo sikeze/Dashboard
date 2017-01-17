@@ -35,7 +35,7 @@ function users_sessions_dates() {
 	$sessionsdata = array();
 	
 	while($time<=$timevalues->maxtime) {
-		$date = date("d M, Y H:i",$time);
+		$date = date("d-M-Y H:00:00",$time);
 		if(array_key_exists($time,$sessions)) {
 			$sessionsdata[$positioncount][0] = $date;
 			$sessionsdata[$positioncount][1] = (int)$sessions[$time]->sessions;
@@ -154,6 +154,104 @@ function users_info_labels() {
 	return $labels;
 }
 
+//FILL USERS INFO SPARKLINE CHARTS WITH ANY DISPERSSION
+function users_info_disperssion($disperssion) {
+	global $DB;
+	if($disperssion == 1){
+		$datetypesql = '%b-%Y';
+		$dateadd = "-1 month";
+		$datetypephp = "M-Y";
+	} elseif($disperssion == 2){ //STAND BY POR MIENTRAS
+		$datetypesql = "%V-%Y";
+		$dateadd = "-1";
+		$datetypephp = "W-Y";
+	} elseif($disperssion == 3){
+		$datetypesql = '%d-%b-%Y';
+		$dateadd = "-1 day";
+		$datetypephp = "d-M-Y";
+	} else{
+		$datetypesql = '%d-%b-%Y %H:00:00';
+		$dateadd = "-1 hour";
+		$datetypephp = "d-M-Y H:00:00";
+	}
+	
+	$sessions = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, sessions
+									  FROM {dashboard_data}
+									  ORDER BY time DESC
+									  LIMIT 80");
+	
+	$avgsessions = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, avgsessiontime
+										 FROM {dashboard_data}
+										 ORDER BY time DESC
+										 LIMIT 80");
+	
+	$users = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, users
+								   FROM {dashboard_data}
+								   ORDER BY time DESC
+								   LIMIT 80");
+	
+	$courseview = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, courseviews
+										FROM {dashboard_data}
+										ORDER BY time DESC
+										LIMIT 80");
+	
+	$coursepersession = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, sessions, courseviews
+											  FROM {dashboard_data}
+											  ORDER BY time DESC
+											  LIMIT 80");
+	
+	$newusers = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, newusers
+									  FROM mdl_dashboard_data
+									  ORDER BY time DESC
+									  LIMIT 80");
+	
+	$timevalues = $DB->get_record_sql("SELECT
+										DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
+										DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
+									    FROM {dashboard_data}
+										LIMIT 80");
+	
+	$positioncount = 80;
+	$time = $timevalues->maxtime;
+	$usersdata = array();
+	
+	while(strtotime($time)<=strtotime($timevalues->mintime)) {
+		if(array_key_exists($time,$sessions)) {
+			$usersdata[0][$positioncount]= (int)$sessions[$time]->sessions;
+		} else {
+			$usersdata[0][$positioncount]= (int)0;
+		}
+		if(array_key_exists($time,$avgsessions)) {
+			$usersdata[1][$positioncount]= (int)$avgsessions[$time]->avgsessiontime;
+		} else {
+			$usersdata[1][$positioncount]= (int)0;
+		}
+		if(array_key_exists($time,$users)) {
+			$usersdata[2][$positioncount]= (int)$users[$time]->users;
+		} else {
+			$usersdata[2][$positioncount]= (int)0;
+		}
+		if(array_key_exists($time,$courseview)) {
+			$usersdata[3][$positioncount]= (int)$courseview[$time]->courseviews;
+		} else {
+			$usersdata[3][$positioncount]= (int)0;
+		}
+		if(array_key_exists($time,$coursepersession)) {
+			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
+		} else {
+			$usersdata[4][$positioncount]= (int)0;
+		}
+		if(array_key_exists($time,$newusers)) {
+			$usersdata[5][$positioncount]= (int)$newusers[$time]->newusers;
+		} else {
+			$usersdata[5][$positioncount]= (int)0;
+		}
+		$time = date($datetypephp,strtotime($time.$dateadd));
+		$positioncount--;
+	}
+	return $usersdata;
+}
+
 //FILL USERS SESSIONS/DATES CHART WITH ANY DISPERSSION
 function users_sessions_disperssion($disperssion) {
 	global $DB;
@@ -177,7 +275,7 @@ function users_sessions_disperssion($disperssion) {
 	
 	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, SUM(sessions) as totalsessions  
 									  FROM {dashboard_data} 
-										GROUP BY times";
+									  GROUP BY times";
 	$sessions = $DB->get_records_sql($query);
 
 	 

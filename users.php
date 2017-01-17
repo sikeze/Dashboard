@@ -197,30 +197,6 @@ $(document).ready(function () {
         	$( "#userschart" ).html(output);
         }
   	});
-    $('#dispersionselect').change(function () {
-  	  var datos  = $('#dataselect :selected').val();
-  	  var dispersion = $('#dispersionselect :selected').val();
-  	  	$.ajax({
-  	  	  	url: 'changeuserschart.php',
-  	        data: {'select': datos, 'disperssion': dispersion},
-  	        method: 'POST',
-  	        success: function (output) {
-  	        	$( "#userschart" ).html(output);
-  	        }
-  	  	});
-    });
-    $("#dataselect").change(function () { //Change div of charts
-  	  var datos  = $("#dataselect :selected").val();
-  	  var dispersion = $('#dispersionselect :selected').val();
-    	$.ajax({
-        	url: 'changeuserschart.php',
-        	data: {'select': datos, 'disperssion': dispersion},
-        	method: 'POST',
-        	success: function (output) {
-            	$('#userschart').html(output);
-        	}
-  		});
-    });
     $.ajax({
         url: 'charts/usersinfo.php',
         data: {users: users_info, labels: users_labels},
@@ -229,14 +205,42 @@ $(document).ready(function () {
         	$( "#userinfo" ).html(output);
         }
   	});
+    $('#dispersionselect').change(function () {
+  	  var datos  = $('#dataselect :selected').val();
+  	  var dispersion = $('#dispersionselect :selected').val();
+  	  	$.ajax({
+  	  	  	url: 'charts/changeuserschart.php',
+  	        data: {'select': datos, 'disperssion': dispersion},
+  	        method: 'POST',
+  	        success: function (output) {
+  	        	$( "#userschart" ).html(output);
+  	        }
+  	  	});
+  	  	$.ajax({
+  	  	  	url: 'charts/changeusersinfo.php',
+  	        data: {'disperssion': dispersion, 'labels':users_labels},
+  	        method: 'POST',
+  	        success: function (output) {
+  	        	$( "#userinfo" ).html(output);
+  	        }
+  	  	});
+    });
+    $("#dataselect").change(function () { //Change div of charts
+  	  var datos  = $("#dataselect :selected").val();
+  	  var dispersion = $('#dispersionselect :selected').val();
+    	$.ajax({
+        	url: 'charts/changeuserschart.php',
+        	data: {'select': datos, 'disperssion': dispersion},
+        	method: 'POST',
+        	success: function (output) {
+            	$('#userschart').html(output);
+        	}
+  		});
+    });
     $( "#locationtable" ).load( "charts/locationtable.php" );
     $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
     $('.menu-item').click(function () {
         ref = $(this).attr('href').replace('#', '') + '.html';
-        $('.progress > div').toggleClass('determinate').toggleClass('indeterminate');
-        $('#content').load(ref, function () {
-            $('.progress > div').toggleClass('determinate').toggleClass('indeterminate');
-        });
     }); 
 });
 </script>
