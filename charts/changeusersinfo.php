@@ -4,7 +4,7 @@ require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
 $disperssion = $_POST['disperssion'];
 $labels = $_POST['labels'];
-$usersinfo_disperssion = users_info_disperssion($disperssion);
+$disperssion = $_POST['disperssion'];
 ?>
 <!-- Labels array index represent the info that we need for every sparkline -->
 <div class="col s12">
@@ -43,34 +43,36 @@ Curso/sesión <br>
 </div>
 </div>
 
-
+<?php 
+echo "
 <script>
-var data_disperssion = <?php echo json_encode($usersinfo_disperssion);?>;
+var data_disperssion =".json_encode(users_info_disperssion($disperssion))."
 //Data array index represent if the info we need is for sessions or courseviews, etc.
 $(document).ready(function () {
-	$("#sessions").sparkline(data_disperssion[0], {
+	$('#sessions').sparkline(data_disperssion[0], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: true});
-	$("#users").sparkline(data_disperssion[2], {
+	$('#users').sparkline(data_disperssion[2], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#courseviews").sparkline(data_disperssion[3], {
+	$('#courseviews').sparkline(data_disperssion[3], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#coursesession").sparkline(data_disperssion[4], {
+	$('#coursesession').sparkline(data_disperssion[4], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#sessionduration").sparkline(data_disperssion[1], {
+	$('#sessionduration').sparkline(data_disperssion[1], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#newusers").sparkline(data_disperssion[5], {
+	$('#newusers').sparkline(data_disperssion[5], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
 });
-</script>
+</script>";
+?>
