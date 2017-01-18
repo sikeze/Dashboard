@@ -33,6 +33,35 @@ $string ['courseresources'] = 'Course Resources';
 $string ['ubication'] = 'Ubication';
 $string ['devices'] = 'Devices';
 $string ['userinfo'] = 'User Information';
+$string ['resource_tittle'] = '<b>Resources</b>';
+$string ['all'] = 'All';
+$string ['assign'] = 'assign';
+$string ['assignment'] = 'Assignment';
+$string ['book'] = 'Book';
+$string ['chat'] = 'Chat';
+$string ['choice'] = 'Multiple choices';
+$string ['data'] = 'Database';
+$string ['feedback'] = 'Feedback';
+$string ['forum'] = 'Forum';
+$string ['glosary'] = 'Glosary';
+$string ['imscp'] = 'IMS content package';
+$string ['lesson'] = 'Lesson';
+$string ['lti'] = 'Lti';
+$string ['page'] = 'Page';
+$string ['quiz'] = 'Quiz';
+$string ['resource'] = 'Files';
+$string ['scorm'] = 'SCORM Package';
+$string ['survey'] = 'Survey';
+$string ['url'] = 'URL';
+$string ['wiki'] = 'Wiki';
+$string ['workshop'] = 'Workshop';
+$string ['turnitin'] = 'Turnitin';
+$string ['emarking'] = 'eMarking';
+$string ['papperattendance'] = 'Papperattendance';
+
+
+
+
 
 //task
 $string['sessiontask']="Fill sessions";

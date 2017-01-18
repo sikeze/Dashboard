@@ -37,7 +37,6 @@ cli_heading('Sessions fill');
 	
 
 	dashboard_getip();
-	
 	dashboard_getusersdata();
 
 	

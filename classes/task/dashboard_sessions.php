@@ -29,7 +29,7 @@ class dashboard_sessions extends \core\task\scheduled_task {
 	}
 	public function execute() {
 		global $DB;
-		require_once(dirname(__FILE__) . '/locallib.php');
+		require_once($CFG->dirroot."/local/dashboard/tasklocallib.php");
 		
 		dashboard_getip();
 		dashboard_getusersdata();
