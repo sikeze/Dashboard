@@ -5,6 +5,7 @@ require_once(dirname(__FILE__) . '/header.php');
 <body>
 <!-- CONTENT -->
 	<main class="grey lighten-3">
+
 	<!-- Text row -->
 		<div class="row">
         	<div class="col s6" style="height:15px;">
