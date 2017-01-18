@@ -28,7 +28,7 @@ class dashboard_sessions extends \core\task\scheduled_task {
 		return get_string('sessiontask', 'local_dashboard');
 	}
 	public function execute() {
-		global $DB;
+		global $DB, $CFG;
 		require_once($CFG->dirroot."/local/dashboard/tasklocallib.php");
 		
 		dashboard_getip();
