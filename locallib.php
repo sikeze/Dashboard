@@ -175,35 +175,12 @@ function users_info_disperssion($disperssion) {
 		$datetypephp = "d-M-Y H:00:00";
 	}
 	
-	$sessions = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, sessions
+	$sessions = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, SUM(sessions) as totalsessions
 									  FROM {dashboard_data}
-									  ORDER BY time DESC
+									  GROUP BY times
 									  LIMIT 80");
 	
-	$avgsessions = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, avgsessiontime
-										 FROM {dashboard_data}
-										 ORDER BY time DESC
-										 LIMIT 80");
 	
-	$users = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, users
-								   FROM {dashboard_data}
-								   ORDER BY time DESC
-								   LIMIT 80");
-	
-	$courseview = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, courseviews
-										FROM {dashboard_data}
-										ORDER BY time DESC
-										LIMIT 80");
-	
-	$coursepersession = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, sessions, courseviews
-											  FROM {dashboard_data}
-											  ORDER BY time DESC
-											  LIMIT 80");
-	
-	$newusers = $DB->get_records_sql("SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, newusers
-									  FROM mdl_dashboard_data
-									  ORDER BY time DESC
-									  LIMIT 80");
 	
 	$timevalues = $DB->get_record_sql("SELECT
 										DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
@@ -213,40 +190,19 @@ function users_info_disperssion($disperssion) {
 	
 	$positioncount = 80;
 	$time = $timevalues->maxtime;
-	$usersdata = array();
-	
-	while(strtotime($time)<=strtotime($timevalues->mintime)) {
+	$usersdata =array();
+
+	for($i=81;$i>0;$i--) {
+		
 		if(array_key_exists($time,$sessions)) {
-			$usersdata[0][$positioncount]= (int)$sessions[$time]->sessions;
+			$usersdata["$positioncount"]=(int)$sessions[$time]->totalsessions;
+			;
 		} else {
-			$usersdata[0][$positioncount]= (int)0;
+			$usersdata["$positioncount"]= (int)0;
 		}
-		if(array_key_exists($time,$avgsessions)) {
-			$usersdata[1][$positioncount]= (int)$avgsessions[$time]->avgsessiontime;
-		} else {
-			$usersdata[1][$positioncount]= (int)0;
-		}
-		if(array_key_exists($time,$users)) {
-			$usersdata[2][$positioncount]= (int)$users[$time]->users;
-		} else {
-			$usersdata[2][$positioncount]= (int)0;
-		}
-		if(array_key_exists($time,$courseview)) {
-			$usersdata[3][$positioncount]= (int)$courseview[$time]->courseviews;
-		} else {
-			$usersdata[3][$positioncount]= (int)0;
-		}
-		if(array_key_exists($time,$coursepersession)) {
-			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
-		} else {
-			$usersdata[4][$positioncount]= (int)0;
-		}
-		if(array_key_exists($time,$newusers)) {
-			$usersdata[5][$positioncount]= (int)$newusers[$time]->newusers;
-		} else {
-			$usersdata[5][$positioncount]= (int)0;
-		}
+		
 		$time = date($datetypephp,strtotime($time.$dateadd));
+		
 		$positioncount--;
 	}
 	return $usersdata;

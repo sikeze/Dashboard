@@ -45,7 +45,6 @@ Curso/sesión <br>
 
 <script>
 var data =  <?php echo json_encode($usersinfo);?>;
-var data_disperssion = <?php echo json_encode($usersinfo_disperssion);?>;
 //Data array index represent if the info we need is for sessions or courseviews, etc.
 $(document).ready(function () {
 	$("#sessions").sparkline(data[0], {
