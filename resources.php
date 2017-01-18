@@ -6,22 +6,40 @@ require_once(dirname(__FILE__) . '/header.php');
 <!-- CONTENT -->
 	<main class="grey lighten-3">
 		
-		<!-- Utilization vs time text row -->
+		<!-- Page tittle -->
     	<div class="row">
         	<div class="col s12">
-        		<h5><b>Recursos</b></h5>
+        		<h5><?php echo get_string('resource_tittle', 'local_dashboard'); ?></h5>
         	</div>
         </div>
         
-		<!-- Data select and datepicker -->
+		<!-- Data selector -->
 		<div class="row">
 			<div class="input-field left-align col s4 blue-text">
         		<select id="dataselect">
-      				<option value="1"><span class="blue-text">Sesiones</span></option>
-      				<option value="2"><span class="blue-text">Tiempo Promedio Sesiones</span></option>
-      				<option value="3"><span class="blue-text">Usuarios</span></option>
-      				<option value="4"><span class="blue-text">Usuarios Nuevos</span></option>
-      				<option value="5"><span class="blue-text">Cursos Vistos</span></option>
+      				<option value="1"><span class="blue-text"><?php echo get_string('all', 'local_dashboard'); ?></span></option>assi<option value="2"><span class="blue-text"><?php echo get_string('assign', 'local_dashboard'); ?></span></option>
+      				<option value="3"><span class="blue-text"><?php echo get_string('assignment', 'local_dashboard'); ?></span></option>
+      				<option value="4"><span class="blue-text"><?php echo get_string('book', 'local_dashboard'); ?></span></option>
+      				<option value="5"><span class="blue-text"><?php echo get_string('chat', 'local_dashboard'); ?></span></option>
+      				<option value="6"><span class="blue-text"><?php echo get_string('choice', 'local_dashboard'); ?></span></option>
+      				<option value="7"><span class="blue-text"><?php echo get_string('data', 'local_dashboard'); ?></span></option>
+      				<option value="8"><span class="blue-text"><?php echo get_string('feedback', 'local_dashboard'); ?></span></option>
+      				<option value="9"><span class="blue-text"><?php echo get_string('forum', 'local_dashboard'); ?></span></option>
+      				<option value="10"><span class="blue-text"><?php echo get_string('glosary', 'local_dashboard'); ?></span></option>
+      				<option value="11"><span class="blue-text"><?php echo get_string('imscp', 'local_dashboard'); ?></span></option>
+      				<option value="12"><span class="blue-text"><?php echo get_string('lesson', 'local_dashboard'); ?></span></option>
+      				<option value="13"><span class="blue-text"><?php echo get_string('lti', 'local_dashboard'); ?></span></option>
+      				<option value="14"><span class="blue-text"><?php echo get_string('page', 'local_dashboard'); ?></span></option>
+      				<option value="15"><span class="blue-text"><?php echo get_string('quiz', 'local_dashboard'); ?></span></option>
+      				<option value="16"><span class="blue-text"><?php echo get_string('resource', 'local_dashboard'); ?></span></option>
+      				<option value="17"><span class="blue-text"><?php echo get_string('scorm', 'local_dashboard'); ?></span></option>
+      				<option value="18"><span class="blue-text"><?php echo get_string('survey', 'local_dashboard'); ?></span></option>
+      				<option value="19"><span class="blue-text"><?php echo get_string('url', 'local_dashboard'); ?></span></option>
+      				<option value="20"><span class="blue-text"><?php echo get_string('wiki', 'local_dashboard'); ?></span></option>
+      				<option value="21"><span class="blue-text"><?php echo get_string('workshop', 'local_dashboard'); ?></span></option>
+      				<option value="22"><span class="blue-text"><?php echo get_string('turnitin', 'local_dashboard'); ?></span></option>
+      				<option value="23"><span class="blue-text"><?php echo get_string('emarking', 'local_dashboard'); ?></span></option>
+      				<option value="24"><span class="blue-text"><?php echo get_string('papperattendance', 'local_dashboard'); ?></span></option>
     			</select>
     			<label>Selección de Datos</label>
         	</div>
