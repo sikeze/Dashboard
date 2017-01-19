@@ -18,7 +18,10 @@ function drawBasic() {
 	data.addRows(datos);
 
 	var options = {
-	
+		chartArea: {
+       		top: 28,
+       		height: '50%' 
+    	},
 		hAxis: {
 			title: 'Fecha',
 			textStyle: {fontSize: 9}

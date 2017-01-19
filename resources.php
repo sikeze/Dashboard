@@ -1,5 +1,6 @@
 <?php 
 require_once(dirname(__FILE__) . '/header.php');
+
 ?>
 <html>
 <body>
@@ -17,29 +18,13 @@ require_once(dirname(__FILE__) . '/header.php');
 		<div class="row">
 			<div class="input-field left-align col s4 blue-text">
         		<select id="dataselect">
-      				<option value="1"><span class="blue-text"><?php echo get_string('all', 'local_dashboard'); ?></span></option>assi<option value="2"><span class="blue-text"><?php echo get_string('assign', 'local_dashboard'); ?></span></option>
-      				<option value="3"><span class="blue-text"><?php echo get_string('assignment', 'local_dashboard'); ?></span></option>
-      				<option value="4"><span class="blue-text"><?php echo get_string('book', 'local_dashboard'); ?></span></option>
-      				<option value="5"><span class="blue-text"><?php echo get_string('chat', 'local_dashboard'); ?></span></option>
-      				<option value="6"><span class="blue-text"><?php echo get_string('choice', 'local_dashboard'); ?></span></option>
-      				<option value="7"><span class="blue-text"><?php echo get_string('data', 'local_dashboard'); ?></span></option>
-      				<option value="8"><span class="blue-text"><?php echo get_string('feedback', 'local_dashboard'); ?></span></option>
-      				<option value="9"><span class="blue-text"><?php echo get_string('forum', 'local_dashboard'); ?></span></option>
-      				<option value="10"><span class="blue-text"><?php echo get_string('glosary', 'local_dashboard'); ?></span></option>
-      				<option value="11"><span class="blue-text"><?php echo get_string('imscp', 'local_dashboard'); ?></span></option>
-      				<option value="12"><span class="blue-text"><?php echo get_string('lesson', 'local_dashboard'); ?></span></option>
-      				<option value="13"><span class="blue-text"><?php echo get_string('lti', 'local_dashboard'); ?></span></option>
-      				<option value="14"><span class="blue-text"><?php echo get_string('page', 'local_dashboard'); ?></span></option>
-      				<option value="15"><span class="blue-text"><?php echo get_string('quiz', 'local_dashboard'); ?></span></option>
-      				<option value="16"><span class="blue-text"><?php echo get_string('resource', 'local_dashboard'); ?></span></option>
-      				<option value="17"><span class="blue-text"><?php echo get_string('scorm', 'local_dashboard'); ?></span></option>
-      				<option value="18"><span class="blue-text"><?php echo get_string('survey', 'local_dashboard'); ?></span></option>
-      				<option value="19"><span class="blue-text"><?php echo get_string('url', 'local_dashboard'); ?></span></option>
-      				<option value="20"><span class="blue-text"><?php echo get_string('wiki', 'local_dashboard'); ?></span></option>
-      				<option value="21"><span class="blue-text"><?php echo get_string('workshop', 'local_dashboard'); ?></span></option>
-      				<option value="22"><span class="blue-text"><?php echo get_string('turnitin', 'local_dashboard'); ?></span></option>
-      				<option value="23"><span class="blue-text"><?php echo get_string('emarking', 'local_dashboard'); ?></span></option>
-      				<option value="24"><span class="blue-text"><?php echo get_string('papperattendance', 'local_dashboard'); ?></span></option>
+        		<?php 
+        		$modules = dashboard_getresourcemoduleid();
+        		echo "<option value='0'><span class='blue-text'>".get_string('all', 'local_dashboard')."</span></option>";
+    			foreach($modules as $module){
+        			echo "<option value=".$module->id."><span class='blue-text'>".get_string("$module->name", 'local_dashboard')."</span></option>";
+        		}
+        		?>
     			</select>
     			<label>Selección de Datos</label>
         	</div>
@@ -120,11 +105,12 @@ $(document).ready(function () {
   	  var datos  = $('#dataselect :selected').val();
   	  var dispersion = $('#dispersionselect :selected').val();
   	  	$.ajax({
-  	  	  	url: 'changeuserschart.php',
+  	  	  	url: 'changeresourceschart.php',
   	        data: {'select': datos, 'disperssion': dispersion},
   	        method: 'POST',
   	        success: function (output) {
-  	        	$( "#userschart" ).html(output);
+  	        	$( "#utimechart" ).html(output);
+  	        	alert(output);
   	        }
   	  	});
     });
@@ -132,11 +118,11 @@ $(document).ready(function () {
   	  var datos  = $("#dataselect :selected").val();
   	  var dispersion = $('#dispersionselect :selected').val();
     	$.ajax({
-        	url: 'changeuserschart.php',
+        	url: 'changeresourceschart.php',
         	data: {'select': datos, 'disperssion': dispersion},
         	method: 'POST',
         	success: function (output) {
-            	$('#userschart').html(output);
+            	$('#utimechart').html(output);
         	}
   		});
     });

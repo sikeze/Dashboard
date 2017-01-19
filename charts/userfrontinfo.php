@@ -13,11 +13,13 @@
 
 <div class="col s12">
 	<div class="col s6 l6 card hoverable widget" overflow: auto;>
-		<font size="1">Avg Session Duration 00:08:16</font>
+		Avg Session Duration<br>
+		00:08:16
 		<div id="sessionduration"  overflow: auto;></div>
 	</div>
 	<div class ="col s6 l6 card hoverable widget" overflow:auto;>
-		<font size="1">% New Sessions 10,11%</font>
+		% New Sessions <br>
+		10,11%
 	<div id="newsessions"  overflow: auto;></div>
 	</div>
 </div>
@@ -29,7 +31,8 @@
 	<div id="pageviews"  overflow: auto;></div>
 	</div>
 	<div class ="col s6 l6 card hoverable widget" overflow:auto;>
-		<font size="2">Pages/session 2,76</font>
+		Pages/session<br>
+		2,76
 		<div id="pagesession"  overflow: auto;></div>
 	</div>
 </div>

@@ -53,9 +53,8 @@ require_once(dirname(__FILE__) . '/locallib.php');
     					<select id="dispersionselect">
      	 					<option value="0" disabled selected>Opciones de Dispersión</option>
       						<option value="1"><span class="blue-text">Mensual</span></option>
-      						<option value="2"><span class="blue-text">Semanal</span></option>
-      						<option value="3"><span class="blue-text">Diario</span></option>
-      						<option value="4"><span class="blue-text">Hora</span></option>
+      						<option value="2"><span class="blue-text">Diario</span></option>
+      						<option value="3"><span class="blue-text">Hora</span></option>
     					</select>
                		</li>
                		<li><a href="badges.html" class=""><i class="material-icons blue-text">edit</i></a></li>
