@@ -24,22 +24,19 @@ require_once(dirname(__FILE__) . '/header.php');
         
 	<!-- Ubication, devices and user information text -->
     	<div class="row">
-        	<div class="col s4" style="height:20px;">
+        	<div class="col s8" style="height:20px;">
         		<h5><b><?php echo get_string('ubication','local_dashboard'); ?></b></h5>
         	</div>
-        	<div class="col s5" style="height:20px;">
-        		<h5><b><?php echo get_string('devices','local_dashboard'); ?></b></h5>
-        	</div>
-        	<div class="col s3" style="height:45px;">
+
+        	<div class="col s4" style="height:45px;">
         		<h5><b><?php echo get_string('userinfo','local_dashboard'); ?></b></h5>
         	</div>
         </div>
 
 	<!-- Ubication, devices and user information charts -->
 		<div class="row">
-			<div id="ubicationmap" class="col s4" overflow:auto;></div>
-			<div id="deviceschart" class="col s5 card hoverable widget" style="height:265px;" overflow:auto;></div>
-			<div id="userinfo" class="col s3" overflow:auto;></div>
+			<div id="ubicationmap" class="col s8" overflow:auto;></div>
+			<div id="userinfo" class="col s4" overflow:auto;></div>
         </div>
         
 	<!-- Map buttons -->
@@ -72,7 +69,6 @@ require_once(dirname(__FILE__) . '/header.php');
 	$(document).ready(function () {
     	$( "#userinfo" ).load( "charts/userfrontinfo.php" );
         $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
-        $( "#deviceschart" ).load( "charts/deviceschart.php" );
     });
 </script>
 </html>

@@ -484,3 +484,63 @@ function courseview_dates_disperssion($disperssion) {
 	}
 	return $courseviewsdata;
 }
+function dashboard_getresourcemoduleid(){
+	global $DB;
+	$modules = $DB->get_records('modules');
+	return $modules;
+}
+function dashboard_resourcedata($resourceid, $disperssion, $initialdate = null, $enddate = null){
+	global $DB;
+	if($disperssion == 1){
+		$datetypesql = '%b-%Y';
+		$dateadd = "+1 month";
+		$datetypephp = "M-Y";
+	} elseif($disperssion == 2){
+		$datetypesql = '%d-%b-%Y';
+		$dateadd = "+1 day";
+		$datetypephp = "d-M-Y";
+	} else{
+		$datetypesql = '%d-%b-%Y %H:00:00';
+		$dateadd = "+1 hour";
+		$datetypephp = "d-M-Y H:00:00";
+	}
+	$parameters = array(
+			$resourceid
+	);
+	
+	$timequery = "SELECT
+				DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
+				DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
+			    FROM {dashboard_resources}
+				WHERE resourceid = ?";
+	
+	$timevalues = $DB->get_record_sql($timequery, $parameters);
+	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, activity, amountcreated
+			FROM {dashboard_resources}
+			WHERE resourceid = ?";
+
+	if($initialdate !== null AND $enddate !== null){
+		$parameters[] = $initialdate;
+		$parameters[] = $enddate;
+		$query .= "AND time BETWEEN ? AND ? ";
+	}
+	
+	$query = $query." GROUP BY times";
+	
+	$resourcedata = $DB->get_records_sql($query, $parameters);
+	$positioncount = 0;
+	$time = $timevalues->mintime;
+	$courseviewsdata = array();
+	while(strtotime($time)<=strtotime($timevalues->maxtime)) {
+		if(array_key_exists($time,$resourcedata)) {
+			$courseviewsdata[$positioncount][0] = $time;
+			$courseviewsdata[$positioncount][1] = (int)$resourcedata[$time]->activity;
+		} else {
+			$courseviewsdata[$positioncount][0] = $time;
+			$courseviewsdata[$positioncount][1] = (int)0;
+		}
+		$time = date($datetypephp,strtotime($time.$dateadd));
+		$positioncount++;
+	}
+	return $courseviewsdata;
+}
