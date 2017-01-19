@@ -38,6 +38,7 @@ cli_heading('Sessions fill');
 
 	dashboard_getip();
 	dashboard_getusersdata();
+	dashboard_resourcesdata();
 
 	
 exit(0); // 0 means success
