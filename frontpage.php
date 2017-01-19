@@ -22,21 +22,26 @@ require_once(dirname(__FILE__) . '/header.php');
             <div id="resourcebarchart" class="col s6 l6 card white-text hoverable widget" style="width:50%;" overflow: auto;></div>
         </div>
         
-	<!-- Ubication, devices and user information text -->
     	<div class="row">
-        	<div class="col s8" style="height:20px;">
-        		<h5><b><?php echo get_string('ubication','local_dashboard'); ?></b></h5>
-        	</div>
-
-        	<div class="col s4" style="height:45px;">
+    		<div class="col s4" style="height:45px;">
         		<h5><b><?php echo get_string('userinfo','local_dashboard'); ?></b></h5>
         	</div>
         </div>
 
-	<!-- Ubication, devices and user information charts -->
+		<!-- Users sparklines chart-->
+    	<div class="row">
+        	<div id="userinfo" class="col s12" overflow:auto;></div>
+		</div>
+		
 		<div class="row">
-			<div id="ubicationmap" class="col s8" overflow:auto;></div>
-			<div id="userinfo" class="col s4" overflow:auto;></div>
+			<div class="col s12" style="height:20px;">
+        		<h5><b><?php echo get_string('ubication','local_dashboard'); ?></b></h5>
+        	</div>
+		</div>
+	<!-- Ubication charts -->
+		<div class="row">
+			<script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>
+			<div id="ubicationmap" class="col s12" overflow:auto;></div>
         </div>
 
 	<!-- Facebok data -->
@@ -48,8 +53,8 @@ require_once(dirname(__FILE__) . '/header.php');
 	<footer class="blue page-footer">
     	<div class="footer-copyright">
         	<div class="container">
-            	© 2017 Copyright Text
-            	<a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            	<?php echo get_string('copyright','local_dashboard');?>
+            	<a class="grey-text text-lighten-4 right" href="#!"><?php echo get_string('links','local_dashboard');?></a>
             </div>
      	</div>
 	</footer>
@@ -58,8 +63,28 @@ require_once(dirname(__FILE__) . '/header.php');
 <script src="js/turnitinchart.js"></script>
 <script src="js/resourcebarchart.js"></script>
 <script>
+var users_info = <?php echo json_encode(users_info());?>;
+var users_labels = <?php echo json_encode(users_info_labels());?>;
 	$(document).ready(function () {
-    	$( "#userinfo" ).load( "charts/userfrontinfo.php" );
+		$.ajax({
+	        url: 'charts/usersinfo.php',
+	        data: {users: users_info, labels: users_labels},
+	        method: 'POST',
+	        success: function (output) {
+	        	$( "#userinfo" ).html(output);
+	        }
+	  	});
+		$('#dispersionselect').change(function () {
+		  	var dispersion = $('#dispersionselect :selected').val();
+		  	$.ajax({
+	  	  	  	url: 'charts/changeusersinfo.php',
+	  	        data: {'dispersion': dispersion, 'labels':users_labels},
+	  	        method: 'POST',
+	  	        success: function (output) {
+	  	        	$( "#userinfo" ).html(output);
+	  	        }
+	  	  	});
+		});
         $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
     });
 </script>
