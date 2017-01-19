@@ -45,17 +45,14 @@ require_once(dirname(__FILE__) . '/locallib.php');
                	<ul id="nav-mobile" class="right hide-on-med-and-down">
                		<li class="input-field">
                			<i class="material-icons prefix blue-text">date_range</i>
-        				<input type="date" class="datepicker" id="datepickerone">
-        				<label id="dateone" class="active" for="datepickerone" data-value="<?php echo $timemonthless;?>"><?php echo get_string('datepicker_one','local_dashboard');?></label>
+        				<input type="date" class="datepicker" id="datepickerone" data-value="<?php echo $timemonthless;?>">
                		</li>
                		<li class="input-field">
                			<i class="material-icons prefix blue-text">date_range</i>
         				<input type="date" class="datepicker" id="datepickertwo"  data-value="<?php echo $timenow;?>">
-        				<label id="datetwo" class="active" for="datepickertwo"><?php echo get_string('datepicker_two','local_dashboard');?></label>
         			</li>
                		<li class="input-field blue-text">
     					<select id="dispersionselect">
-     	 					<option value="0" disabled selected><?php echo get_string('dispersion', 'local_dashboard');?></option>
       						<option value="1"><span class="blue-text"><?php echo get_string('monthly', 'local_dashboard');?></span></option>
       						<option value="2"><span class="blue-text"><?php echo get_string('daily', 'local_dashboard');?></span></option>
       						<option value="3"><span class="blue-text"><?php echo get_string('hour', 'local_dashboard');?></span></option>

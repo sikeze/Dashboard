@@ -1,6 +1,9 @@
 <?php 
 $usersinfo  = $_POST['users'];
 $labels = $_POST['labels'];
+require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
+require_once(dirname(dirname(__FILE__)) . '/locallib.php');
+
 ?>
 <!-- Labels array index represent the info that we need for every sparkline -->
 <div class="col s12">
