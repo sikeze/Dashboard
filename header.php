@@ -7,7 +7,9 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 $frontpageurl = new moodle_url('/local/dashboard/frontpage.php');
 $usersurl = new moodle_url('/local/dashboard/users.php');
 $resourcesurl = new moodle_url('/local/dashboard/resources.php');
-
+$time = time();
+$timenow =  gmdate("d-m-Y", $time);
+$timemonthless = date('d-m-Y',strtotime($timenow . "-1 month"));
 require_login();
 if (isguestuser()) {
 	die();
@@ -24,8 +26,10 @@ require_once(dirname(__FILE__) . '/locallib.php');
 	<!--Let browser know website is optimized for mobile-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<!--Import jQuery before materialize.js-->
-	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.js"></script>
 	<script type="text/javascript" src="js/jquery.sparkline.js"></script>
+		<script type="text/javascript" src="js/jquery.sparkline.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -42,11 +46,11 @@ require_once(dirname(__FILE__) . '/locallib.php');
                		<li class="input-field">
                			<i class="material-icons prefix blue-text">date_range</i>
         				<input type="date" class="datepicker" id="datepickerone">
-        				<label id="dateone" class="active" for="datepickerone"><?php echo get_string('datepicker_one','local_dashboard');?></label>
+        				<label id="dateone" class="active" for="datepickerone" data-value="<?php echo $timemonthless;?>"><?php echo get_string('datepicker_one','local_dashboard');?></label>
                		</li>
                		<li class="input-field">
                			<i class="material-icons prefix blue-text">date_range</i>
-        				<input type="date" class="datepicker" id="datepickertwo">
+        				<input type="date" class="datepicker" id="datepickertwo"  data-value="<?php echo $timenow;?>">
         				<label id="datetwo" class="active" for="datepickertwo"><?php echo get_string('datepicker_two','local_dashboard');?></label>
         			</li>
                		<li class="input-field blue-text">
@@ -55,6 +59,7 @@ require_once(dirname(__FILE__) . '/locallib.php');
       						<option value="1"><span class="blue-text"><?php echo get_string('monthly', 'local_dashboard');?></span></option>
       						<option value="2"><span class="blue-text"><?php echo get_string('daily', 'local_dashboard');?></span></option>
       						<option value="3"><span class="blue-text"><?php echo get_string('hour', 'local_dashboard');?></span></option>
+
     					</select>
                		</li>
                		<li><a href="badges.html" class=""><i class="material-icons blue-text">edit</i></a></li>
@@ -104,14 +109,10 @@ $(document).ready(function () {
 	//datepicker config
 	$('.datepicker').pickadate({
 	    selectMonths: true, // Creates a dropdown to control month
-	    selectYears: 15 // Creates a dropdown of 15 years to control year
+	    selectYears: 15, // Creates a dropdown of 15 years to control year
+	    format: 'dd-mm-yyyy'
 	  });
-	//datepicker fide label
-	$('#datepickerone').click(function () {
-	    $('#dateone').hide();
-	});
-	$('#datepickertwo').click(function () {
-	    $('#datetwo').hide();
-	});
+	
+
 });
 </script>

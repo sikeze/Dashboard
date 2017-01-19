@@ -528,7 +528,7 @@ function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $
 		$dateadd = "+1 hour";
 		$datetypephp = "d-M-Y H:00:00";
 	}
-	$parameters = array(
+	$timeparameters = array(
 			$resourceid
 	);
 	
@@ -536,9 +536,19 @@ function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $
 				DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
 				DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 			    FROM {dashboard_resources}
-				WHERE resourceid = ?";
+				WHERE resourceid = ? ";
 	
-	$timevalues = $DB->get_record_sql($timequery, $parameters);
+	if($initialdate !== null AND $enddate !== null){
+		$timeparameters[] = $initialdate;
+		$timeparameters[] = $enddate;
+		$timequery .= " AND time BETWEEN ? AND ? ";
+	}
+	
+	$timevalues = $DB->get_record_sql($timequery, $timeparameters);
+	
+	$parameters = array(
+			$resourceid
+	);
 	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, activity, amountcreated
 			FROM {dashboard_resources}
 			WHERE resourceid = ?";

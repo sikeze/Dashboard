@@ -95,37 +95,88 @@ require_once(dirname(__FILE__) . '/header.php');
     </footer>
 <!-- FOOTER -->
 </body>
-
-<script src="js/utimechart.js"></script>
 <script src="js/uresources.js"></script>
 <script>
 $(document).ready(function () {
+
+	 var $dispersionselect = $('#dispersionselect');
+	 var $dataselect = $("#dataselect");
+	 var $datepickerone = $('#datepickerone');
+	 var $datepickertwo = $('#datepickertwo');
+
+	 var datos  = $('#dataselect :selected').val();
+ 	  var dispersion = $('#dispersionselect :selected').val();
+ 	  var datepickerone = $datepickerone.val();
+ 	  var datepickertwo = $datepickertwo.val();
+ 	  	$.ajax({
+ 	  	  	url: 'changeresourceschart.php',
+ 	        data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
+ 	        method: 'POST',
+ 	        success: function (output) {
+ 	        	$( "#utimechart" ).html(output);
+ 	        }
+ 	  	});
+
     //Ajax call for the selected data
-       $('#dispersionselect').change(function () {
+      $dispersionselect.change(function () {
   	  var datos  = $('#dataselect :selected').val();
   	  var dispersion = $('#dispersionselect :selected').val();
+  	  var datepickerone = $datepickerone.val();
+  	  var datepickertwo = $datepickertwo.val();
   	  	$.ajax({
   	  	  	url: 'changeresourceschart.php',
-  	        data: {'select': datos, 'disperssion': dispersion},
+  	        data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
   	        method: 'POST',
   	        success: function (output) {
   	        	$( "#utimechart" ).html(output);
-  	        	alert(output);
   	        }
   	  	});
     });
-    $("#dataselect").change(function () { //Change div of charts
-  	  var datos  = $("#dataselect :selected").val();
-  	  var dispersion = $('#dispersionselect :selected').val();
+       $dataselect.change(function () { //Change div of charts
+    	var datos  = $('#dataselect :selected').val();
+    	var dispersion = $('#dispersionselect :selected').val();
+    	var datepickerone = $datepickerone.val();
+    	var datepickertwo = $datepickertwo.val();
     	$.ajax({
         	url: 'changeresourceschart.php',
-        	data: {'select': datos, 'disperssion': dispersion},
+        	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
         	method: 'POST',
         	success: function (output) {
             	$('#utimechart').html(output);
         	}
   		});
     });
+       $datepickertwo.change(function () { //Change div of charts
+    	  var datos  = $('#dataselect :selected').val();
+    	  var dispersion = $('#dispersionselect :selected').val();
+    	  var datepickerone = $datepickerone.val();
+    	  var datepickertwo = $datepickertwo.val();
+    	   	$.ajax({
+    	       	url: 'changeresourceschart.php',
+    	       	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
+    	       	method: 'POST',
+    	       	success: function (output) {
+    	           	$('#utimechart').html(output);
+    	      }
+    	});
+    });
+       $datepickerone.change(function () { //Change div of charts
+     	  var datos  = $('#dataselect :selected').val();
+     	  var dispersion = $('#dispersionselect :selected').val();
+     	  var datepickerone = $datepickerone.val();
+     	  var datepickertwo = $datepickertwo.val();
+     	   	$.ajax({
+     	       	url: 'changeresourceschart.php',
+     	       	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
+     	       	method: 'POST',
+     	       	success: function (output) {
+     	           	$('#utimechart').html(output);
+     	      }
+     	});
+     });
+     
+    
+
     //load the facebook users chart
     $( "#facebookusers" ).load( "charts/fbusers.php" );
 });
