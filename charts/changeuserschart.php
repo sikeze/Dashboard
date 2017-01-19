@@ -3,7 +3,7 @@ require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
 $select = $_POST['select'];
-$disperssion = $_POST['disperssion'];
+$dispersion = $_POST['dispersion'];
 switch ($select) {
 	case 1:
 		echo "<script>
@@ -15,7 +15,7 @@ switch ($select) {
 					data.addColumn('string', 'X');
 					data.addColumn('number', 'Sesiones');
 
-					var datos =".json_encode(users_sessions_disperssion($disperssion))."
+					var datos =".json_encode(users_sessions_dispersion($dispersion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -53,7 +53,7 @@ switch ($select) {
 					data.addColumn('string', 'X');
 					data.addColumn('number', 'Segundos');
 
-					var datos =".json_encode(users_avgsessions_disperssion($disperssion))."
+					var datos =".json_encode(users_avgsessions_dispersion($dispersion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -87,7 +87,7 @@ switch ($select) {
 					data.addColumn('string', 'X');
 					data.addColumn('number', 'Usuarios');
 
-					var datos =".json_encode(users_dates_disperssion($disperssion))."
+					var datos =".json_encode(users_dates_dispersion($dispersion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -121,7 +121,7 @@ switch ($select) {
 					data.addColumn('string', 'X');
 					data.addColumn('number', 'Usuarios');
 
-					var datos =".json_encode(newusers_dates_disperssion($disperssion))."
+					var datos =".json_encode(newusers_dates_dispersion($dispersion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -155,7 +155,7 @@ switch ($select) {
 					data.addColumn('string', 'X');
 					data.addColumn('number', 'Cursos');
 
-					var datos =".json_encode(courseview_dates_disperssion($disperssion))."
+					var datos =".json_encode(courseview_dates_dispersion($dispersion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});

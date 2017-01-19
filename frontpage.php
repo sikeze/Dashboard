@@ -38,15 +38,7 @@ require_once(dirname(__FILE__) . '/header.php');
 			<div id="ubicationmap" class="col s8" overflow:auto;></div>
 			<div id="userinfo" class="col s4" overflow:auto;></div>
         </div>
-        
-	<!-- Map buttons -->
-        <div class="row">
-        	<div id="buttons" class="col s4">	
-				<a class="btn btn-flat white blue-text waves-effect waves-blue" onclick="changeSantiago()" style="padding:0.1rem;"><font size="2">Santiago</font></a>
-				<a class="btn btn-flat white blue-text waves-effect waves-blue" onclick="changeVina()" style="padding:0.1rem;"><font size="2">Viña del Mar</font></a>
-			</div>
-        </div>
-        
+
 	<!-- Facebok data -->
         <div class="row">
         </div>

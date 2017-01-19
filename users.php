@@ -2,6 +2,7 @@
 require_once(dirname(__FILE__) . '/header.php');
 ?>
 <html>
+
 <body>
 <!-- CONTENT -->
 	<main class="grey lighten-3">	
@@ -33,7 +34,7 @@ require_once(dirname(__FILE__) . '/header.php');
 
 	<!-- Divider line -->
     	<div class="row">
-       		<hr width=95% align="middle" class="grey lighten-2">
+       		<hr width=95% align="middle" style="height:2px; background-color:#757575; border:0;">
         </div>
         
 	<!-- Users sparkline charts -->
@@ -55,8 +56,10 @@ require_once(dirname(__FILE__) . '/header.php');
         </div>
         
 	<!-- Location Maps-->
+	<script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>
     	<div class="row">
-        	<div id="ubicationmap" class="col s12" overflow:auto;></div>
+        	<div id="ubicationmap" class="col s12" overflow:auto;>
+        	</div>
         </div> 
         
     <!-- Location Table --> 
@@ -104,7 +107,7 @@ $(document).ready(function () {
   	  var dispersion = $('#dispersionselect :selected').val();
   	  	$.ajax({
   	  	  	url: 'charts/changeuserschart.php',
-  	        data: {'select': datos, 'disperssion': dispersion},
+  	        data: {'select': datos, 'dispersion': dispersion},
   	        method: 'POST',
   	        success: function (output) {
   	        	$( "#userschart" ).html(output);
@@ -112,7 +115,7 @@ $(document).ready(function () {
   	  	});
   	  	$.ajax({
   	  	  	url: 'charts/changeusersinfo.php',
-  	        data: {'disperssion': dispersion, 'labels':users_labels},
+  	        data: {'dispersion': dispersion, 'labels':users_labels},
   	        method: 'POST',
   	        success: function (output) {
   	        	$( "#userinfo" ).html(output);
@@ -124,7 +127,7 @@ $(document).ready(function () {
   	  var dispersion = $('#dispersionselect :selected').val();
     	$.ajax({
         	url: 'charts/changeuserschart.php',
-        	data: {'select': datos, 'disperssion': dispersion},
+        	data: {'select': datos, 'dispersion': dispersion},
         	method: 'POST',
         	success: function (output) {
             	$('#userschart').html(output);

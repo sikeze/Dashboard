@@ -8,7 +8,7 @@ echo "<table class='striped bordered responsive-table'>
 	<thead>
     	<tr>
        		<th data-field='regions'>Regions</th>
-        	<th data-field='sessions'>Sesiones</th>
+        	<th data-field='sessions'>Usuarios</th>
         </tr>
    	</thead>
         			

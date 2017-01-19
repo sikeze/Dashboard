@@ -23,6 +23,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string ['backhome'] = 'Volver a Moodle';
 $string ['dashboardtittle'] = 'Dashboard';
 $string ['home'] = 'Inicio';
 $string ['users'] = 'Usuarios';
@@ -34,10 +35,12 @@ $string ['ubication'] = 'Ubicación';
 $string ['devices'] = 'Equipos';
 $string ['userinfo'] = 'Información del usuario';
 $string ['resource_tittle'] = '<b>Recursos</b>';
-$string ['userinfo'] = 'Información del usuario';
-$string ['userinfo'] = 'Información del usuario';
-$string ['userinfo'] = 'Información del usuario';
-$string ['userinfo'] = 'Información del usuario';
+$string ['datepicker_one'] = 'Elegir primera fecha';
+$string ['datepicker_two'] = 'Elegir segunda fecha';
+$string ['dispersion'] = 'Opciones de Dispersión';
+$string ['monthly'] = 'Mensual';
+$string ['daily'] = 'Diario';
+$string ['hour'] = 'Hora';
 
 //task
 $string['sessiontask']="Rellenar sesiones";

@@ -22,7 +22,7 @@
 */
 
 defined('MOODLE_INTERNAL') || die();
-
+$string ['backhome'] = 'Back to Moodle';
 $string ['dashboardtittle'] = 'Dashboard';
 $string ['home'] = 'Home';
 $string ['users'] = 'Users';
@@ -58,6 +58,13 @@ $string ['workshop'] = 'Workshop';
 $string ['turnitin'] = 'Turnitin';
 $string ['emarking'] = 'eMarking';
 $string ['papperattendance'] = 'Papperattendance';
+$string ['datepicker_one'] = 'Pick first date';
+$string ['datepicker_two'] = 'Pick second date';
+$string ['dispersion'] = 'Dispersion Options';
+$string ['monthly'] = 'Monthly';
+$string ['daily'] = 'Daily';
+$string ['hour'] = 'Hour';
+
 
 
 
