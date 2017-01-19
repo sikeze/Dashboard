@@ -114,6 +114,10 @@ function users_info() {
 		}
 		if(array_key_exists($time,$coursepersession)) {
 			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
+			
+			if ((int)$coursepersession[$time]->sessions == 0) {
+				$usersdata[4][$positioncount]= (int)0;
+			}
 		} else {
 			$usersdata[4][$positioncount]= (int)0;
 		}
@@ -152,6 +156,17 @@ function users_info_labels() {
 
 	$labels = array($totalsessions->totalsessions,$avgsessions->avgsessions,$newusers->newusers,$users->users,$courseviews->courseviews,$coursepersession->coursesessions);
 	return $labels;
+}
+
+//FILL LOCATION TABLE USERS PAGE
+function location_table() {
+	global $DB;
+
+	$regions = $DB->get_records_sql("SELECT region, COUNT(userid) as usersid
+									 FROM {dashboard_users_location}
+									 GROUP BY region");
+
+	return $regions;
 }
 
 //FILL USERS INFO SPARKLINE CHARTS WITH ANY DISPERSSION
