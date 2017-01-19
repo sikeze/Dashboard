@@ -45,17 +45,21 @@ require_once(dirname(__FILE__) . '/locallib.php');
                	<ul id="nav-mobile" class="right hide-on-med-and-down">
                		<li class="input-field">
                			<i class="material-icons prefix blue-text">date_range</i>
-        				<input type="date" class="datepicker" id="datepickerone" data-value="<?php echo $timemonthless;?>">
+        				<input type="date" class="datepicker" id="datepickerone">
+        				<label id="dateone" class="active" for="datepickerone" data-value="<?php echo $timemonthless;?>"><?php echo get_string('datepicker_one','local_dashboard');?></label>
                		</li>
                		<li class="input-field">
                			<i class="material-icons prefix blue-text">date_range</i>
-        				<input type="date" class="datepicker" id="datepickertwo" data-value="<?php echo $timenow;?>">
+        				<input type="date" class="datepicker" id="datepickertwo"  data-value="<?php echo $timenow;?>">
+        				<label id="datetwo" class="active" for="datepickertwo"><?php echo get_string('datepicker_two','local_dashboard');?></label>
         			</li>
                		<li class="input-field blue-text">
     					<select id="dispersionselect">
-      						<option value="1"><span class="blue-text">Mensual</span></option>
-      						<option value="2"><span class="blue-text">Diario</span></option>
-      						<option value="3"><span class="blue-text">Hora</span></option>
+     	 					<option value="0" disabled selected><?php echo get_string('dispersion', 'local_dashboard');?></option>
+      						<option value="1"><span class="blue-text"><?php echo get_string('monthly', 'local_dashboard');?></span></option>
+      						<option value="2"><span class="blue-text"><?php echo get_string('daily', 'local_dashboard');?></span></option>
+      						<option value="3"><span class="blue-text"><?php echo get_string('hour', 'local_dashboard');?></span></option>
+
     					</select>
                		</li>
                		<li><a href="badges.html" class=""><i class="material-icons blue-text">edit</i></a></li>
@@ -84,10 +88,10 @@ require_once(dirname(__FILE__) . '/locallib.php');
                </div>
             </div>
        </li>
-       	<li><a href="<?php echo $frontpageurl; ?>" class="white-text menu-item"><?php echo get_string('home', 'local_dashboard'); ?><i class="material-icons white-text">home</i></a></li>
-        <li><a href="<?php echo $usersurl; ?>" class="white-text menu-item"><?php echo get_string('users', 'local_dashboard'); ?><i class="material-icons white-text">supervisor_account</i></a></li>
-        <li><a href="<?php echo $resourcesurl; ?>" class="white-text menu-item"><?php echo get_string('resources', 'local_dashboard'); ?><i class="material-icons white-text">description</i></a></li>
-		<li><a href="<?php echo $backtomoodleurl; ?>" class="white-text menu-item">Volver a Moodle<i class="material-icons white-text">undo</i></a></li>	
+       	<li><a href="<?php echo $frontpageurl; ?>" class="white-text menu-item"><?php echo get_string('home', 'local_dashboard');?><i class="material-icons white-text">home</i></a></li>
+        <li><a href="<?php echo $usersurl; ?>" class="white-text menu-item"><?php echo get_string('users', 'local_dashboard');?><i class="material-icons white-text">supervisor_account</i></a></li>
+        <li><a href="<?php echo $resourcesurl; ?>" class="white-text menu-item"><?php echo get_string('resources', 'local_dashboard');?><i class="material-icons white-text">description</i></a></li>
+		<li><a href="<?php echo $backtomoodleurl; ?>" class="white-text menu-item"><?php echo get_string('backhome', 'local_dashboard');?><i class="material-icons white-text">undo</i></a></li>	
 	</ul>
 <!-- SIDENAV -->
 </body>

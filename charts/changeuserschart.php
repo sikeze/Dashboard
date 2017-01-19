@@ -3,7 +3,7 @@ require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
 $select = $_POST['select'];
-$disperssion = $_POST['disperssion'];
+$dispersion = $_POST['dispersion'];
 switch ($select) {
 	case 1:
 		echo "<script>
@@ -13,9 +13,9 @@ switch ($select) {
 				function drawBasic() {
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', 'X');
-					data.addColumn('number', 'Sesiones');
+					data.addColumn('number', '".get_string('sessions','local_dashboard')."');
 
-					var datos =".json_encode(users_sessions_disperssion($disperssion))."
+					var datos =".json_encode(users_sessions_dispersion($dispersion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -28,11 +28,11 @@ switch ($select) {
 			       			height: '50%'
 			    		},
 						hAxis: {
-							title: 'Fecha',
+							title: '".get_string('date','local_dashboard')."',
 							textStyle: {fontSize: 9}
 						},
 						vAxis: {
-							title: 'Sesiones'
+							title: '".get_string('sessions','local_dashboard')."'
 						}
 					};
 
@@ -51,9 +51,9 @@ switch ($select) {
 				function drawBasic() {
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', 'X');
-					data.addColumn('number', 'Segundos');
+					data.addColumn('number', '".get_string('seconds','local_dashboard')."');
 
-					var datos =".json_encode(users_avgsessions_disperssion($disperssion))."
+					var datos =".json_encode(users_avgsessions_dispersion($dispersion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -62,11 +62,11 @@ switch ($select) {
 
 					var options = {
 						hAxis: {
-							title: 'Fecha',
+							title: '".get_string('date','local_dashboard')."',
 							textStyle: {fontSize: 9}
 						},
 						vAxis: {
-							title: 'Tiempo Promedio de Sesiones'
+							title: '".get_string('avgtime','local_dashboard')."'
 						}
 					};
 
@@ -85,9 +85,9 @@ switch ($select) {
 				function drawBasic() {
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', 'X');
-					data.addColumn('number', 'Usuarios');
+					data.addColumn('number', '".get_string('users','local_dashboard')."');
 
-					var datos =".json_encode(users_dates_disperssion($disperssion))."
+					var datos =".json_encode(users_dates_dispersion($dispersion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -96,11 +96,11 @@ switch ($select) {
 
 					var options = {
 						hAxis: {
-							title: 'Fecha',
+							title: '".get_string('date','local_dashboard')."',
 							textStyle: {fontSize: 9}
 						},
 						vAxis: {
-							title: 'Usuarios'
+							title: '".get_string('users','local_dashboard')."'
 						}
 					};
 
@@ -119,9 +119,9 @@ switch ($select) {
 				function drawBasic() {
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', 'X');
-					data.addColumn('number', 'Usuarios');
+					data.addColumn('number', '".get_string('users','local_dashboard')."');
 
-					var datos =".json_encode(newusers_dates_disperssion($disperssion))."
+					var datos =".json_encode(newusers_dates_dispersion($dispersion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -130,11 +130,11 @@ switch ($select) {
 
 					var options = {
 						hAxis: {
-							title: 'Fecha',
+							title: '".get_string('date','local_dashboard')."',
 							textStyle: {fontSize: 9}
 						},
 						vAxis: {
-							title: 'Nuevos Usuarios'
+							title: '".get_string('newusers','local_dashboard')."'
 						}
 					};
 
@@ -153,9 +153,9 @@ switch ($select) {
 				function drawBasic() {
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', 'X');
-					data.addColumn('number', 'Cursos');
+					data.addColumn('number', '".get_string('courses','local_dashboard')."');
 
-					var datos =".json_encode(courseview_dates_disperssion($disperssion))."
+					var datos =".json_encode(courseview_dates_dispersion($dispersion))."
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
@@ -164,11 +164,11 @@ switch ($select) {
 
 					var options = {
 						hAxis: {
-							title: 'Fecha',
+							title: '".get_string('date','local_dashboard')."',
 							textStyle: {fontSize: 9}
 						},
 						vAxis: {
-							title: 'Cursos Vistos'
+							title: '".get_string('courses','local_dashboard')."'
 						}
 					};
 

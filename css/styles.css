@@ -33,3 +33,9 @@ header, main, footer{
 .side-nav a{
     padding: 0 16px;
 }
+#map_stgo {
+        height: 265px;
+}
+#map_vina {
+	height: 265px;
+}
