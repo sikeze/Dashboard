@@ -7,6 +7,8 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 $frontpageurl = new moodle_url('/local/dashboard/frontpage.php');
 $usersurl = new moodle_url('/local/dashboard/users.php');
 $resourcesurl = new moodle_url('/local/dashboard/resources.php');
+$backtomoodleurl = new moodle_url('/my');
+$logouturl = new moodle_url("/login/logout.php?");
 $time = time();
 $timenow =  gmdate("d-m-Y", $time);
 $timemonthless = date('d-m-Y',strtotime($timenow . "-1 month"));
@@ -79,7 +81,7 @@ require_once(dirname(__FILE__) . '/locallib.php');
                             </a>
                         <!-- Dropdown Structure -->
                         	<ul id='dropdown1' class='dropdown-content'>
-                                <li  class="red darken-4"><a class="white-text" href="#!"><?php echo get_string('logout', 'local_dashboard'); ?></a></li>
+                                <li  class="red darken-4"><a class="white-text" href="<?php echo $logouturl;?>"><?php echo get_string('logout', 'local_dashboard'); ?></a></li>
                             </ul>
                     </div>
                </div>
