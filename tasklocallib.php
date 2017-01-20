@@ -394,145 +394,186 @@ function dashboard_getusersdata(){
 		}
 	}
 }
-
-//FUNCTION THAT FILL THE NEW TABLE DASHBOARD_RESOURCES DURING THE TASK
-
 function dashboard_resourcesdata (){
 	global $DB;
 	$time = time();
 	$arrayupdate = array();
+	$insertresourcedata = array ();
+
+	$lasttimeresourcesdata = $DB->get_record_sql( "SELECT 	MAX(time) AS time
+												 	FROM 	{dashboard_resources}")->time;
+	if ($lasttimeresourcesdata==null){
+		$lasttimeresourcesdata=1;
+	}
 
 	//PAPERATTENDANCE
-/*	$lasttimepaperattendance = $DB->get_record_sql( "SELECT 	MAX(time) AS time
-												 		FROM 		{dashboard_resources}
-												 		WHERE 		resourceid = ?", array(RESOURCES_TYPE_PAPERATTENDANCE))->time;
-	if ($lasttimepaperattendance==null){
-		$lasttimepaperattendance=0;
-	}
-	$query="SELECT CONCAT(d.lastmodified,d.courseid),d.lastmodified AS time,d.courseid AS courseid,activity,amountcreated
-			FROM (SELECT count(*) AS activity, courseid, lastmodified
-			FROM (SELECT s.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-			FROM {paperattendance_session} as s
-			UNION ALL
-			SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-			FROM {paperattendance_session} AS s1
-			INNER JOIN {paperattendance_presence} AS p1 ON (s1.id=p1.sessionid)
-			UNION ALL
-			SELECT s2.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p2.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-			FROM {paperattendance_session} AS s2
-			INNER JOIN {paperattendance_presence} AS p2 ON (s2.id=p2.sessionid)
-			INNER JOIN {paperattendance_discussion} AS d2 ON (p2.id=d2.presenceid)
-			UNION ALL
-			SELECT s3.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p3.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-			FROM {paperattendance_session} AS s3
-			INNER JOIN {paperattendance_presence} AS p3 ON (s3.id=p3.sessionid)
-			INNER JOIN {paperattendance_discussion} AS d3 ON (p3.id=d3.presenceid)) AS a
-			GROUP BY courseid,lastmodified) as d
-			LEFT JOIN
-			(SELECT count(*) AS amountcreated,courseid,lastmodified
-			FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-			FROM {paperattendance_session} as s5) as b
-			GROUP BY courseid,lastmodified) AS c ON (c.courseid=d.courseid) AND (c.lastmodified=d.lastmodified)";
-	$paperdata =$DB->get_records_sql($query);
-	var_dump($paperdata);*/
-	//TURNITIN
 
+
+	/*	$querypaper="SELECT CONCAT(d.lastmodified,d.courseid),d.lastmodified AS time,d.courseid AS courseid,activity,IFNULL(amountcreated,0) AS amountcreated
+	 FROM (SELECT count(*) AS activity, courseid, lastmodified
+	 FROM (SELECT s.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+	 FROM mdl_paperattendance_session as s
+	 UNION ALL
+	 SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+	 FROM mdl_paperattendance_session AS s1
+	 INNER JOIN mdl_paperattendance_presence AS p1 ON (s1.id=p1.sessionid)
+	 UNION ALL
+	 SELECT s2.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d2.timecreated),'%d-%c-%Y %H:00:00') AS lastmodified
+	 FROM mdl_paperattendance_session AS s2
+	 INNER JOIN mdl_paperattendance_presence AS p2 ON (s2.id=p2.sessionid)
+	 INNER JOIN mdl_paperattendance_discussion AS d2 ON (p2.id=d2.presenceid)
+	 UNION ALL
+	 SELECT s3.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d3.timemodified),'%d-%c-%Y %H:00:00') AS lastmodified
+	 FROM mdl_paperattendance_session AS s3
+	 INNER JOIN mdl_paperattendance_presence AS p3 ON (s3.id=p3.sessionid)
+	 INNER JOIN mdl_paperattendance_discussion AS d3 ON (p3.id=d3.presenceid)) AS a
+	 GROUP BY courseid,lastmodified) as d
+	 LEFT JOIN
+	 (SELECT count(*) AS amountcreated,courseid,lastmodified
+	 FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+	 FROM mdl_paperattendance_session as s5) as b
+	 GROUP BY courseid,lastmodified)
+	 AS c ON (c.courseid=d.courseid) AND (c.lastmodified=d.lastmodified)";
+	 $paperdata =$DB->get_records_sql($querypaper);
+	 foreach ($paperdata AS $data){
+		$currentdata = new stdClass();
+		$currentdata->courseid=(int)$data->courseid;
+		$currentdata->time=(int)strtotime($data->time)+60*60;
+		$currentdata->resourceid=RESOURCES_TYPE_PAPERATTENDANCE;
+		$currentdata->activity=(int)$data->activity;
+		$currentdata->amountcreated=(int)$data->amountcreated;
+		if($currentdata->time>$lasttimeresourcesdata){
+		$insertresourcedata[]=$currentdata;
+		}else if ($currentdata->time==$lasttimeresourcesdata){
+		$arrayupdate[] = $currentdata;
+		}
+		}
+
+*/
+
+		//TURNITIN
+
+
+
+
+		if(file_exists($turnitinlib)){
+
+		$queryturnitin="SELECT CONCAT(a.time,a.course),a.time AS time,a.course AS courseid,activity,IFNULL(amountcreated,0) AS amountcreated
+		FROM (SELECT count(id) AS activity, time, course
+		FROM (SELECT t.id AS id,
+		DATE_FORMAT(FROM_UNIXTIME(t.timecreated),'%d-%c-%Y %H:00:00') AS time,t.course AS course
+		FROM mdl_turnitintooltwo AS t
+		UNION
+		SELECT t.id AS id, DATE_FORMAT(FROM_UNIXTIME(t.timemodified),'%d-%c-%Y %H:00:00') AS time, t.course AS course
+		FROM mdl_turnitintooltwo AS t
+		UNION ALL
+		SELECT ts.id AS id, DATE_FORMAT(FROM_UNIXTIME(ts.submission_modified),'%d-%c-%Y %H:00:00') AS time, t.course AS course
+		FROM mdl_turnitintooltwo AS t
+		INNER JOIN mdl_turnitintooltwo_submissions AS ts ON (t.id=ts.turnitintooltwoid)) AS alpha
+		GROUP BY course,time) AS a
+		LEFT JOIN
+		(SELECT COUNT(t.id) as amountcreated, DATE_FORMAT(FROM_UNIXTIME(t.timecreated),'%d-%c-%Y %H:00:00') as time, t.course as course
+		FROM mdl_turnitintooltwo AS t
+		GROUP BY time,course) AS b
+		ON (a.course=b.course) AND (a.time=b.time)";
+
+		$turnitindata =$DB->get_records_sql($queryturnitin);
+		foreach ($turnitindata AS $data){
+		$currentdata = new stdClass();
+		$currentdata->courseid=(int)$data->courseid;
+		$currentdata->time=(int)strtotime($data->time)+60*60;
+		$currentdata->resourceid=RESOURCES_TYPE_TURNITIN;
+		$currentdata->activity=(int)$data->activity;
+		$currentdata->amountcreated=(int)$data->amountcreated;
+		if($currentdata->time>$lasttimeresourcesdata){
+		$insertresourcedata[]=$currentdata;
+		}else if ($currentdata->time==$lasttimeresourcesdata){
+		$arrayupdate[] = $currentdata;
+		}
+
+		}
+
+		}
+
+		
 	//EMARKING
 
-	//IF YOU WANT TO ADD MORE RESOURCES, CHECK THE LIST IN LIB.PHP AND MODIFY THE ARRAY FROM $RESOURCES
-	$resourceslist=array(
-			RESOURCES_TYPE_ASSIGN,
-			RESOURCES_TYPE_ASSIGNMENT,
-			RESOURCES_TYPE_BOOK,
-			RESOURCES_TYPE_CHAT,
-			RESOURCES_TYPE_CHOICE,
-			RESOURCES_TYPE_DATA,
-			RESOURCES_TYPE_FEEDBACK,
-			RESOURCES_TYPE_FOLDER,
-			RESOURCES_TYPE_FORUM,
-			RESOURCES_TYPE_GLOSARY,
-			RESOURCES_TYPE_IMSCP,
-			RESOURCES_TYPE_LABEL,
-			RESOURCES_TYPE_LESSON,
-			RESOURCES_TYPE_LTI,
-			RESOURCES_TYPE_PAGE,
-			RESOURCES_TYPE_QUIZ,
-			RESOURCES_TYPE_RESOURCE,
-			RESOURCES_TYPE_SCORM,
-			RESOURCES_TYPE_SURVEY,
-			RESOURCES_TYPE_URL,
-			RESOURCES_TYPE_WIKI,
-			RESOURCES_TYPE_WORKSHOP
-	);
-	$insertresourcedata = array ();
-	foreach ($resourceslist AS $currentresource) {
-		$lasttimeresources = $DB->get_record_sql( "SELECT 	MAX(time) AS time
-												 		FROM 		{dashboard_resources}
-												 		WHERE 		resourceid = ?", array($currentresource))->time;
-		if ($lasttimeresources==null){
-			$lasttimeresources=0;
+	/*
+	 $query="";
+
+
+
+	 $emarkingdata =$DB->get_records_sql($query);
+	 foreach ($emarkingdata AS $data){
+		$currentdata = new stdClass();
+		$currentdata->courseid=(int)$data->courseid;
+		$currentdata->time=(int)strtotime($data->time)+60*60;
+		$currentdata->resourceid=RESOURCES_TYPE_EMARKING;
+		$currentdata->activity=(int)$data->activity;
+		$currentdata->amountcreated=(int)$data->amountcreated;
+		if($currentdata->time==null){
+		$currentdata->amountcreated = 0;
 		}
-		$queryresource = "			 SELECT id1, time, courseid, activity, amountcreated
-										 FROM (	SELECT 		l2.id as id1,
-			 												COUNT(l2.id) AS activity,
-			 												cm2.course AS courseid,
-	 														DATE_FORMAT(FROM_UNIXTIME(l2.timecreated),'%d-%c-%Y %H:00:00') as time
-												FROM 		{logstore_standard_log} AS l2
-												INNER JOIN	{course_modules} AS cm2 ON (l2.objectid=cm2.id)
-												INNER JOIN	{modules} AS m2 ON (cm2.module=m2.id)
-												WHERE 	 	m2.id = ? AND
-															 timecreated > ? AND
-															timecreated < ?
-	 											GROUP BY 	time) AS a
-										LEFT JOIN ( SELECT 	l1.id as id2,
-			 												COUNT(l1.id) as amountcreated,
-						 									DATE_FORMAT(FROM_UNIXTIME(l1.timecreated),'%d-%c-%Y %H:00:00') as datenormal1,
-						 									cm1.course as course
-				 									FROM 			{logstore_standard_log} AS l1
-													INNER JOIN		{course_modules} AS cm1 ON (l1.objectid=cm1.id)
-													INNER JOIN		{modules} AS m1 ON (cm1.module=m1.id)
-													WHERE  			m1.id = ? AND
-															 		l1.action= ? AND
-															 		timecreated > ? AND
-																	timecreated < ?
-			 										GROUP BY 		datenormal1) AS b ON (a.id1=b.id2)
-			 							ORDER BY time ASC";
-		$resourcedata =$DB->get_records_sql($queryresource,array($currentresource,$lasttimeresources,$time,$currentresource,'created',$lasttimeresources,$time));
+		if($currentdata->time==$lasttimeemarking){
+		$arrayupdate[] = $currentdata;
 
-		foreach ($resourcedata AS $data){
-
-
-			$currentdata = new stdClass();
-			$currentdata->courseid=(int)$data->courseid;
-			$currentdata->time=(int)strtotime($data->time)+60*60;
-			$currentdata->resourceid=$currentresource;
-			$currentdata->activity=(int)$data->activity;
-			$currentdata->amountcreated=(int)$data->amountcreated;
-			if(!property_exists($data, "amountcreated")){
-				$currentdata->amountcreated = 0;
-			}
-			if($currentdata->time==$lasttimeresources){
-				$arrayupdate[] = $currentdata;
-					
-			}else{
-				$insertresourcedata[]=$currentdata;
-			}
-
-
+		}else{
+		if ($currentdata->time > $lasttimeemarking){
+		$insertresourcedata[]=$currentdata;
+		}
 		}
 
+		}
+		*/
+
+	//get all data related to the resources contained in the table mdl_modules
+	$querybasicresources = "SELECT CONCAT(a.resource,a.date,a.course) AS id,a.date AS time,a.resource AS resourceid,a.course AS courseid,IFNULL(amountcreated,0) AS amountcreated ,activity
+						FROM
+							(SELECT 	l2.id as id2,
+							COUNT(l2.id) as activity,
+							DATE_FORMAT(FROM_UNIXTIME(l2.timecreated),'%d-%c-%Y %H:00:00') as date,
+							cm2.course as course, m2.id AS resource
+							FROM 		mdl_logstore_standard_log AS l2
+							INNER JOIN	mdl_course_modules AS cm2 ON (l2.contextinstanceid=cm2.id)
+							INNER JOIN	mdl_modules AS m2 ON (cm2.module=m2.id) AND target= ? AND l2.timecreated BETWEEN ? AND ?
+							GROUP BY 	date,resource,course) AS a
+						LEFT JOIN
+							(SELECT 	l1.id as id2,
+							COUNT(l1.id) as amountcreated,
+							DATE_FORMAT(FROM_UNIXTIME(l1.timecreated),'%d-%c-%Y %H:00:00') as date,
+							cm1.course as course, m1.id AS resource
+							FROM 		mdl_logstore_standard_log AS l1
+							INNER JOIN	mdl_course_modules AS cm1 ON (l1.contextinstanceid=cm1.id)
+							INNER JOIN	mdl_modules AS m1 ON (cm1.module=m1.id) AND target= ? AND action= ? AND l1.timecreated BETWEEN ? AND ?
+							GROUP BY 	date,resource,course) AS b
+						ON (a.date=b.date) AND (a.course=b.course) AND (a.resource=b.resource)
+						ORDER BY time,activity ASC";
+	$basicresourcesdata =$DB->get_records_sql($querybasicresources,array('course_module',$lasttimeresourcesdata,$time,'course_module','created',$lasttimeresourcesdata,$time));
+
+	foreach ($basicresourcesdata AS $data){
+
+		$currentdata = new stdClass();
+		$currentdata->courseid=(int)$data->courseid;
+		$currentdata->time=(int)strtotime($data->time)+60*60;
+		$currentdata->resourceid=(int)$data->resourceid;
+		$currentdata->activity=(int)$data->activity;
+		$currentdata->amountcreated=(int)$data->amountcreated;
+		if($currentdata->time>$lasttimeresourcesdata){
+			$insertresourcedata[]=$currentdata;
+		}else if ($currentdata->time==$lasttimeresourcesdata){
+			$arrayupdate[] = $currentdata;
+		}
 	}
 
+	var_dump($lasttimeresourcesdata);
 	echo "<br> update data:";
 	var_dump($arrayupdate);
 	echo "<br> insert data:";
 	var_dump($insertresourcedata);
-	$allresourcesdata=array_merge(
-			$insertresourcedata
-			);
+
 
 	if(count($insertresourcedata)>0){
-		if(	 $DB->insert_records('dashboard_resources',$allresourcesdata)){
+		if(	 $DB->insert_records('dashboard_resources',$insertresourcedata)){
 			echo "insert completed";
 		}
 	}
@@ -561,5 +602,4 @@ function dashboard_resourcesdata (){
 
 
 }
-
 ?>
