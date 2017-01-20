@@ -4,7 +4,6 @@ require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
 $dispersion = $_POST['dispersion'];
 $labels = $_POST['labels'];
-$dispersion = $_POST['dispersion'];
 ?>
 <!-- Labels array index represent the info that we need for every sparkline -->
 <div class="col s12">

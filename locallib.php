@@ -100,11 +100,12 @@ function users_info() {
 			$usersdata[3][$positioncount]= (int)0;
 		}
 		if(array_key_exists($time,$coursepersession)) {
-			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
-				
 			if ((int)$coursepersession[$time]->sessions == 0) {
 				$usersdata[4][$positioncount]= (int)0;
+			}else{
+			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
 			}
+			
 		} else {
 			$usersdata[4][$positioncount]= (int)0;
 		}
