@@ -16,7 +16,6 @@ require_once(dirname(__FILE__) . '/header.php');
         	</div>
         	<div class="input-field left-align col s4 blue-text">
         		<select id="dataselect">
-      				<option value="0" disabled selected><?php echo get_string('choose','local_dashboard');?></option>
       				<option value="1"><span class="blue-text"><?php echo get_string('sessions','local_dashboard');?></span></option>
       				<option value="2"><span class="blue-text"><?php echo get_string('avgtime','local_dashboard');?></span></option>
       				<option value="3"><span class="blue-text"><?php echo get_string('users','local_dashboard');?></span></option>
