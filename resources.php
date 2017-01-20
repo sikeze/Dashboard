@@ -59,7 +59,7 @@ require_once(dirname(__FILE__) . '/header.php');
         		<?php 
         	$emarkinglocallib = new moodle_url('/local/emarking/reports/locallib.php');
         	if(file_exists($emarkinglocallib)){
-        		require_once($CFG->dirroot."/local/emarking/reports/locallib.php");
+        		require_once($CFG->dirroot."/mod/emarking/reports/locallib.php");
         		echo html_writer::start_tag('div');
         		// Generation of the buttons table.
         		$mainbuttons = array(
