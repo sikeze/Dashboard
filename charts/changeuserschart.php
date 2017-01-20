@@ -4,6 +4,16 @@ require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
 $select = $_POST['select'];
 $dispersion = $_POST['dispersion'];
+$initialdate = $_POST['initialdate'];
+$enddate = $_POST['enddate'];
+if($enddate == '' OR $initialdate == ''){
+	$enddate = null;
+	$initialdate = null;
+}else{
+	$initialdate = strtotime($initialdate);
+	$enddate = strtotime($enddate);
+}
+
 switch ($select) {
 	case 1:
 		echo "<script>
