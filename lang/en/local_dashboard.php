@@ -22,7 +22,7 @@
 */
 
 defined('MOODLE_INTERNAL') || die();
-
+$string ['backhome'] = 'Back to Moodle';
 $string ['dashboardtittle'] = 'Dashboard';
 $string ['home'] = 'Home';
 $string ['users'] = 'Users';
@@ -32,7 +32,16 @@ $string ['turnitin'] = 'Turnitin';
 $string ['courseresources'] = 'Course Resources';
 $string ['ubication'] = 'Ubication';
 $string ['devices'] = 'Devices';
+$string ['sessions'] = 'Sessions';
+$string ['avgtime'] = 'Average Sessions Time';
+$string ['newusers'] = 'New Users';
+$string ['courses'] = 'Courses View';
+$string ['coursesession'] = 'Courses/Session';
 $string ['userinfo'] = 'User Information';
+$string ['uservisit'] = 'User Visits';
+$string ['regions'] = 'Regions';
+$string ['date'] = 'Date';
+$string ['seconds'] = 'Seconds';
 $string ['resource_tittle'] = '<b>Resources</b>';
 $string ['all'] = 'All';
 $string ['assign'] = 'assign';
@@ -58,6 +67,17 @@ $string ['workshop'] = 'Workshop';
 $string ['turnitin'] = 'Turnitin';
 $string ['emarking'] = 'eMarking';
 $string ['papperattendance'] = 'Papperattendance';
+$string ['datepicker_one'] = 'Pick first date';
+$string ['datepicker_two'] = 'Pick second date';
+$string ['dispersion'] = 'Dispersion Options';
+$string ['datasel'] = 'Data Selection';
+$string ['options'] = 'Options';
+$string ['monthly'] = 'Monthly';
+$string ['daily'] = 'Daily';
+$string ['hour'] = 'Hour';
+$string ['choose'] = 'Choose your data';
+$string ['copyright'] = '© 2017 Copyright Text';
+$string ['links'] = 'More Links';
 
 
 

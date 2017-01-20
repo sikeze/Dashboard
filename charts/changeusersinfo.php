@@ -2,43 +2,36 @@
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
-$disperssion = $_POST['disperssion'];
+$dispersion = $_POST['dispersion'];
 $labels = $_POST['labels'];
-$disperssion = $_POST['disperssion'];
 ?>
 <!-- Labels array index represent the info that we need for every sparkline -->
 <div class="col s12">
 <div class="col s4 l4 card hoverable widget" overflow: auto;>
-Sesiones<br>
-<?php echo $labels[0];?>
+<?php echo get_string('sessions','local_dashboard')."<br>".$labels[0];?>
 <div id="sessions"  overflow: auto;></div>
 </div>
 <div class="col s4 l4 card hoverable widget" overflow: auto;>
-Tiempo Promedio Sesión <br>
-<?php echo gmdate("H:i:s",$labels[1]);?> <!-- No toma más de 86400 segundos -->
+<?php echo get_string('avgtime','local_dashboard')."<br>".gmdate("H:i:s",$labels[1]);?> <!-- No toma más de 86400 segundos -->
 <div id="sessionduration"  overflow: auto;></div>
 </div>
 <div class ="col s4 l4 card hoverable widget" overflow:auto;>
-Nuevos Usuarios <br>
-<?php echo $labels[2];?>
+<?php echo get_string('newusers','local_dashboard')."<br>".$labels[2];?>
 <div id="newusers"  overflow: auto;></div>
 </div>
 </div>
 
 <div class="col s12">
 <div class ="col s4 l4 card hoverable widget" overflow:auto;>
-Usuarios<br>
-<?php echo $labels[3];?>
+<?php echo get_string('users','local_dashboard')."<br>".$labels[3];?>
 <div id="users"  overflow: auto;></div>
 </div>
 <div class ="col s4 l4 card hoverable widget" overflow:auto;>
-Cursos vistos<br>
-<?php echo $labels[4];?>
+<?php echo get_string('courses','local_dashboard')."<br>".$labels[4];?>
 <div id="courseviews"  overflow: auto;></div>
 </div>
 <div class ="col s4 l4 card hoverable widget" overflow:auto;>
-Curso/sesión <br>
-<?php echo $labels[5];?>
+<?php echo get_string('coursesession','local_dashboard')."<br>".$labels[5];?>
 <div id="coursesession"  overflow: auto;></div>
 </div>
 </div>
@@ -46,30 +39,30 @@ Curso/sesión <br>
 <?php 
 echo "
 <script>
-var data_disperssion =".json_encode(users_info_disperssion($disperssion))."
+var data_dispersion =".json_encode(users_info_dispersion($dispersion))."
 //Data array index represent if the info we need is for sessions or courseviews, etc.
 $(document).ready(function () {
-	$('#sessions').sparkline(data_disperssion[0], {
+	$('#sessions').sparkline(data_dispersion[0], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: true});
-	$('#users').sparkline(data_disperssion[2], {
+	$('#users').sparkline(data_dispersion[2], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$('#courseviews').sparkline(data_disperssion[3], {
+	$('#courseviews').sparkline(data_dispersion[3], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$('#coursesession').sparkline(data_disperssion[4], {
+	$('#coursesession').sparkline(data_dispersion[4], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$('#sessionduration').sparkline(data_disperssion[1], {
+	$('#sessionduration').sparkline(data_dispersion[1], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$('#newusers').sparkline(data_disperssion[5], {
+	$('#newusers').sparkline(data_dispersion[5], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});

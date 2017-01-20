@@ -2,27 +2,27 @@
 require_once(dirname(__FILE__) . '/header.php');
 ?>
 <html>
+
 <body>
 <!-- CONTENT -->
 	<main class="grey lighten-3">	
 	<!-- Users text row -->
     	<div class="row">
         	<div class="col s8">
-        		<h5><b>Visitas del usuario</b></h5>
+        		<h5><b><?php echo get_string('uservisit','local_dashboard');?></b></h5>
         	</div>
         	<div class="col s4" style="margin-top:20px;">
-        		<b>Opciones: </b><i class="material-icons prefix blue-text md-24">file_download</i>
+        		<b><?php echo get_string('options','local_dashboard');?>: </b><i class="material-icons prefix blue-text md-24">file_download</i>
         	</div>
         	<div class="input-field left-align col s4 blue-text">
         		<select id="dataselect">
-      				<option value="0" disabled selected>Choose your option</option>
-      				<option value="1"><span class="blue-text">Sesiones</span></option>
-      				<option value="2"><span class="blue-text">Tiempo Promedio Sesiones</span></option>
-      				<option value="3"><span class="blue-text">Usuarios</span></option>
-      				<option value="4"><span class="blue-text">Usuarios Nuevos</span></option>
-      				<option value="5"><span class="blue-text">Cursos Vistos</span></option>
+      				<option value="1"><span class="blue-text"><?php echo get_string('sessions','local_dashboard');?></span></option>
+      				<option value="2"><span class="blue-text"><?php echo get_string('avgtime','local_dashboard');?></span></option>
+      				<option value="3"><span class="blue-text"><?php echo get_string('users','local_dashboard');?></span></option>
+      				<option value="4"><span class="blue-text"><?php echo get_string('newusers','local_dashboard');?></span></option>
+      				<option value="5"><span class="blue-text"><?php echo get_string('courses','local_dashboard');?></span></option>
     			</select>
-    			<label>Selección de Datos</label>
+    			<label><?php echo get_string('datasel','local_dashboard');?></label>
         	</div>
         </div>
         
@@ -33,13 +33,13 @@ require_once(dirname(__FILE__) . '/header.php');
 
 	<!-- Divider line -->
     	<div class="row">
-       		<hr width=95% align="middle" class="grey lighten-2">
+       		<hr width=95% align="middle" style="height:2px; background-color:#757575; border:0;">
         </div>
         
 	<!-- Users sparkline charts -->
     	<div class="row">
         	<div class="col s12" style="margin-left:15px;" overflow:auto;>
-        		<b>Opciones: </b><i class="material-icons prefix blue-text md-24">file_download</i>
+        		<b><?php echo get_string('options','local_dashboard');?>: </b><i class="material-icons prefix blue-text md-24">file_download</i>
         	</div>
         	<div id="userinfo" class="col s12" overflow:auto;></div>
         </div>
@@ -50,13 +50,15 @@ require_once(dirname(__FILE__) . '/header.php');
         		<h5><b><?php echo get_string('ubication', 'local_dashboard'); ?></b></h5>
         	</div>
         	<div class="col s2" style="margin-top:20px;">
-        		<b>Opciones: </b><i class="material-icons prefix blue-text md-24">file_download</i>
+        		<b><?php echo get_string('options','local_dashboard');?>: </b><i class="material-icons prefix blue-text md-24">file_download</i>
         	</div>
         </div>
         
 	<!-- Location Maps-->
+	<script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>
     	<div class="row">
-        	<div id="ubicationmap" class="col s12" overflow:auto;></div>
+        	<div id="ubicationmap" class="col s12" overflow:auto;>
+        	</div>
         </div> 
         
     <!-- Location Table --> 
@@ -69,8 +71,8 @@ require_once(dirname(__FILE__) . '/header.php');
 	<footer class="blue page-footer">
 		<div class="footer-copyright">
 			<div class="container">
-            	© 2017 Copyright Text
-            	<a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            	<?php echo get_string('copyright','local_dashboard');?>
+            	<a class="grey-text text-lighten-4 right" href="#!"><?php echo get_string('links','local_dashboard');?></a>
             </div>
 		</div>
 	</footer>
@@ -104,7 +106,7 @@ $(document).ready(function () {
   	  var dispersion = $('#dispersionselect :selected').val();
   	  	$.ajax({
   	  	  	url: 'charts/changeuserschart.php',
-  	        data: {'select': datos, 'disperssion': dispersion},
+  	        data: {'select': datos, 'dispersion': dispersion},
   	        method: 'POST',
   	        success: function (output) {
   	        	$( "#userschart" ).html(output);
@@ -112,7 +114,7 @@ $(document).ready(function () {
   	  	});
   	  	$.ajax({
   	  	  	url: 'charts/changeusersinfo.php',
-  	        data: {'disperssion': dispersion, 'labels':users_labels},
+  	        data: {'dispersion': dispersion, 'labels':users_labels},
   	        method: 'POST',
   	        success: function (output) {
   	        	$( "#userinfo" ).html(output);
@@ -124,7 +126,7 @@ $(document).ready(function () {
   	  var dispersion = $('#dispersionselect :selected').val();
     	$.ajax({
         	url: 'charts/changeuserschart.php',
-        	data: {'select': datos, 'disperssion': dispersion},
+        	data: {'select': datos, 'dispersion': dispersion},
         	method: 'POST',
         	success: function (output) {
             	$('#userschart').html(output);

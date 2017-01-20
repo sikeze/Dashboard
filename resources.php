@@ -49,27 +49,33 @@ require_once(dirname(__FILE__) . '/header.php');
         		</div>
         		<div id="uresources" class="col s12 card white-text hoverable widget" style="height:262px;" overflow:auto;></div>
         	</div>
+        	
         	<div class="col s6">
         		<div class="col s12">
         			<h5><b>Costo eMarking</b></h5>
         		</div>
+        		<div class = "col s12">
         		<!-- eMarking costs panels -->
-        		<div class="col s12">
-        			<div class="col s4 m4">
-        				<div class="card-panel blue white-text center-align hoverable widget">
-        				Largo promedio prueba: 3
-        				</div>
-        			</div>
-        			<div class="col s4 m4">
-        				<div class="card-panel blue white-text center-align hoverable widget">
-        				Páginas impresas: 829
-        				</div>
-        			</div>
-        			<div class="col s4 m4">
-        				<div class="card-panel blue white-text center-align hoverable widget">
-        				Costo total impresiones: $0
-        				</div>
-        			</div>
+        		<?php 
+        	$emarkinglocallib = new moodle_url('/local/emarking/reports/locallib.php');
+        	if(file_exists($emarkinglocallib)){
+        		require_once($CFG->dirroot."/mod/emarking/reports/locallib.php");
+        		echo html_writer::start_tag('div');
+        		// Generation of the buttons table.
+        		$mainbuttons = array(
+        				emarking_buttons_creator(get_string('meanexamlength', 'emarking'). ": " .emarking_get_original_pages($categoryid), 'meantestlenght', 'emarking-area-cost-button-style'),
+        				emarking_buttons_creator(get_string('totalprintedpages', 'emarking'). ": " . emarking_get_total_pages($categoryid), 'totalprintedpages', 'emarking-area-cost-button-style'),
+        				emarking_buttons_creator(get_string('totalprintingcost', 'emarking').": " . '$' .number_format(emarking_get_printing_cost($categoryid)), 'totalprintingcost', 'emarking-totalcost-button-style emarking-area-cost-button-style')
+        		);
+        		echo html_writer::tag('h4',get_string('reportbuttonsheader', 'emarking'),array('style' => 'width:100%;', 'class' => 'emarking-right-table-ranking'));
+        		echo emarking_table_creator(null,array($mainbuttons),array('20%','20%','20%','20%','20%'));
+        		echo html_writer::end_tag('div');
+        	}else{
+        		echo "<div class='card-content red-text'>
+        			<h4>Please install EMarking for this information</h4>
+        			</div>";
+        	}
+        	?>
         		</div>
         		<div class="col s12">
         			<h5><b>Usuarios linkeados a Facebook</b></h5>
@@ -95,37 +101,88 @@ require_once(dirname(__FILE__) . '/header.php');
     </footer>
 <!-- FOOTER -->
 </body>
-
-<script src="js/utimechart.js"></script>
 <script src="js/uresources.js"></script>
 <script>
 $(document).ready(function () {
+
+	 var $dispersionselect = $('#dispersionselect');
+	 var $dataselect = $("#dataselect");
+	 var $datepickerone = $('#datepickerone');
+	 var $datepickertwo = $('#datepickertwo');
+
+	 var datos  = $('#dataselect :selected').val();
+ 	  var dispersion = $('#dispersionselect :selected').val();
+ 	  var datepickerone = $datepickerone.val();
+ 	  var datepickertwo = $datepickertwo.val();
+ 	  	$.ajax({
+ 	  	  	url: 'changeresourceschart.php',
+ 	        data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
+ 	        method: 'POST',
+ 	        success: function (output) {
+ 	        	$( "#utimechart" ).html(output);
+ 	        }
+ 	  	});
+
     //Ajax call for the selected data
-       $('#dispersionselect').change(function () {
+      $dispersionselect.change(function () {
   	  var datos  = $('#dataselect :selected').val();
   	  var dispersion = $('#dispersionselect :selected').val();
+  	  var datepickerone = $datepickerone.val();
+  	  var datepickertwo = $datepickertwo.val();
   	  	$.ajax({
   	  	  	url: 'changeresourceschart.php',
-  	        data: {'select': datos, 'disperssion': dispersion},
+  	        data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
   	        method: 'POST',
   	        success: function (output) {
   	        	$( "#utimechart" ).html(output);
-  	        	alert(output);
   	        }
   	  	});
     });
-    $("#dataselect").change(function () { //Change div of charts
-  	  var datos  = $("#dataselect :selected").val();
-  	  var dispersion = $('#dispersionselect :selected').val();
+       $dataselect.change(function () { //Change div of charts
+    	var datos  = $('#dataselect :selected').val();
+    	var dispersion = $('#dispersionselect :selected').val();
+    	var datepickerone = $datepickerone.val();
+    	var datepickertwo = $datepickertwo.val();
     	$.ajax({
         	url: 'changeresourceschart.php',
-        	data: {'select': datos, 'disperssion': dispersion},
+        	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
         	method: 'POST',
         	success: function (output) {
             	$('#utimechart').html(output);
         	}
   		});
     });
+       $datepickertwo.change(function () { //Change div of charts
+    	  var datos  = $('#dataselect :selected').val();
+    	  var dispersion = $('#dispersionselect :selected').val();
+    	  var datepickerone = $datepickerone.val();
+    	  var datepickertwo = $datepickertwo.val();
+    	   	$.ajax({
+    	       	url: 'changeresourceschart.php',
+    	       	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
+    	       	method: 'POST',
+    	       	success: function (output) {
+    	           	$('#utimechart').html(output);
+    	      }
+    	});
+    });
+       $datepickerone.change(function () { //Change div of charts
+     	  var datos  = $('#dataselect :selected').val();
+     	  var dispersion = $('#dispersionselect :selected').val();
+     	  var datepickerone = $datepickerone.val();
+     	  var datepickertwo = $datepickertwo.val();
+     	   	$.ajax({
+     	       	url: 'changeresourceschart.php',
+     	       	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
+     	       	method: 'POST',
+     	       	success: function (output) {
+     	           	$('#utimechart').html(output);
+     	      }
+     	});
+     });
+     
+    
+
     //load the facebook users chart
     $( "#facebookusers" ).load( "charts/fbusers.php" );
 });

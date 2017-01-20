@@ -113,11 +113,12 @@ function users_info() {
 			$usersdata[3][$positioncount]= (int)0;
 		}
 		if(array_key_exists($time,$coursepersession)) {
-			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
-			
 			if ((int)$coursepersession[$time]->sessions == 0) {
 				$usersdata[4][$positioncount]= (int)0;
+			}else{
+			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
 			}
+			
 		} else {
 			$usersdata[4][$positioncount]= (int)0;
 		}
@@ -169,14 +170,23 @@ function location_table() {
 	return $regions;
 }
 
-//FILL USERS INFO SPARKLINE CHARTS WITH ANY DISPERSSION
-function users_info_disperssion($disperssion) {
+//GET LOCATION COORDINATES FOR MARKERS CLUSTERING (MAP)
+function location_map() {
 	global $DB;
-	if($disperssion == 1){
+	
+	$coordinates = $DB->get_records_sql("SELECT latitude, longitude FROM {dashboard_users_location}");
+	
+	return $coordinates;
+}
+
+//FILL USERS INFO SPARKLINE CHARTS WITH ANY dispersion
+function users_info_dispersion($dispersion) {
+	global $DB;
+	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "-1 month";
 		$datetypephp = "M-Y";
-	} elseif($disperssion == 2){
+	} elseif($dispersion == 2){
 		$datetypesql = '%d-%b-%Y';
 		$dateadd = "-1 day";
 		$datetypephp = "d-M-Y";
@@ -270,14 +280,14 @@ function users_info_disperssion($disperssion) {
 	return $usersdata;
 }
 
-//FILL USERS SESSIONS/DATES CHART WITH ANY DISPERSSION
-function users_sessions_disperssion($disperssion) {
+//FILL USERS SESSIONS/DATES CHART WITH ANY dispersion
+function users_sessions_dispersion($dispersion) {
 	global $DB;
-	if($disperssion == 1){
+	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "+1 month";
 		$datetypephp = "M-Y";
-	} elseif($disperssion == 2){
+	} elseif($dispersion == 2){
 		$datetypesql = '%d-%b-%Y';
 		$dateadd = "+1 day";
 		$datetypephp = "d-M-Y";
@@ -316,14 +326,14 @@ function users_sessions_disperssion($disperssion) {
 	return $sessionsdata;
 }
 
-//FILL USERS AVG TIME SESSIONS/DATES CHART USERS PAGE WITH ANY DISPERSSION
-function users_avgsessions_disperssion($disperssion) {
+//FILL USERS AVG TIME SESSIONS/DATES CHART USERS PAGE WITH ANY dispersion
+function users_avgsessions_dispersion($dispersion) {
 	global $DB;
-	if($disperssion == 1){
+	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "+1 month";
 		$datetypephp = "M-Y";
-	} elseif($disperssion == 2){
+	} elseif($dispersion == 2){
 		$datetypesql = '%d-%b-%Y';
 		$dateadd = "+1 day";
 		$datetypephp = "d-M-Y";
@@ -362,14 +372,14 @@ function users_avgsessions_disperssion($disperssion) {
 	return $avgtimedata;
 }
 
-//FILL USERS/DATES CHART USERS PAGE WITH ANY DISPERSSION
-function users_dates_disperssion($disperssion) {
+//FILL USERS/DATES CHART USERS PAGE WITH ANY dispersion
+function users_dates_dispersion($dispersion) {
 	global $DB;
-	if($disperssion == 1){
+	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "+1 month";
 		$datetypephp = "M-Y";
-	} elseif($disperssion == 2){
+	} elseif($dispersion == 2){
 		$datetypesql = '%d-%b-%Y';
 		$dateadd = "+1 day";
 		$datetypephp = "d-M-Y";
@@ -408,14 +418,14 @@ function users_dates_disperssion($disperssion) {
 	return $usersdata;
 }
 
-//FILL NEW USERS/DATES CHART USERS PAGE WITH ANY DISPERSSION
-function newusers_dates_disperssion($disperssion) {
+//FILL NEW USERS/DATES CHART USERS PAGE WITH ANY dispersion
+function newusers_dates_dispersion($dispersion) {
 	global $DB;
-	if($disperssion == 1){
+	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "+1 month";
 		$datetypephp = "M-Y";
-	} elseif($disperssion == 2){
+	} elseif($dispersion == 2){
 		$datetypesql = '%d-%b-%Y';
 		$dateadd = "+1 day";
 		$datetypephp = "d-M-Y";
@@ -454,14 +464,14 @@ function newusers_dates_disperssion($disperssion) {
 	return $newusersdata;
 }
 
-//FILL COURSE VIEWS/DATES CHART USERS PAGE WITH ANY DISPERSSION
-function courseview_dates_disperssion($disperssion) {
+//FILL COURSE VIEWS/DATES CHART USERS PAGE WITH ANY dispersion
+function courseview_dates_dispersion($dispersion) {
 	global $DB;
-	if($disperssion == 1){
+	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "+1 month";
 		$datetypephp = "M-Y";
-	} elseif($disperssion == 2){
+	} elseif($dispersion == 2){
 		$datetypesql = '%d-%b-%Y';
 		$dateadd = "+1 day";
 		$datetypephp = "d-M-Y";
@@ -504,13 +514,13 @@ function dashboard_getresourcemoduleid(){
 	$modules = $DB->get_records('modules');
 	return $modules;
 }
-function dashboard_resourcedata($resourceid, $disperssion, $initialdate = null, $enddate = null){
+function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $enddate = null){
 	global $DB;
-	if($disperssion == 1){
+	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "+1 month";
 		$datetypephp = "M-Y";
-	} elseif($disperssion == 2){
+	} elseif($dispersion == 2){
 		$datetypesql = '%d-%b-%Y';
 		$dateadd = "+1 day";
 		$datetypephp = "d-M-Y";
@@ -519,7 +529,7 @@ function dashboard_resourcedata($resourceid, $disperssion, $initialdate = null, 
 		$dateadd = "+1 hour";
 		$datetypephp = "d-M-Y H:00:00";
 	}
-	$parameters = array(
+	$timeparameters = array(
 			$resourceid
 	);
 	
@@ -527,9 +537,19 @@ function dashboard_resourcedata($resourceid, $disperssion, $initialdate = null, 
 				DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
 				DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 			    FROM {dashboard_resources}
-				WHERE resourceid = ?";
+				WHERE resourceid = ? ";
 	
-	$timevalues = $DB->get_record_sql($timequery, $parameters);
+	if($initialdate !== null AND $enddate !== null){
+		$timeparameters[] = $initialdate;
+		$timeparameters[] = $enddate;
+		$timequery .= " AND time BETWEEN ? AND ? ";
+	}
+	
+	$timevalues = $DB->get_record_sql($timequery, $timeparameters);
+	
+	$parameters = array(
+			$resourceid
+	);
 	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, activity, amountcreated
 			FROM {dashboard_resources}
 			WHERE resourceid = ?";
