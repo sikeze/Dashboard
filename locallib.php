@@ -485,7 +485,7 @@ function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $
 	$parameters = array(
 			$resourceid
 	);
-	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, activity, amountcreated
+	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, SUM(activity) as activity, amountcreated
 			FROM {dashboard_resources}
 			WHERE resourceid = ?";
 	if($initialdate !== null AND $enddate !== null){
