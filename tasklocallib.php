@@ -409,31 +409,31 @@ function dashboard_resourcesdata (){
 	//PAPERATTENDANCE
 
 
-	/*	$querypaper="SELECT CONCAT(d.lastmodified,d.courseid),d.lastmodified AS time,d.courseid AS courseid,activity,IFNULL(amountcreated,0) AS amountcreated
-	 FROM (SELECT count(*) AS activity, courseid, lastmodified
-	 FROM (SELECT s.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session as s
-	 UNION ALL
-	 SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session AS s1
-	 INNER JOIN mdl_paperattendance_presence AS p1 ON (s1.id=p1.sessionid)
-	 UNION ALL
-	 SELECT s2.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d2.timecreated),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session AS s2
-	 INNER JOIN mdl_paperattendance_presence AS p2 ON (s2.id=p2.sessionid)
-	 INNER JOIN mdl_paperattendance_discussion AS d2 ON (p2.id=d2.presenceid)
-	 UNION ALL
-	 SELECT s3.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d3.timemodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session AS s3
-	 INNER JOIN mdl_paperattendance_presence AS p3 ON (s3.id=p3.sessionid)
-	 INNER JOIN mdl_paperattendance_discussion AS d3 ON (p3.id=d3.presenceid)) AS a
-	 GROUP BY courseid,lastmodified) as d
-	 LEFT JOIN
-	 (SELECT count(*) AS amountcreated,courseid,lastmodified
-	 FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session as s5) as b
-	 GROUP BY courseid,lastmodified)
-	 AS c ON (c.courseid=d.courseid) AND (c.lastmodified=d.lastmodified)";
+	$querypaper="SELECT CONCAT(d.lastmodified,d.courseid),d.lastmodified AS time,d.courseid AS courseid,activity,IFNULL(amountcreated,0) AS amountcreated
+			 FROM (SELECT count(*) AS activity, courseid, lastmodified
+			 FROM (SELECT s.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+			 FROM mdl_paperattendance_session as s
+			 UNION ALL
+			 SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+			 FROM mdl_paperattendance_session AS s1
+			 INNER JOIN mdl_paperattendance_presence AS p1 ON (s1.id=p1.sessionid)
+			 UNION ALL
+			 SELECT s2.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d2.timecreated),'%d-%c-%Y %H:00:00') AS lastmodified
+			 FROM mdl_paperattendance_session AS s2
+			 INNER JOIN mdl_paperattendance_presence AS p2 ON (s2.id=p2.sessionid)
+			 INNER JOIN mdl_paperattendance_discussion AS d2 ON (p2.id=d2.presenceid)
+			 UNION ALL
+			 SELECT s3.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d3.timemodified),'%d-%c-%Y %H:00:00') AS lastmodified
+			 FROM mdl_paperattendance_session AS s3
+			 INNER JOIN mdl_paperattendance_presence AS p3 ON (s3.id=p3.sessionid)
+			 INNER JOIN mdl_paperattendance_discussion AS d3 ON (p3.id=d3.presenceid)) AS a
+			 GROUP BY courseid,lastmodified) as d
+			 LEFT JOIN
+			 (SELECT count(*) AS amountcreated,courseid,lastmodified
+			 FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+			 FROM mdl_paperattendance_session as s5) as b
+			 GROUP BY courseid,lastmodified)
+			 AS c ON (c.courseid=d.courseid) AND (c.lastmodified=d.lastmodified)";
 	 $paperdata =$DB->get_records_sql($querypaper);
 	 foreach ($paperdata AS $data){
 		$currentdata = new stdClass();
@@ -447,18 +447,13 @@ function dashboard_resourcesdata (){
 		}else if ($currentdata->time==$lasttimeresourcesdata){
 		$arrayupdate[] = $currentdata;
 		}
-		}
+	 }
 
-*/
+
 
 		//TURNITIN
 
-
-
-
-		if(file_exists($turnitinlib)){
-
-		$queryturnitin="SELECT CONCAT(a.time,a.course),a.time AS time,a.course AS courseid,activity,IFNULL(amountcreated,0) AS amountcreated
+	 $queryturnitin="SELECT CONCAT(a.time,a.course),a.time AS time,a.course AS courseid,activity,IFNULL(amountcreated,0) AS amountcreated
 		FROM (SELECT count(id) AS activity, time, course
 		FROM (SELECT t.id AS id,
 		DATE_FORMAT(FROM_UNIXTIME(t.timecreated),'%d-%c-%Y %H:00:00') AS time,t.course AS course
@@ -493,9 +488,7 @@ function dashboard_resourcesdata (){
 
 		}
 
-		}
-
-		
+	
 	//EMARKING
 
 	/*
