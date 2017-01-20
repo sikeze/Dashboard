@@ -100,12 +100,11 @@ function users_info() {
 			$usersdata[3][$positioncount]= (int)0;
 		}
 		if(array_key_exists($time,$coursepersession)) {
+			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
+				
 			if ((int)$coursepersession[$time]->sessions == 0) {
 				$usersdata[4][$positioncount]= (int)0;
-			}else{
-			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
 			}
-			
 		} else {
 			$usersdata[4][$positioncount]= (int)0;
 		}
@@ -143,6 +142,7 @@ function location_table() {
 	$regions = $DB->get_records_sql("SELECT city, COUNT(userid) as usersid
 									 FROM {dashboard_users_location}
 									 GROUP BY city");
+	
 	return $regions;
 }
 //GET LOCATION COORDINATES FOR MARKERS CLUSTERING (MAP)
@@ -150,6 +150,7 @@ function location_map() {
 	global $DB;
 
 	$coordinates = $DB->get_records_sql("SELECT id, latitude, longitude FROM {dashboard_users_location}");
+	
 
 	return $coordinates;
 }
