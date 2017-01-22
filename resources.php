@@ -179,6 +179,7 @@ $(document).ready(function () {
       	       	method: 'POST',
       	       	success: function (output) {
       	           	$('#utimechart').html(output);
+      	           	alert(output);
       	      }
       	});
       });	

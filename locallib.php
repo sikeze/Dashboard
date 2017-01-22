@@ -514,3 +514,13 @@ function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $
 	}
 	return $courseviewsdata;
 }
+function dashboard_getfacebookusers() {
+	global $DB;
+	//Get the amount of moodle users who has access the platform (firstaccess diferent from 0)
+	$moodleusers = $DB->get_record_sql('SELECT COUNT(id) as totalusers FROM {user} WHERE firstaccess != ?', array(0));
+	//Get the amount of facebook active users who has access status = 1 (active)
+	$facebookusers = $DB->get_record_sql('SELECT COUNT(id) as facebookusers FROM {facebook_user} WHERE status = ?', array(1));
+	
+	return $faebookusers->facebookusers/$moodleusers->totalusers;
+	
+}

@@ -5,6 +5,7 @@ $select = $_POST['select'];
 $disperssion = $_POST['disperssion'];
 $initialdate = $_POST['initialdate'];
 $enddate = $_POST['enddate'];
+
 if($enddate == '' OR $initialdate == ''){
 	$enddate = null;
 	$initialdate = null;
@@ -42,6 +43,8 @@ if($select == 0){
   }
     </script>";
 }else{
+	$dataname = $DB->get_record('modules', array('id'=>$select));
+	var_dump($dataname);
 		echo "
 				<script>
 					google.charts.load('current', {packages: ['corechart', 'bar']});
@@ -51,14 +54,13 @@ if($select == 0){
 
       					var data = new google.visualization.DataTable();
       					data.addColumn('string', 'Time of Day');
-      					data.addColumn('number', 'Motivation Level');
+      					data.addColumn('number', '$dataname->name');
 
       					data.addRows(".json_encode(dashboard_resourcedata($select,$disperssion, $initialdate, $enddate)).")
 
       					var options = {
-        					title: 'Motivation Level Throughout the Day',
         					hAxis: {
-          						title: 'Time of Day',
+          						title: 'Date',
         					},
         					vAxis: {
         					}
