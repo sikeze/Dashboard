@@ -81,8 +81,8 @@ $string ['links'] = 'More Links';
 
 
 
-
-
+//settings
+$string['settings'] = 'Configuración Basica';	
 //task
 $string['sessiontask']="Fill sessions";
 
