@@ -58,6 +58,10 @@ switch ($select) {
 					});
 					data.addRows(datos);
 					var options = {
+						chartArea: {
+			       			top: 28,
+			       			height: '50%'
+			    		},
 						hAxis: {
 							title: '".get_string('date','local_dashboard')."',
 							textStyle: {fontSize: 9}
@@ -85,6 +89,10 @@ switch ($select) {
 					});
 					data.addRows(datos);
 					var options = {
+						chartArea: {
+			       			top: 28,
+			       			height: '50%'
+			    		},
 						hAxis: {
 							title: '".get_string('date','local_dashboard')."',
 							textStyle: {fontSize: 9}
@@ -112,6 +120,10 @@ switch ($select) {
 					});
 					data.addRows(datos);
 					var options = {
+						chartArea: {
+			       			top: 28,
+			       			height: '50%'
+			    		},
 						hAxis: {
 							title: '".get_string('date','local_dashboard')."',
 							textStyle: {fontSize: 9}
@@ -139,6 +151,10 @@ switch ($select) {
 					});
 					data.addRows(datos);
 					var options = {
+						chartArea: {
+			       			top: 28,
+			       			height: '50%'
+			    		},
 						hAxis: {
 							title: '".get_string('date','local_dashboard')."',
 							textStyle: {fontSize: 9}
