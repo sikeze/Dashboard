@@ -36,12 +36,12 @@ defined('MOODLE_INTERNAL') || die();
  * @param int $oldversion
  * @return bool
  */
-function xmldb_emarking_upgrade($oldversion) {
+function xmldb_local_dashboard_upgrade($oldversion) {
 	global $DB;
 	// Loads ddl manager and xmldb classes.
 	$dbman = $DB->get_manager();
 	
-	if ($oldversion < 2017012302) {
+	if ($oldversion < 2017012303) {
 	
 		// Define table dashboard_turnitin to be created.
 		$table = new xmldb_table('dashboard_turnitin');
@@ -62,10 +62,10 @@ function xmldb_emarking_upgrade($oldversion) {
 		}
 	
 		// Dashboard savepoint reached.
-		upgrade_plugin_savepoint(true, 2017012302, 'local', 'dashboard');
+		upgrade_plugin_savepoint(true, 2017012303, 'local', 'dashboard');
 	}
 	
-	if ($oldversion < 2017012302) {
+	if ($oldversion < 2017012303) {
 	
 		// Define table dashboard_emarking to be created.
 		$table = new xmldb_table('dashboard_emarking');
@@ -88,9 +88,33 @@ function xmldb_emarking_upgrade($oldversion) {
 		}
 	
 		// Dashboard savepoint reached.
-		upgrade_plugin_savepoint(true, 2017012302, 'local', 'dashboard');
+		upgrade_plugin_savepoint(true, 2017012303, 'local', 'dashboard');
 	}
 	
+	if ($oldversion < 2017012303) {
+	
+		// Define table dashboard_paperattendance to be created.
+		$table = new xmldb_table('dashboard_paperattendance');
+	
+		// Adding fields to table dashboard_paperattendance.
+		$table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+		$table->add_field('time', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+		$table->add_field('courseid', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+		$table->add_field('amountcreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+		$table->add_field('presence', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+		$table->add_field('discussion', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+	
+		// Adding keys to table dashboard_paperattendance.
+		$table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+	
+		// Conditionally launch create table for dashboard_paperattendance.
+		if (!$dbman->table_exists($table)) {
+			$dbman->create_table($table);
+		}
+	
+		// Dashboard savepoint reached.
+		upgrade_plugin_savepoint(true, 2017012303, 'local', 'dashboard');
+	}
 	
 	return true;
 	}
