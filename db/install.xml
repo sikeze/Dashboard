@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/dashboard/db" VERSION="20170113" COMMENT="XMLDB file for Moodle local/dashboard"
+<XMLDB PATH="local/dashboard/db" VERSION="20170123" COMMENT="XMLDB file for Moodle local/dashboard"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -53,6 +53,32 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id" COMMENT="course id of the activity"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="dashboard_turnitin" COMMENT="This table is used to save the turnitin usage">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="time" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="moment of the action"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="amountcreated" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="useramount" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="count the amount of users using turnitin"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="dashboard_emarking" COMMENT="this table is use to save the emarking usage">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="time" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="the course id"/>
+        <FIELD NAME="amountcreated" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="digitalized" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="corrections" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="publish" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
   </TABLES>
