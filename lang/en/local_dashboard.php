@@ -73,7 +73,6 @@ $string ['options'] = 'Options';
 $string ['monthly'] = 'Monthly';
 $string ['daily'] = 'Daily';
 $string ['hour'] = 'Hour';
-$string ['choose'] = 'Choose your data';
 $string ['copyright'] = '© 2017 Copyright Text';
 $string ['links'] = 'More Links';
 

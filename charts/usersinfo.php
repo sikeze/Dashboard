@@ -1,9 +1,8 @@
-<?php 
-$usersinfo  = $_POST['users'];
-$labels = $_POST['labels'];
+<?php
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
-
+$dispersion = $_POST['dispersion'];
+$labels = $_POST['labels'];
 ?>
 <!-- Labels array index represent the info that we need for every sparkline -->
 <div class="col s12">
@@ -12,7 +11,7 @@ require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 <div id="sessions"  overflow: auto;></div>
 </div>
 <div class="col s4 l4 card hoverable widget" overflow: auto;>
-<?php echo get_string('avgtime','local_dashboard')."<br>".gmdate("H:i:s",$labels[1]);?>  <!-- No toma más de 86400 segundos -->
+<?php echo get_string('avgtime','local_dashboard')."<br>".gmdate("H:i:s",$labels[1]);?> <!-- No toma más de 86400 segundos -->
 <div id="sessionduration"  overflow: auto;></div>
 </div>
 <div class ="col s4 l4 card hoverable widget" overflow:auto;>
@@ -36,34 +35,36 @@ require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 </div>
 </div>
 
-
+<?php 
+echo "
 <script>
-var data =  <?php echo json_encode($usersinfo);?>;
+var data_dispersion =".json_encode(users_info_dispersion($dispersion))."
 //Data array index represent if the info we need is for sessions or courseviews, etc.
 $(document).ready(function () {
-	$("#sessions").sparkline(data[0], {
+	$('#sessions').sparkline(data_dispersion[0], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: true});
-	$("#users").sparkline(data[2], {
+	$('#users').sparkline(data_dispersion[2], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#courseviews").sparkline(data[3], {
+	$('#courseviews').sparkline(data_dispersion[3], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#coursesession").sparkline(data[4], {
+	$('#coursesession').sparkline(data_dispersion[4], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#sessionduration").sparkline(data[1], {
+	$('#sessionduration').sparkline(data_dispersion[1], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
-	$("#newusers").sparkline(data[5], {
+	$('#newusers').sparkline(data_dispersion[5], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
 });
-	</script>
+</script>";
+?>

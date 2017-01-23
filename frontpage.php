@@ -63,12 +63,12 @@ require_once(dirname(__FILE__) . '/header.php');
 <script src="js/turnitinchart.js"></script>
 <script src="js/resourcebarchart.js"></script>
 <script>
-var users_info = <?php echo json_encode(users_info());?>;
 var users_labels = <?php echo json_encode(users_info_labels());?>;
+var dispersion = $('#dispersionselect :selected').val();
 	$(document).ready(function () {
 		$.ajax({
 	        url: 'charts/usersinfo.php',
-	        data: {users: users_info, labels: users_labels},
+	        data: {'dispersion': dispersion, 'labels': users_labels},
 	        method: 'POST',
 	        success: function (output) {
 	        	$( "#userinfo" ).html(output);
@@ -77,7 +77,7 @@ var users_labels = <?php echo json_encode(users_info_labels());?>;
 		$('#dispersionselect').change(function () {
 		  	var dispersion = $('#dispersionselect :selected').val();
 		  	$.ajax({
-	  	  	  	url: 'charts/changeusersinfo.php',
+	  	  	  	url: 'charts/usersinfo.php',
 	  	        data: {'dispersion': dispersion, 'labels':users_labels},
 	  	        method: 'POST',
 	  	        success: function (output) {
