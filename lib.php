@@ -51,12 +51,3 @@ define('RESOURCES_TYPE_EMARKING', 24);
 //THE ID FOR PAPERATTENDANCE IS 1000 BECAUSE PAPERATTENANCE DON'T HAVE AN ID IN THE TABLE MDL_MODULES
 define('RESOURCES_TYPE_PAPERATTENDANCE', 1000);
 
-function dashboard_getmodules(){
-	global $DB;
-	$modules = $DB->get_records('modules');
-	$modulesarray = array();
-	foreach($modules as $module){
-		$modulesarray[] = $module->name; 
-	}
-	return $modulesarray;
-}
