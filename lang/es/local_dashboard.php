@@ -46,7 +46,6 @@ $string ['seconds'] = 'Segundos';
 $string ['resource_tittle'] = '<b>Recursos</b>';
 $string ['dispersion'] = 'Opciones de Dispersión';
 $string ['options'] = 'Opciones';
-$string ['choose'] = 'Seleccione los datos';
 $string ['datasel'] = 'Selección de Datos';
 $string ['monthly'] = 'Mensual';
 $string ['daily'] = 'Diario';

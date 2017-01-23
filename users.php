@@ -56,10 +56,7 @@ require_once(dirname(__FILE__) . '/header.php');
         
 	<!-- Location Maps-->
 	<script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>
-    	<div class="row">
-        	<div id="ubicationmap" class="col s12" overflow:auto;>
-        	</div>
-        </div> 
+    	<div id="maps" class="row"></div> 
         
     <!-- Location Table --> 
     	<div class="row">
@@ -81,7 +78,6 @@ require_once(dirname(__FILE__) . '/header.php');
 
 <script>
 //Send function tu userschart and fill the chart
-var users_info = <?php echo json_encode(users_info());?>;
 var users_labels = <?php echo json_encode(users_info_labels());?>;
 
 var $dispersionselect = $('#dispersionselect');
@@ -95,28 +91,28 @@ $(document).ready(function () {
 	var datepickerone = $datepickerone.val();
 	var datepickertwo = $datepickertwo.val();
 		$.ajax({
-	  		url: 'charts/changeuserschart.php',
+	  		url: 'charts/userschart.php',
 	        data: {'select': datos, 'dispersion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
 	        method: 'POST',
 	        success: function (output) {
 	        	$( "#userschart" ).html(output);
 	        }
 	  	});
-    $.ajax({
-        url: 'charts/usersinfo.php',
-        data: {users: users_info, labels: users_labels},
-        method: 'POST',
-        success: function (output) {
-        	$( "#userinfo" ).html(output);
-        }
-  	});
+	  	$.ajax({
+		  	url: 'charts/usersinfo.php',
+		  	data: {'dispersion': dispersion, 'labels': users_labels},
+		  	method: 'POST',
+		  	success: function (output) {
+			  	$("#userinfo").html(output);
+		  	}
+	  	});
     $('#dispersionselect').change(function () {
   	  var datos  = $('#dataselect :selected').val();
   	  var dispersion = $('#dispersionselect :selected').val();
   	  var datepickerone = $datepickerone.val();
 	  var datepickertwo = $datepickertwo.val();
   	  	$.ajax({
-  	  	  	url: 'charts/changeuserschart.php',
+  	  	  	url: 'charts/userschart.php',
   	        data: {'select': datos, 'dispersion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
   	        method: 'POST',
   	        success: function (output) {
@@ -124,7 +120,7 @@ $(document).ready(function () {
   	        }
   	  	});
   	  	$.ajax({
-  	  	  	url: 'charts/changeusersinfo.php',
+  	  	  	url: 'charts/usersinfo.php',
   	        data: {'dispersion': dispersion, 'labels':users_labels},
   	        method: 'POST',
   	        success: function (output) {
@@ -136,7 +132,7 @@ $(document).ready(function () {
   	  var datos  = $("#dataselect :selected").val();
   	  var dispersion = $('#dispersionselect :selected').val();
     	$.ajax({
-        	url: 'charts/changeuserschart.php',
+        	url: 'charts/userschart.php',
         	data: {'select': datos, 'dispersion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
         	method: 'POST',
         	success: function (output) {
@@ -145,7 +141,7 @@ $(document).ready(function () {
   		});
     });
     $( "#locationtable" ).load( "charts/locationtable.php" );
-    $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
+    $( "#maps" ).load( "charts/ubicationmap.php" );
 });
 </script>
 </html>
