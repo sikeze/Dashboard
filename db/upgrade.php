@@ -91,7 +91,7 @@ function xmldb_local_dashboard_upgrade($oldversion) {
 		upgrade_plugin_savepoint(true, 2017012303, 'local', 'dashboard');
 	}
 	
-	if ($oldversion < 2017012303) {
+	if ($oldversion < 2017012305) {
 	
 		// Define table dashboard_paperattendance to be created.
 		$table = new xmldb_table('dashboard_paperattendance');
@@ -113,7 +113,7 @@ function xmldb_local_dashboard_upgrade($oldversion) {
 		}
 	
 		// Dashboard savepoint reached.
-		upgrade_plugin_savepoint(true, 2017012303, 'local', 'dashboard');
+		upgrade_plugin_savepoint(true, 2017012305, 'local', 'dashboard');
 	}
 	
 	return true;
