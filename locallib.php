@@ -100,12 +100,11 @@ function users_info() {
 			$usersdata[3][$positioncount]= (int)0;
 		}
 		if(array_key_exists($time,$coursepersession)) {
+			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
+				
 			if ((int)$coursepersession[$time]->sessions == 0) {
 				$usersdata[4][$positioncount]= (int)0;
-			}else{
-			$usersdata[4][$positioncount]= round(((int)$coursepersession[$time]->courseviews)/((int)$coursepersession[$time]->sessions),3);
 			}
-			
 		} else {
 			$usersdata[4][$positioncount]= (int)0;
 		}
@@ -143,6 +142,7 @@ function location_table() {
 	$regions = $DB->get_records_sql("SELECT city, COUNT(userid) as usersid
 									 FROM {dashboard_users_location}
 									 GROUP BY city");
+	
 	return $regions;
 }
 //GET LOCATION COORDINATES FOR MARKERS CLUSTERING (MAP)
@@ -150,6 +150,7 @@ function location_map() {
 	global $DB;
 
 	$coordinates = $DB->get_records_sql("SELECT id, latitude, longitude FROM {dashboard_users_location}");
+	
 
 	return $coordinates;
 }
@@ -485,7 +486,10 @@ function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $
 	$parameters = array(
 			$resourceid
 	);
-	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, activity, amountcreated
+	$query = "SELECT 
+			DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,
+			SUM(activity) as activity,
+			amountcreated
 			FROM {dashboard_resources}
 			WHERE resourceid = ?";
 	if($initialdate !== null AND $enddate !== null){
@@ -512,4 +516,84 @@ function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $
 		$positioncount++;
 	}
 	return $courseviewsdata;
+}
+function dashboard_allresourcesdata($dispersion, $initialdate = null, $enddate = null){
+	global $DB;
+	if($dispersion == 1){
+		$datetypesql = '%b-%Y';
+		$dateadd = "+1 month";
+		$datetypephp = "M-Y";
+	} elseif($dispersion == 2){
+		$datetypesql = '%d-%b-%Y';
+		$dateadd = "+1 day";
+		$datetypephp = "d-M-Y";
+	} else{
+		$datetypesql = '%d-%b-%Y %H:00:00';
+		$dateadd = "+1 hour";
+		$datetypephp = "d-M-Y H:00:00";
+	}
+	
+	$timequery = "SELECT
+				DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
+				DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
+			    FROM {dashboard_resources} ";
+	
+	if($initialdate !== null AND $enddate !== null){
+		$timeparameters[] = $initialdate;
+		$timeparameters[] = $enddate;
+		$timequery .= " WHERE time BETWEEN ? AND ? ";
+		$timevalues = $DB->get_record_sql($timequery, $timeparameters);
+	}else{
+		$timevalues = $DB->get_record_sql($timequery);
+	}
+	
+	$modules = dashboard_getresourcemoduleid();
+	
+	$resourceposition = 1;
+	$courseviewsdata = array();
+	foreach($modules as $module){
+		$parameters = array(
+				$module->id
+		);
+		
+		$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, SUM(activity) as activity, amountcreated
+			FROM {dashboard_resources}
+			WHERE resourceid = ?";
+		
+		if($initialdate !== null AND $enddate !== null){
+			$parameters[] = $initialdate;
+			$parameters[] = $enddate;
+			$query .= "AND time BETWEEN ? AND ? ";
+		}
+		
+		$query = $query." GROUP BY times";
+		
+		$resourcedata = $DB->get_records_sql($query, $parameters);
+		$time = $timevalues->mintime;
+		
+		$positioncount = 0;
+		while(strtotime($time)<=strtotime($timevalues->maxtime)) {
+			if(array_key_exists($time,$resourcedata)) {
+				$courseviewsdata[$positioncount][0] = $time;
+				$courseviewsdata[$positioncount][$resourceposition] = (int)$resourcedata[$time]->activity;
+			} else {
+				$courseviewsdata[$positioncount][0] = $time;
+				$courseviewsdata[$positioncount][$resourceposition] = (int)0;
+			}
+			$time = date($datetypephp,strtotime($time.$dateadd));
+			$positioncount++;
+		}
+		$resourceposition++;
+	}
+	return $courseviewsdata;
+}
+function dashboard_getfacebookusers() {
+	global $DB;
+	//Get the amount of moodle users who has access the platform (firstaccess diferent from 0)
+	$moodleusers = $DB->get_record_sql('SELECT COUNT(id) as totalusers FROM {user} WHERE firstaccess != ?', array(0));
+	//Get the amount of facebook active users who has access status = 1 (active)
+	$facebookusers = $DB->get_record_sql('SELECT COUNT(id) as facebookusers FROM {facebook_user} WHERE status = ?', array(1));
+	
+	return $faebookusers->facebookusers/$moodleusers->totalusers;
+	
 }
