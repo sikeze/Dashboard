@@ -65,7 +65,7 @@ function xmldb_local_dashboard_upgrade($oldversion) {
 		upgrade_plugin_savepoint(true, 2017012303, 'local', 'dashboard');
 	}
 	
-	if ($oldversion < 2017012303) {
+	if ($oldversion < 2017012304) {
 	
 		// Define table dashboard_emarking to be created.
 		$table = new xmldb_table('dashboard_emarking');
@@ -88,7 +88,7 @@ function xmldb_local_dashboard_upgrade($oldversion) {
 		}
 	
 		// Dashboard savepoint reached.
-		upgrade_plugin_savepoint(true, 2017012303, 'local', 'dashboard');
+		upgrade_plugin_savepoint(true, 2017012304, 'local', 'dashboard');
 	}
 	
 	if ($oldversion < 2017012305) {

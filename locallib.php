@@ -348,12 +348,20 @@ function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $
 	
 	// Position caount used to get the array in google chart format
 	$positioncount = 0;
-	$time = $timevalues->mintime;
+	if($initialdate !== null){
+		$time = date($datetypephp,$initialdate);
+	}else{
+		$time = $timevalues->mintime;
+	}
+	if($enddate !== null){
+		$maxtime = $enddate;
+	}else{
+		$maxtime = strtotime($timevalues->maxtime);
+	}	
 	$resourcearray = array();
-	$time = $timevalues->mintime;
 	
 	//go throw each day,hour,month depending on dispersion, until it reach the maxtime 
-	while(strtotime($time)<=strtotime($timevalues->maxtime)) {
+	while(strtotime($time)<=$maxtime) {
 		if(array_key_exists($time,$resourcedata)) {
 			$resourcearray[$positioncount][0] = $time;
 			$resourcearray[$positioncount][1] = (int)$resourcedata[$time]->activity;
@@ -390,20 +398,16 @@ function dashboard_allresourcesdata($dispersion, $initialdate = null, $enddate =
 		$dateadd = "+1 hour";
 		$datetypephp = "d-M-Y H:00:00";
 	}
+	
 	// Query that get the time range
 	$timequery = "SELECT
 				DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
 				DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 			    FROM {dashboard_resources} ";
 	//check if there is a date
-	if($initialdate !== null AND $enddate !== null){
-		$timeparameters[] = $initialdate;
-		$timeparameters[] = $enddate;
-		$timequery .= " WHERE time BETWEEN ? AND ? ";
-		$timevalues = $DB->get_record_sql($timequery, $timeparameters);
-	}else{
-		$timevalues = $DB->get_record_sql($timequery);
-	}
+	$timevalues = $DB->get_record_sql($timequery);
+	
+	$time = $timevalues->mintime;
 	
 	$modules = explode(',',$CFG->dashboard_resourcetypes);
 	list ( $sqlin, $parametros ) = $DB->get_in_or_equal ( $modules );
@@ -434,11 +438,19 @@ function dashboard_allresourcesdata($dispersion, $initialdate = null, $enddate =
 		
 		//get the resource data
 		$resourcedata = $DB->get_records_sql($query, $parameters);
-		
-		$time = $timevalues->mintime;
+		if($initialdate !== null){
+			$time = date($datetypephp,$initialdate);
+		}else{
+			$time = $timevalues->mintime;
+		}
+		if($enddate !== null){
+			$maxtime = $enddate;
+		}else{
+			$maxtime = strtotime($timevalues->maxtime);
+		}
 		$positioncount = 0;
 		//go throw each day,hour,month depending on dispersion, until it reach the maxtime
-		while(strtotime($time)<=strtotime($timevalues->maxtime)) {
+		while(strtotime($time)<=$maxtime) {
 			if(array_key_exists($time,$resourcedata)) {
 				$resourcearray[$positioncount][0] = $time;
 				$resourcearray[$positioncount][$resourceposition] = (int)$resourcedata[$time]->activity;
