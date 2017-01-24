@@ -493,7 +493,7 @@ function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $
  * @return array[array[]]
  */
 function dashboard_allresourcesdata($dispersion, $initialdate = null, $enddate = null){
-	global $DB;
+	global $DB, $CFG;
 	// set the dispersion
 	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
@@ -523,13 +523,15 @@ function dashboard_allresourcesdata($dispersion, $initialdate = null, $enddate =
 		$timevalues = $DB->get_record_sql($timequery);
 	}
 	
-	//get the modules id from moodle
-	$modules = dashboard_getresourcemoduleid();
+	$modules = explode(',',$CFG->dashboard_resourcetypes);
+	list ( $sqlin, $parametros ) = $DB->get_in_or_equal ( $modules );
+	
+	$modulesdata = $DB->get_records_sql("SELECT * FROM {modules} WHERE name $sqlin",$parametros);
 	
 	//use to get the resouece in a specific position in the array
 	$resourceposition = 1;
 	$resourcearray = array();
-	foreach($modules as $module){
+	foreach($modulesdata as $module){
 		$parameters = array(
 				$module->id
 		);
@@ -580,6 +582,6 @@ function dashboard_getfacebookusers() {
 	//Get the amount of facebook active users who has access status = 1 (active)
 	$facebookusers = $DB->get_record_sql('SELECT COUNT(id) as facebookusers FROM {facebook_user} WHERE status = ?', array(1));
 	
-	return $faebookusers->facebookusers/$moodleusers->totalusers;
+	return $facebookusers->facebookusers/$moodleusers->totalusers;
 	
 }

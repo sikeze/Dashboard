@@ -21,9 +21,12 @@ require_once(dirname(__FILE__) . '/header.php');
 			<div class="input-field left-align col s4 blue-text">
         		<select id="dataselect">
         		<?php 
-        		$modules = dashboard_getresourcemoduleid();
+        		$modules = explode(',',$CFG->dashboard_resourcetypes);
+        		list ( $sqlin, $parametros ) = $DB->get_in_or_equal ( $modules );
+        		
+        		$modulesdata = $DB->get_records_sql("SELECT * FROM {modules} WHERE name $sqlin",$parametros);
         		echo "<option value='0'><span class='blue-text'>".get_string('all', 'local_dashboard')."</span></option>";
-    			foreach($modules as $module){
+    			foreach($modulesdata as $module){
         			echo "<option value=".$module->id."><span class='blue-text'>".get_string("$module->name", 'local_dashboard')."</span></option>";
         		}
         		?>
@@ -58,7 +61,9 @@ require_once(dirname(__FILE__) . '/header.php');
         		<div class = "col s12">
         		<!-- EMarking costs center buttons -->
         		<?php 
+        		require_once($CFG->dirroot."/mod/emarking/lib.php");
         		require_once($CFG->dirroot."/mod/emarking/reports/locallib.php");
+        		$categoryid = 1;
 				echo " <a class='waves-effect waves-light btn'>".get_string('meanexamlength', 'emarking').": ".emarking_get_original_pages($categoryid)."</a>
 						<a class='waves-effect waves-light btn'>".get_string('totalprintedpages', 'emarking'). ": " . emarking_get_total_pages($categoryid)."</a>
 						<a class='waves-effect waves-light btn'>".get_string('totalprintingcost', 'emarking').": " . '$' .number_format(emarking_get_printing_cost($categoryid))."</a>
@@ -85,7 +90,6 @@ require_once(dirname(__FILE__) . '/header.php');
     </footer>
 <!-- FOOTER -->
 </body>
-<script src="js/uresources.js"></script>
 <script>
 // Wait for the document to load
 $(document).ready(function () {
@@ -187,6 +191,7 @@ $(document).ready(function () {
       	       	method: 'POST',
       	       	success: function (output) {
       	           	$('#utimechart').html(output);
+      	           	alert(output);
       	      }
       	});
       });	

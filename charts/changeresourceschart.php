@@ -19,8 +19,12 @@ if($enddate == '' OR $initialdate == ''){
 }
 // if select = 0 means that user want all the resources
 if($select == 0){
-	global $DB;
-	$modules = $DB->get_records('modules');
+	global $DB, $CFG;
+
+	$modules = explode(',',$CFG->dashboard_resourcetypes);
+	list ( $sqlin, $parametros ) = $DB->get_in_or_equal ( $modules );
+	
+	$modulesdata = $DB->get_records_sql("SELECT * FROM {modules} WHERE name $sqlin",$parametros);
 	echo "<script type='text/javascript'>
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawVisualization);
@@ -31,16 +35,14 @@ if($select == 0){
         var data = new google.visualization.DataTable();
       					data.addColumn('string', 'Time of Day');
       					"; 
-      					foreach($modules as $module){
+      					foreach($modulesdata as $module){
       					echo "data.addColumn('number', '$module->name');";
       					}
 
       					echo "data.addRows(".json_encode(dashboard_allresourcesdata($disperssion, $initialdate, $enddate)).")
 
     var options = {
-      title : 'Monthly Coffee Production by Country',
-      vAxis: {title: 'Cups'},
-      hAxis: {title: 'Month'},
+      hAxis: {title: 'Month'}
     };
 
     var chart = new google.visualization.AreaChart(document.getElementById('utimechart'));
@@ -50,7 +52,6 @@ if($select == 0){
 }else{
 	//Get the specific selected resource data
 	$dataname = $DB->get_record('modules', array('id'=>$select));
-	var_dump($dataname);
 		echo "
 				<script>
 					google.charts.load('current', {packages: ['corechart', 'bar']});
