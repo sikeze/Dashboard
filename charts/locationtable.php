@@ -2,7 +2,7 @@
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
-$location_table = location_table();
+$location_table = dashboard_locationtable();
 
 echo "<table class='striped bordered responsive-table'>
 	<thead>
@@ -14,6 +14,9 @@ echo "<table class='striped bordered responsive-table'>
         			
     <tbody>";
 		foreach($location_table as $location){
+			if ($location->city == "" || $location->city == NULL) {
+				$location->city = get_string('nolocation','local_dashboard');
+			}
 			echo " <tr>
 			<td> $location->city</td>
 			<td> $location->usersid</td>

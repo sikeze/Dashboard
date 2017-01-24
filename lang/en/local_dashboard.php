@@ -31,6 +31,9 @@ $string ['logout'] = 'Log Out';
 $string ['turnitin'] = 'Turnitin';
 $string ['courseresources'] = 'Course Resources';
 $string ['ubication'] = 'Ubication';
+$string ['nolocation'] = 'Unknown location';
+$string ['centerstgo'] = 'Center Santiago';
+$string ['centervina'] = 'Center Viña del Mar';
 $string ['devices'] = 'Devices';
 $string ['sessions'] = 'Sessions';
 $string ['avgtime'] = 'Average Sessions Time';
@@ -73,14 +76,13 @@ $string ['options'] = 'Options';
 $string ['monthly'] = 'Monthly';
 $string ['daily'] = 'Daily';
 $string ['hour'] = 'Hour';
-$string ['choose'] = 'Choose your data';
 $string ['copyright'] = '© 2017 Copyright Text';
 $string ['links'] = 'More Links';
 
 
 
-
-
+//settings
+$string['settings'] = 'Configuración Basica';	
 //task
 $string['sessiontask']="Fill sessions";
 
