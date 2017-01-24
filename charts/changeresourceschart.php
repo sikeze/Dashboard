@@ -72,7 +72,7 @@ if($select == 0){
         					}
       					};
 
-      					var chart = new google.visualization.ColumnChart(
+      					var chart = new google.visualization.AreaChart(
         				document.getElementById('utimechart'));
 
       					chart.draw(data, options);
