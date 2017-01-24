@@ -33,12 +33,10 @@ $CFG->debugdisplay = 1;             // NOT FOR PRODUCTION SERVERS!
 require_once ($CFG->libdir . '/clilib.php'); // cli only functions
 require_once(dirname(dirname(__FILE__)) . '/tasklocallib.php');
 cli_heading('Sessions fill');
-	global $DB;
-	
+global $DB;
 
-	dashboard_getip();
-	dashboard_getusersdata();
-	dashboard_resourcesdata();
-
+dashboard_getip();
+dashboard_getusersdata();
+dashboard_allresources();
 	
 exit(0); // 0 means success
