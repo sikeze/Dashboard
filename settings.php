@@ -26,22 +26,16 @@ defined('MOODLE_INTERNAL') || die;
 if ($hassiteconfig) {
 	$settings = new admin_settingpage( 'local_dashboard', 'Dashboard' );
 	$ADMIN->add( 'localplugins', $settings );
-	$settings->add( new admin_setting_configtext(
-	
-			// This is the reference you will use to your configuration
-			'yourplugin_apikey',
-	
-			// This is the friendly title for the config, which will be displayed
-			'External API: Key',
-	
-			// This is helper text for this config field
-			'This is the key used to access the External API',
-	
-			// This is the default value
-			'No Key Defined',
-	
-			// This is the type of Parameter this config is
-			PARAM_TEXT
-	
-			) );
+	$settings->add(new admin_setting_configmulticheckbox('block_uai_local_modules',
+			'Módulos locales activos',
+			'Lista de módulos locales activos.',
+			array(
+					'assign' => 1,
+					'assignment' => 1,
+			),
+			array(
+					'assign'=>'assign',
+					'assignment'=>'assignment',
+			)
+	));
 }
