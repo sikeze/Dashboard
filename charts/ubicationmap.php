@@ -2,7 +2,7 @@
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
-$coordinates = location_map();
+$coordinates = dashboard_locationmap();
 
 echo "
 		<div class='col s12'>
