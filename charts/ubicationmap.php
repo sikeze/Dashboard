@@ -11,10 +11,10 @@ echo "
 		</div>
 		<div class='col s12 center-align' overflow:auto;>
         		<div id='center_stgo' class='col s6' overflow:auto;>
-    				<a onclick='centerstgo()' class='waves-effect waves-light btn blue-text hoverable widget' style='background-color:white;margin-top:3%' overflow:auto;>Centrar Santiago</a>
+    				<a onclick='centerstgo()' class='waves-effect waves-light btn blue-text hoverable widget' style='background-color:white;margin-top:3%' overflow:auto;>".get_string('centerstgo','local_dashboard')."</a>
     			</div>
 				<div id='center_vina' class='col s6' overflow:auto;>
-    				<a onclick='centervina()' class='waves-effect waves-light btn blue-text hoverable widget' style='background-color:white;margin-top:3%' overflow:auto;>Centrar Viña del Mar</a>
+    				<a onclick='centervina()' class='waves-effect waves-light btn blue-text hoverable widget' style='background-color:white;margin-top:3%' overflow:auto;>".get_string('centervina','local_dashboard')."</a>
     			</div>
         </div>
     <script>
