@@ -387,13 +387,26 @@ function courseview_dates_dispersion($dispersion) {
 	}
 	return $courseviewsdata;
 }
+/**
+ * Returns  the resources id that exist in moodle, must be change for CFG modules admin wants to see
+ * @return objarray[]
+ */
 function dashboard_getresourcemoduleid(){
 	global $DB;
 	$modules = $DB->get_records('modules');
 	return $modules;
 }
+/**
+ * Return the specific resource data for the main chart
+ * @param int $resourceid the id of the moodle module
+ * @param int $dispersion the dispersion value (1=month,2=day,3=hour)
+ * @param int $initialdate the initial date you want to get the data from (unix)
+ * @param int $initialdate the end date you want to get the data from (unix)
+ * @return array[array[]]
+ */
 function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $enddate = null){
 	global $DB;
+	// set the dispersion
 	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "+1 month";
@@ -407,60 +420,81 @@ function dashboard_resourcedata($resourceid, $dispersion, $initialdate = null, $
 		$dateadd = "+1 hour";
 		$datetypephp = "d-M-Y H:00:00";
 	}
+	// what resource to see	
 	$timeparameters = array(
 			$resourceid
 	);
-
+	// Query to get the max and min times in the table
 	$timequery = "SELECT
 				DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
 				DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 			    FROM {dashboard_resources}
 				WHERE resourceid = ? ";
-
+	
+	// Check if there is any date
 	if($initialdate !== null AND $enddate !== null){
 		$timeparameters[] = $initialdate;
 		$timeparameters[] = $enddate;
 		$timequery .= " AND time BETWEEN ? AND ? ";
 	}
-
+	//Get the time values from the database
 	$timevalues = $DB->get_record_sql($timequery, $timeparameters);
-
+	
+	//Parameters
 	$parameters = array(
 			$resourceid
 	);
+	// Query to get the activities from the specific resource
 	$query = "SELECT 
 			DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,
 			SUM(activity) as activity,
 			amountcreated
 			FROM {dashboard_resources}
 			WHERE resourceid = ?";
+	
+	// Check if there is any date
 	if($initialdate !== null AND $enddate !== null){
 		$parameters[] = $initialdate;
 		$parameters[] = $enddate;
 		$query .= "AND time BETWEEN ? AND ? ";
 	}
-
+	// Concat the groupby
 	$query = $query." GROUP BY times";
-
+	
+	//Get the resource data
 	$resourcedata = $DB->get_records_sql($query, $parameters);
+	
+	// Position caount used to get the array in google chart format
 	$positioncount = 0;
 	$time = $timevalues->mintime;
-	$courseviewsdata = array();
+	$resourcearray = array();
+	$time = $timevalues->mintime;
+	
+	//go throw each day,hour,month depending on dispersion, until it reach the maxtime 
 	while(strtotime($time)<=strtotime($timevalues->maxtime)) {
 		if(array_key_exists($time,$resourcedata)) {
-			$courseviewsdata[$positioncount][0] = $time;
-			$courseviewsdata[$positioncount][1] = (int)$resourcedata[$time]->activity;
+			$resourcearray[$positioncount][0] = $time;
+			$resourcearray[$positioncount][1] = (int)$resourcedata[$time]->activity;
 		} else {
-			$courseviewsdata[$positioncount][0] = $time;
-			$courseviewsdata[$positioncount][1] = (int)0;
+			$resourcearray[$positioncount][0] = $time;
+			$resourcearray[$positioncount][1] = (int)0;
 		}
+		//add a hour, day, month depending on dispersion
 		$time = date($datetypephp,strtotime($time.$dateadd));
 		$positioncount++;
 	}
-	return $courseviewsdata;
+	return $resourcearray;
 }
+/**
+ * Return the all resource data for the main chart
+ * @param int $dispersion the dispersion value (1=month,2=day,3=hour)
+ * @param int $initialdate the initial date you want to get the data from (unix)
+ * @param int $initialdate the end date you want to get the data from (unix)
+ * @return array[array[]]
+ */
 function dashboard_allresourcesdata($dispersion, $initialdate = null, $enddate = null){
 	global $DB;
+	// set the dispersion
 	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "+1 month";
@@ -474,12 +508,12 @@ function dashboard_allresourcesdata($dispersion, $initialdate = null, $enddate =
 		$dateadd = "+1 hour";
 		$datetypephp = "d-M-Y H:00:00";
 	}
-	
+	// Query that get the time range
 	$timequery = "SELECT
 				DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
 				DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 			    FROM {dashboard_resources} ";
-	
+	//check if there is a date
 	if($initialdate !== null AND $enddate !== null){
 		$timeparameters[] = $initialdate;
 		$timeparameters[] = $enddate;
@@ -489,46 +523,56 @@ function dashboard_allresourcesdata($dispersion, $initialdate = null, $enddate =
 		$timevalues = $DB->get_record_sql($timequery);
 	}
 	
+	//get the modules id from moodle
 	$modules = dashboard_getresourcemoduleid();
 	
+	//use to get the resouece in a specific position in the array
 	$resourceposition = 1;
-	$courseviewsdata = array();
+	$resourcearray = array();
 	foreach($modules as $module){
 		$parameters = array(
 				$module->id
 		);
-		
+		//query that gets the specific resource data
 		$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times, SUM(activity) as activity, amountcreated
 			FROM {dashboard_resources}
 			WHERE resourceid = ?";
 		
+		//check if there is any date
 		if($initialdate !== null AND $enddate !== null){
 			$parameters[] = $initialdate;
 			$parameters[] = $enddate;
 			$query .= "AND time BETWEEN ? AND ? ";
 		}
 		
+		//concat the group by statemaen
 		$query = $query." GROUP BY times";
 		
+		//get the resource data
 		$resourcedata = $DB->get_records_sql($query, $parameters);
-		$time = $timevalues->mintime;
 		
+		$time = $timevalues->mintime;
 		$positioncount = 0;
+		//go throw each day,hour,month depending on dispersion, until it reach the maxtime
 		while(strtotime($time)<=strtotime($timevalues->maxtime)) {
 			if(array_key_exists($time,$resourcedata)) {
-				$courseviewsdata[$positioncount][0] = $time;
-				$courseviewsdata[$positioncount][$resourceposition] = (int)$resourcedata[$time]->activity;
+				$resourcearray[$positioncount][0] = $time;
+				$resourcearray[$positioncount][$resourceposition] = (int)$resourcedata[$time]->activity;
 			} else {
-				$courseviewsdata[$positioncount][0] = $time;
-				$courseviewsdata[$positioncount][$resourceposition] = (int)0;
+				$resourcearray[$positioncount][0] = $time;
+				$resourcearray[$positioncount][$resourceposition] = (int)0;
 			}
 			$time = date($datetypephp,strtotime($time.$dateadd));
 			$positioncount++;
 		}
 		$resourceposition++;
 	}
-	return $courseviewsdata;
+	return $resourcearray;
 }
+/**
+ * Return the specific resource data for the main chart
+ * @return int
+ */
 function dashboard_getfacebookusers() {
 	global $DB;
 	//Get the amount of moodle users who has access the platform (firstaccess diferent from 0)

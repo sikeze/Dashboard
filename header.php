@@ -3,19 +3,24 @@
 <title>Dashboard</title>
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-
+//Require that the user is logged
+require_login();
+if (isguestuser()) {
+	die();
+}
+// Generate all url used later on the html
 $frontpageurl = new moodle_url('/local/dashboard/frontpage.php');
 $usersurl = new moodle_url('/local/dashboard/users.php');
 $resourcesurl = new moodle_url('/local/dashboard/resources.php');
 $backtomoodleurl = new moodle_url('/my');
 $logouturl = new moodle_url("/login/logout.php?");
+
+// Initial time generation
 $time = time();
 $timenow =  gmdate("d-m-Y", $time);
 $timemonthless = date('d-m-Y',strtotime($timenow . "-1 month"));
-require_login();
-if (isguestuser()) {
-	die();
-}
+
+// Require the locallib
 require_once(dirname(__FILE__) . '/locallib.php');
 ?>
 	<!--Import Google Icon Font-->
@@ -30,10 +35,10 @@ require_once(dirname(__FILE__) . '/locallib.php');
 	<!--Import jQuery before materialize.js-->
 	<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.js"></script>
-	<script type="text/javascript" src="js/jquery.sparkline.js"></script>
 		<script type="text/javascript" src="js/jquery.sparkline.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/materialize.min.js"></script>
+	<!--  google chart loader -->
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/1.0.0/dist/progressbar.js"></script>
 </head>

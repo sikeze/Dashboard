@@ -23,10 +23,11 @@
 */
 namespace local_dashboard\task;
 class dashboard_sessions extends \core\task\scheduled_task {
-
+	// Define task name
 	public function get_name() {
 		return get_string('sessiontask', 'local_dashboard');
 	}
+	// Define what the task is going to do
 	public function execute() {
 		global $DB, $CFG;
 		require_once($CFG->dirroot."/local/dashboard/tasklocallib.php");

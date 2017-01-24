@@ -1,4 +1,6 @@
 <?php 
+// Include header.php to verifty session, get top and side var, with the dispersion select
+// and the two datepickers
 require_once(dirname(__FILE__) . '/header.php');
 
 ?>
@@ -28,7 +30,6 @@ require_once(dirname(__FILE__) . '/header.php');
     			</select>
     			<label>Selección de Datos</label>
         	</div>
-        	
 		</div>
 		
 		<!-- Utilization vs time chart -->
@@ -49,22 +50,22 @@ require_once(dirname(__FILE__) . '/header.php');
         		</div>
         		<div id="uresources" class="col s12 card white-text hoverable widget" style="height:262px;" overflow:auto;></div>
         	</div>
-        	
+        	<!-- Emarking cost center tittle-->
         	<div class="col s6">
         		<div class="col s12">
         			<h5><b>Costo eMarking</b></h5>
         		</div>
         		<div class = "col s12">
-        		<!-- eMarking costs panels -->
+        		<!-- EMarking costs center buttons -->
         		<?php 
-
-        	require_once($CFG->dirroot."/mod/emarking/reports/locallib.php");
+        		require_once($CFG->dirroot."/mod/emarking/reports/locallib.php");
 				echo " <a class='waves-effect waves-light btn'>".get_string('meanexamlength', 'emarking').": ".emarking_get_original_pages($categoryid)."</a>
 						<a class='waves-effect waves-light btn'>".get_string('totalprintedpages', 'emarking'). ": " . emarking_get_total_pages($categoryid)."</a>
 						<a class='waves-effect waves-light btn'>".get_string('totalprintingcost', 'emarking').": " . '$' .number_format(emarking_get_printing_cost($categoryid))."</a>
         		";
         	?>
         		</div>
+        		<!--  Facebook users tittle -->
         		<div class="col s12">
         			<h5><b>Usuarios linkeados a Facebook</b></h5>
         		</div>
@@ -73,17 +74,12 @@ require_once(dirname(__FILE__) . '/header.php');
         		</div>
         	</div>
         </div>
-        
-        <div class="row">
-        </div>
 	</main>
 <!-- CONTENT -->
 <!-- FOOTER -->
 	<footer class="blue page-footer">
     	<div class="footer-copyright">
         	<div class="container">
-            	© 2017 Copyright Text
-            	<a class="grey-text text-lighten-4 right" href="#!">More Links</a>
             </div>
        </div>
     </footer>
@@ -91,19 +87,22 @@ require_once(dirname(__FILE__) . '/header.php');
 </body>
 <script src="js/uresources.js"></script>
 <script>
+// Wait for the document to load
 $(document).ready(function () {
-
+	// Define variables for the initial ajax charge
 	 var $dispersionselect = $('#dispersionselect');
 	 var $dataselect = $("#dataselect");
 	 var $datepickerone = $('#datepickerone');
 	 var $datepickertwo = $('#datepickertwo');
 
+	// Get initial values for both datepickers	
 	 var datos  = $('#dataselect :selected').val();
  	  var dispersion = $('#dispersionselect :selected').val();
  	  var datepickerone = $datepickerone.val();
  	  var datepickertwo = $datepickertwo.val();
+ 	  //Send ajax call to get the main chart
  	  	$.ajax({
- 	  	  	url: 'changeresourceschart.php',
+ 	  	  	url: 'charts/changeresourceschart.php',
  	        data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
  	        method: 'POST',
  	        success: function (output) {
@@ -111,14 +110,15 @@ $(document).ready(function () {
  	        }
  	  	});
 
-    //Ajax call for the selected data
+    //Get data on change of the dispersion select
       $dispersionselect.change(function () {
   	  var datos  = $('#dataselect :selected').val();
   	  var dispersion = $('#dispersionselect :selected').val();
   	  var datepickerone = $datepickerone.val();
   	  var datepickertwo = $datepickertwo.val();
+  	 //Send ajax call to get the main chart 
   	  	$.ajax({
-  	  	  	url: 'changeresourceschart.php',
+  	  	  	url: 'charts/changeresourceschart.php',
   	        data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
   	        method: 'POST',
   	        success: function (output) {
@@ -126,13 +126,15 @@ $(document).ready(function () {
   	        }
   	  	});
     });
+      //Get data on change of the data type select
        $dataselect.change(function () { //Change div of charts
     	var datos  = $('#dataselect :selected').val();
     	var dispersion = $('#dispersionselect :selected').val();
     	var datepickerone = $datepickerone.val();
     	var datepickertwo = $datepickertwo.val();
+    	 //Send ajax call to get the main chart
     	$.ajax({
-        	url: 'changeresourceschart.php',
+        	url: 'charts/changeresourceschart.php',
         	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
         	method: 'POST',
         	success: function (output) {
@@ -140,13 +142,15 @@ $(document).ready(function () {
         	}
   		});
     });
-       $datepickertwo.change(function () { //Change div of charts
+       //Get data on change of the end date datepicker
+       $datepickertwo.change(function () { 
     	  var datos  = $('#dataselect :selected').val();
     	  var dispersion = $('#dispersionselect :selected').val();
     	  var datepickerone = $datepickerone.val();
     	  var datepickertwo = $datepickertwo.val();
+    	  //Send ajax call to get the main chart
     	   	$.ajax({
-    	       	url: 'changeresourceschart.php',
+    	       	url: 'charts/changeresourceschart.php',
     	       	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
     	       	method: 'POST',
     	       	success: function (output) {
@@ -154,13 +158,15 @@ $(document).ready(function () {
     	      }
     	});
     });
-       $datepickerone.change(function () { //Change div of charts
+       //Get data on change of the initial date datepicker
+       $datepickerone.change(function () { 
      	  var datos  = $('#dataselect :selected').val();
      	  var dispersion = $('#dispersionselect :selected').val();
      	  var datepickerone = $datepickerone.val();
      	  var datepickertwo = $datepickertwo.val();
+     	 //Send ajax call to get the main chart
      	   	$.ajax({
-     	       	url: 'changeresourceschart.php',
+     	       	url: 'charts/changeresourceschart.php',
      	       	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
      	       	method: 'POST',
      	       	success: function (output) {
@@ -168,23 +174,22 @@ $(document).ready(function () {
      	      }
      	});
      });
+       //Redraw the chart on the window change
        $( window ).resize(function() {
     	   var datos  = $('#dataselect :selected').val();
       	  var dispersion = $('#dispersionselect :selected').val();
       	  var datepickerone = $datepickerone.val();
       	  var datepickertwo = $datepickertwo.val();
+      	 //Send ajax call to get the main chart
       	   	$.ajax({
-      	       	url: 'changeresourceschart.php',
+      	       	url: 'charts/changeresourceschart.php',
       	       	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
       	       	method: 'POST',
       	       	success: function (output) {
       	           	$('#utimechart').html(output);
-      	           	alert(output);
       	      }
       	});
       });	
-    
-
     //load the facebook users chart
     $( "#facebookusers" ).load( "charts/fbusers.php" );
 });

@@ -1,11 +1,15 @@
 <?php
-require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-require_once(dirname(__FILE__) . '/locallib.php');
+
+require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
+require_once(dirname(dirname(__FILE__)) . '/locallib.php');
+
+//recibe the ajax data
 $select = $_POST['select'];
 $disperssion = $_POST['disperssion'];
 $initialdate = $_POST['initialdate'];
 $enddate = $_POST['enddate'];
 
+//verify if there is a date selected
 if($enddate == '' OR $initialdate == ''){
 	$enddate = null;
 	$initialdate = null;
@@ -13,6 +17,7 @@ if($enddate == '' OR $initialdate == ''){
 	$initialdate = strtotime($initialdate);
 	$enddate = strtotime($enddate);
 }
+// if select = 0 means that user want all the resources
 if($select == 0){
 	global $DB;
 	$modules = $DB->get_records('modules');
@@ -43,6 +48,7 @@ if($select == 0){
   }
     </script>";
 }else{
+	//Get the specific selected resource data
 	$dataname = $DB->get_record('modules', array('id'=>$select));
 	var_dump($dataname);
 		echo "
