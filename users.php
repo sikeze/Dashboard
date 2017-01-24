@@ -78,7 +78,7 @@ require_once(dirname(__FILE__) . '/header.php');
 
 <script>
 //Send function tu userschart and fill the chart
-var users_labels = <?php echo json_encode(users_info_labels());?>;
+var users_labels = <?php echo json_encode(dashboard_usersinfolabels());?>;
 
 var $dispersionselect = $('#dispersionselect');
 var $dataselect = $("#dataselect");
@@ -140,6 +140,54 @@ $(document).ready(function () {
         	}
   		});
     });
+  //Get data on change of the end date datepicker
+    $datepickertwo.change(function () { 
+ 	  var datos  = $('#dataselect :selected').val();
+ 	  var dispersion = $('#dispersionselect :selected').val();
+ 	  var datepickerone = $datepickerone.val();
+ 	  var datepickertwo = $datepickertwo.val();
+ 	  //Send ajax call to get the main chart
+ 	   	$.ajax({
+ 	       	url: 'charts/userschart.php',
+ 	       	data: {'select': datos, 'dispersion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
+ 	       	method: 'POST',
+ 	       	success: function (output) {
+ 	           	$('#userschart').html(output);
+ 	      }
+ 		});
+ 	});
+  //Get data on change of the initial date datepicker
+    $datepickerone.change(function () { 
+  	  var datos  = $('#dataselect :selected').val();
+  	  var dispersion = $('#dispersionselect :selected').val();
+  	  var datepickerone = $datepickerone.val();
+  	  var datepickertwo = $datepickertwo.val();
+  	 //Send ajax call to get the main chart
+  	   	$.ajax({
+  	       	url: 'charts/userschart.php',
+  	       	data: {'select': datos, 'dispersion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
+  	       	method: 'POST',
+  	       	success: function (output) {
+  	           	$('#userschart').html(output);
+  	      }
+  	});
+  });
+    //Redraw the chart on the window change
+    $( window ).resize(function() {
+ 	   var datos  = $('#dataselect :selected').val();
+   	  var dispersion = $('#dispersionselect :selected').val();
+   	  var datepickerone = $datepickerone.val();
+   	  var datepickertwo = $datepickertwo.val();
+   	 //Send ajax call to get the main chart
+   	   	$.ajax({
+   	       	url: 'charts/userschart.php',
+   	       	data: {'select': datos, 'dispersion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
+   	       	method: 'POST',
+   	       	success: function (output) {
+   	           	$('#userschart').html(output);
+   	      }
+   	});
+   });
     $( "#locationtable" ).load( "charts/locationtable.php" );
     $( "#maps" ).load( "charts/ubicationmap.php" );
 });

@@ -2,7 +2,7 @@
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
-$location_table = location_table();
+$location_table = dashboard_locationtable();
 
 echo "<table class='striped bordered responsive-table'>
 	<thead>

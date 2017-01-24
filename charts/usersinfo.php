@@ -38,7 +38,7 @@ $labels = $_POST['labels'];
 <?php 
 echo "
 <script>
-var data_dispersion =".json_encode(users_info_dispersion($dispersion))."
+var data_dispersion =".json_encode(dashboard_usersinfodispersion($dispersion))."
 //Data array index represent if the info we need is for sessions or courseviews, etc.
 $(document).ready(function () {
 	$('#sessions').sparkline(data_dispersion[0], {
