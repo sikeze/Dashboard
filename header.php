@@ -43,16 +43,20 @@ require_once(dirname(__FILE__) . '/locallib.php');
 	<div class="navbar-fixed">
     	<nav class="grey lighten-2 blue-text">
         	<div class="nav-wraper">
+        	<!-- Logo -->
             	<a href="<?php echo $frontpageurl; ?>" class="brand-logo"><img class="responsive-img" src="images/webcursoslogo.gif" style="width:60%"></a>
                	<ul id="nav-mobile" class="right hide-on-med-and-down">
+               		<!-- Initial date daypicker -->
                		<li class="input-field">
-               			<i class="material-icons prefix blue-text">date_range</i>
+               		    <i class="material-icons prefix blue-text">date_range</i>
         				<input type="date" class="datepicker" id="datepickerone" data-value="<?php echo $timemonthless;?>">
                		</li>
+               		<!-- END date daypicker -->
                		<li class="input-field">
                			<i class="material-icons prefix blue-text">date_range</i>
         				<input type="date" class="datepicker" id="datepickertwo"  data-value="<?php echo $timenow;?>">
         			</li>
+        			<!--  -->
                		<li class="input-field blue-text">
     					<select id="dispersionselect">
       						<option value="1"><span class="blue-text"><?php echo get_string('monthly', 'local_dashboard');?></span></option>
@@ -61,9 +65,10 @@ require_once(dirname(__FILE__) . '/locallib.php');
 
     					</select>
                		</li>
-               		<li><a href="badges.html" class=""><i class="material-icons blue-text">edit</i></a></li>
-                    <li><a href="collapsible.html" class=""><i class="material-icons blue-text">refresh</i></a></li>
-                    <li><a href="mobile.html" class=""><i class="material-icons blue-text">help</i></a></li>
+               		<!-- Future edit position, refesh page and help bottons -->
+               		<li><a href="" class="disabled"><i class="material-icons grey-text">edit</i></a></li>
+                    <li><a href="" class="disabled"><i class="material-icons grey-text">refresh</i></a></li>
+                    <li><a href="" class="disabled"><i class="material-icons grey-text">help</i></a></li>
 			</div>
             <a href="#" data-activates="slide-out" class="button-collapse left grey-text"><i class="material-icons">menu</i></a>
     	</nav>
@@ -87,6 +92,7 @@ require_once(dirname(__FILE__) . '/locallib.php');
                </div>
             </div>
        </li>
+       <!-- Sidenav structure -->
        	<li><a href="<?php echo $frontpageurl; ?>" class="white-text menu-item"><?php echo get_string('home', 'local_dashboard');?><i class="material-icons white-text">home</i></a></li>
         <li><a href="<?php echo $usersurl; ?>" class="white-text menu-item"><?php echo get_string('users', 'local_dashboard');?><i class="material-icons white-text">supervisor_account</i></a></li>
         <li><a href="<?php echo $resourcesurl; ?>" class="white-text menu-item"><?php echo get_string('resources', 'local_dashboard');?><i class="material-icons white-text">description</i></a></li>
@@ -111,7 +117,5 @@ $(document).ready(function () {
 	    selectYears: 15, // Creates a dropdown of 15 years to control year
 	    format: 'dd-mm-yyyy'
 	  });
-	
-
 });
 </script>
