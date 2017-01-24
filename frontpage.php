@@ -63,7 +63,7 @@ require_once(dirname(__FILE__) . '/header.php');
 <script src="js/turnitinchart.js"></script>
 <script src="js/resourcebarchart.js"></script>
 <script>
-var users_labels = <?php echo json_encode(users_info_labels());?>;
+var users_labels = <?php echo json_encode(dashboard_usersinfolabels());?>;
 var dispersion = $('#dispersionselect :selected').val();
 	$(document).ready(function () {
 		$.ajax({
