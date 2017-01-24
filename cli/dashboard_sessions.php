@@ -21,7 +21,7 @@
 * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 error_reporting(E_ALL);
-//define('CLI_SCRIPT', true);
+define('CLI_SCRIPT', true);
 require (dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 // Force a debugging mode regardless the settings in the site administration
 @error_reporting(E_ALL | E_STRICT); // NOT FOR PRODUCTION SERVERS!
