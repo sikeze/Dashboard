@@ -17,7 +17,7 @@ if ($select == 1) {
 	$dataname = get_string('sessions','local_dashboard');
 	$vaxisname = get_string('sessions','local_dashboard');
 } elseif ($select == 2) {
-	$datanme = get_string('avgtime','local_dashboard');
+	$dataname = get_string('avgtime','local_dashboard');
 	$vaxisname = get_string('seconds','local_dashboard');
 } elseif ($select == 3) {
 	$dataname = get_string('users','local_dashboard');

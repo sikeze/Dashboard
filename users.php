@@ -106,6 +106,14 @@ $(document).ready(function () {
 			  	$("#userinfo").html(output);
 		  	}
 	  	});
+	  	$.ajax({
+	  		url: 'charts/locationtable.php',
+	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
+	        method: 'POST',
+	        success: function (output) {
+	        	$( "#locationtable" ).html(output);
+	        }
+	  	});
     $('#dispersionselect').change(function () {
   	  var datos  = $('#dataselect :selected').val();
   	  var dispersion = $('#dispersionselect :selected').val();
@@ -155,6 +163,14 @@ $(document).ready(function () {
  	           	$('#userschart').html(output);
  	      }
  		});
+	  	$.ajax({
+	  		url: 'charts/locationtable.php',
+	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
+	        method: 'POST',
+	        success: function (output) {
+	        	$( "#locationtable" ).html(output);
+	        }
+	  	});
  	});
   //Get data on change of the initial date datepicker
     $datepickerone.change(function () { 
@@ -170,8 +186,16 @@ $(document).ready(function () {
   	       	success: function (output) {
   	           	$('#userschart').html(output);
   	      }
+  		});
+	  	$.ajax({
+	  		url: 'charts/locationtable.php',
+	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
+	        method: 'POST',
+	        success: function (output) {
+	        	$( "#locationtable" ).html(output);
+	        }
+	  	});
   	});
-  });
     //Redraw the chart on the window change
     $( window ).resize(function() {
  	   var datos  = $('#dataselect :selected').val();
@@ -188,7 +212,6 @@ $(document).ready(function () {
    	      }
    	});
    });
-    $( "#locationtable" ).load( "charts/locationtable.php" );
     $( "#maps" ).load( "charts/ubicationmap.php" );
 });
 </script>
