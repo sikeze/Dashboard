@@ -48,14 +48,14 @@ function dashboard_usersinfodispersion($dispersion) {
 									  SUM(sessions) as totalsessions
 									  FROM {dashboard_data}
 									  GROUP BY times
-									  ORDER BY time
+									  ORDER BY time DESC
 									  LIMIT 80");
 	
 	//query that gets average time in seconds that of a session
 	$avgsessions = $DB->get_records_sql("SELECT id, DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,
 										 ROUND(AVG(avgsessiontime),0) as avgtime
 										 FROM {dashboard_data}
-										 GROUP BY time
+										 GROUP BY time DESC
 										 LIMIT 80");
 	
 	//query that gets the total users group by the time
@@ -63,7 +63,7 @@ function dashboard_usersinfodispersion($dispersion) {
 								   SUM(users) as totalusers
 								   FROM {dashboard_data}
 								   GROUP BY times
-								   ORDER BY time
+								   ORDER BY time DESC
 								   LIMIT 80");
 	
 	//query that gets the total views of courses group by the time
@@ -71,7 +71,7 @@ function dashboard_usersinfodispersion($dispersion) {
 										SUM(courseviews) as totalcourses
 										FROM {dashboard_data}
 										GROUP BY times
-										ORDER BY time
+										ORDER BY time DESC
 										LIMIT 80");
 	
 	//query that gets the total views of courses per session 
@@ -79,7 +79,7 @@ function dashboard_usersinfodispersion($dispersion) {
 											  ROUND((SUM(courseviews))/(SUM(sessions)),3) as coursepersession
 											  FROM {dashboard_data}
 											  GROUP BY times
-											  ORDER BY time
+											  ORDER BY time DESC
 											  LIMIT 80");
 	
 	//query that gets the total of new users group by the time
@@ -87,7 +87,7 @@ function dashboard_usersinfodispersion($dispersion) {
 									  SUM(newusers) as totalnewusers
 									  FROM {dashboard_data}
 									  GROUP BY times
-									  ORDER BY time
+									  ORDER BY time DESC
 									  LIMIT 80");
 
 	//query that gets time in db
