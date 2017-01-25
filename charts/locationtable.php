@@ -18,6 +18,7 @@ echo "<table class='striped bordered responsive-table'>
 	<thead>
     	<tr>
        		<th data-field='regions'>".get_string('cities','local_dashboard')."</th>
+        	<th data-field='sessions'>".get_string('country','local_dashboard')."</th>
         	<th data-field='sessions'>".get_string('users','local_dashboard')."</th>
         </tr>
    	</thead>
@@ -29,6 +30,7 @@ foreach($location_table as $location){
 	}
 	echo " <tr>
 	<td> $location->city</td>
+	<td> $location->country</td>
 	<td> $location->usersid</td>
 	</tr>";
 }

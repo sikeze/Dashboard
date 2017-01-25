@@ -176,7 +176,7 @@ function dashboard_locationtable($initialdate = null, $enddate = null) {
 	$parameters = array();
 	
 	$query = "SELECT
-			id, city, COUNT(userid) as usersid
+			id, city, country, COUNT(userid) as usersid
 			FROM {dashboard_users_location}";
 	
 	if($initialdate !== null AND $enddate !== null){
@@ -250,6 +250,8 @@ function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate
 	}
 
 	$timevalues = $DB->get_record_sql($timequery, $timeparameters);
+	
+	$time = $timevalues->mintime;
 
 	$parameters = array();
 
@@ -266,11 +268,22 @@ function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate
 	$query = $query." GROUP BY times";
 
 	$usersdata = $DB->get_records_sql($query, $parameters);
-	$positioncount = 0;
-	$time = $timevalues->mintime;
+	
+	if($initialdate !== null){
+		$time = date($datetypephp,$initialdate);
+	}else{
+		$time = $timevalues->mintime;
+	}
+	if($enddate !== null){
+		$maxtime = $enddate;
+	}else{
+		$maxtime = strtotime($timevalues->maxtime);
+	}
+	
 	$usersviewsdata = array();
+	$positioncount = 0;
 
-	while(strtotime($time)<=strtotime($timevalues->maxtime)) {
+	while(strtotime($time)<=$maxtime) {
 		if(array_key_exists($time,$usersdata)) {
 			$usersviewsdata[$positioncount][0] = $time;
 			$usersviewsdata[$positioncount][1] = (int)$usersdata[$time]->$name;
