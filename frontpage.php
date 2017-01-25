@@ -1,8 +1,30 @@
 <?php 
-require_once(dirname(__FILE__) . '/header.php');
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ *
+ * @package local
+ * @subpackage dashboard
+ * @copyright 2017 Mihail Pozarski <mipozarski@alumnos.uai.cl>
+ * @copyright 2017 Danielle Alves <dalves@alumnos.uai.cl>
+ * @copyright 2017 Hans Jeria <hansjeria@gmail.com>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+include('header.php');
 ?>
-<html>
-<body>
 <!-- CONTENT -->
 	<main class="grey lighten-3">
 
@@ -63,29 +85,29 @@ require_once(dirname(__FILE__) . '/header.php');
 <script src="js/turnitinchart.js"></script>
 <script src="js/resourcebarchart.js"></script>
 <script>
-var users_labels = <?php echo json_encode(dashboard_usersinfolabels());?>;
-var dispersion = $('#dispersionselect :selected').val();
-	$(document).ready(function () {
-		$.ajax({
-	        url: 'charts/usersinfo.php',
-	        data: {'dispersion': dispersion, 'labels': users_labels},
-	        method: 'POST',
-	        success: function (output) {
-	        	$( "#userinfo" ).html(output);
-	        }
-	  	});
-		$('#dispersionselect').change(function () {
-		  	var dispersion = $('#dispersionselect :selected').val();
-		  	$.ajax({
-	  	  	  	url: 'charts/usersinfo.php',
-	  	        data: {'dispersion': dispersion, 'labels':users_labels},
-	  	        method: 'POST',
-	  	        success: function (output) {
-	  	        	$( "#userinfo" ).html(output);
-	  	        }
-	  	  	});
-		});
-        $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
-    });
+	var users_labels = <?php echo json_encode(dashboard_usersinfolabels());?>;
+	var dispersion = $('#dispersionselect :selected').val();
+		$(document).ready(function () {
+			$.ajax({
+		        url: 'charts/usersinfo.php',
+		        data: {'dispersion': dispersion, 'labels': users_labels},
+		        method: 'POST',
+		        success: function (output) {
+		        	$( "#userinfo" ).html(output);
+		        }
+		  	});
+			$('#dispersionselect').change(function () {
+			  	var dispersion = $('#dispersionselect :selected').val();
+			  	$.ajax({
+		  	  	  	url: 'charts/usersinfo.php',
+		  	        data: {'dispersion': dispersion, 'labels':users_labels},
+		  	        method: 'POST',
+		  	        success: function (output) {
+		  	        	$( "#userinfo" ).html(output);
+		  	        }
+		  	  	});
+			});
+	        $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
+	    });
 </script>
 </html>
