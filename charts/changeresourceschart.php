@@ -41,8 +41,13 @@ if($select == 0){
 
       					echo "data.addRows(".json_encode(dashboard_allresourcesdata($disperssion, $initialdate, $enddate)).")
 
-    var options = {
-      hAxis: {title: 'Month'}
+    var options = {chartArea: {
+			       			top: 28,
+			       			height: '50%'
+			    		},
+      							hAxis: {
+							title: '".get_string('date','local_dashboard')."',
+						},
     };
 
     var chart = new google.visualization.AreaChart(document.getElementById('utimechart'));
@@ -66,11 +71,16 @@ if($select == 0){
       					data.addRows(".json_encode(dashboard_resourcedata($select,$disperssion, $initialdate, $enddate)).")
 
       					var options = {
-        					hAxis: {
-          						title: 'Date',
-        					},
-        					vAxis: {
-        					}
+        					chartArea: {
+			       			top: 28,
+			       			height: '50%'
+			    		},
+      							hAxis: {
+							title: '".get_string('date','local_dashboard')."',
+						},
+									vAxis: {
+							title: '".$dataname->name."'
+						}
       					};
 
       					var chart = new google.visualization.AreaChart(
