@@ -17,12 +17,19 @@
 * @package    local
 * @subpackage dashboard
 * @copyright  2017 Danielle Alves (dalves@alumnos.uai.cl)
+* @copyright  2017 Mihail Pozarski <mipozarski@alumnos.uai.cl>
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
-//FILL USERS INFO SPARKLINE CHARTS WITH ANY DISPERSION
+/**
+ * Return all the users data to fill the sparklines charts
+ * @param int $dispersion the dispersion value (1=month,2=day,3=hour)
+ * @return array[array[]]
+ */
 function dashboard_usersinfodispersion($dispersion) {
 	global $DB;
+	
+	//set the duspersion
 	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "-1 month";
@@ -36,52 +43,75 @@ function dashboard_usersinfodispersion($dispersion) {
 		$dateadd = "-1 hour";
 		$datetypephp = "d-M-Y H:00:00";
 	}
+	//query that gets the total of sessions group by the time
 	$sessions = $DB->get_records_sql("SELECT id, DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,
 									  SUM(sessions) as totalsessions
 									  FROM {dashboard_data}
 									  GROUP BY times
+									  ORDER BY time
 									  LIMIT 80");
+	
+	//query that gets average time in seconds that of a session
 	$avgsessions = $DB->get_records_sql("SELECT id, DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,
 										 ROUND(AVG(avgsessiontime),0) as avgtime
 										 FROM {dashboard_data}
 										 GROUP BY time
 										 LIMIT 80");
+	
+	//query that gets the total users group by the time
 	$users = $DB->get_records_sql("SELECT id, DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,
 								   SUM(users) as totalusers
 								   FROM {dashboard_data}
 								   GROUP BY times
+								   ORDER BY time
 								   LIMIT 80");
+	
+	//query that gets the total views of courses group by the time
 	$courseview = $DB->get_records_sql("SELECT id, DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,
 										SUM(courseviews) as totalcourses
 										FROM {dashboard_data}
 										GROUP BY times
+										ORDER BY time
 										LIMIT 80");
+	
+	//query that gets the total views of courses per session 
 	$coursepersession = $DB->get_records_sql("SELECT id, DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,
 											  ROUND((SUM(courseviews))/(SUM(sessions)),3) as coursepersession
 											  FROM {dashboard_data}
 											  GROUP BY times
+											  ORDER BY time
 											  LIMIT 80");
+	
+	//query that gets the total of new users group by the time
 	$newusers = $DB->get_records_sql("SELECT id, DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,
 									  SUM(newusers) as totalnewusers
 									  FROM {dashboard_data}
 									  GROUP BY times
+									  ORDER BY time
 									  LIMIT 80");
 
+	//query that gets time in db
 	$timevalues = $DB->get_record_sql("SELECT
 										id, DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
 										DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 									    FROM {dashboard_data}
 										LIMIT 80");
+	
+	//check if time exists
 	$time = $timevalues->maxtime;
 	$usersdata = array();
 	$exist = 0;
+	
+	//the sparklines will only show the last 80 values
 	for($i=81;$i>0;$i--) {
 		foreach($sessions as $session){
+			//if the date exists, then fill de array with the db value
 			if($session->times == $time) {
 				$usersdata[0][]=(int)$session->totalsessions;
 				$exist = 1;
 			}
 		}
+		//if the date does not exists, then fill the array with 0
 		if($exist == 0){
 			$usersdata[0][]= (int)0;
 		}
@@ -141,6 +171,7 @@ function dashboard_usersinfodispersion($dispersion) {
 			$usersdata[5][]= (int)0;
 		}
 		$exist = 0;
+		//new date with minus 1 month, 1 day or 1 hour depending on dispersion
 		$time = date($datetypephp,strtotime($time.$dateadd));
 	}
 
@@ -151,9 +182,14 @@ function dashboard_usersinfodispersion($dispersion) {
 	return $usersdata;
 }
 
-//FILL USERS INFO CHART LABELS USERS PAGE
+/**
+ * Return all the users data labels to show on the sparklines charts
+ * @return array[array[]]
+ */
 function dashboard_usersinfolabels() {
 	global $DB;
+	
+	//query that get the value of each sparkline to show in the div
 	$totalsessions = $DB->get_record_sql('SELECT SUM(sessions) as totalsessions
 										  FROM {dashboard_data}');
 	$avgsessions = $DB->get_record_sql('SELECT ROUND(AVG(avgsessiontime),0) as avgsessions
@@ -166,25 +202,36 @@ function dashboard_usersinfolabels() {
 									 	FROM {dashboard_data}');
 	$coursepersession = $DB->get_record_sql('SELECT ROUND(AVG(courseviews/sessions),3) as coursesessions
 											 FROM {dashboard_data}');
+	
+	//fill the labels array with the querys values
 	$labels = array($totalsessions->totalsessions,$avgsessions->avgsessions,$newusers->newusers,$users->users,$courseviews->courseviews,$coursepersession->coursesessions);
 	return $labels;
 }
-//FILL LOCATION TABLE USERS PAGE
+
+/**
+ * Return cities, countries and total users to fill the location table by dates
+ * @param int $initialdate the initial date you want to get the data from (unix)
+ * @param int $initialdate the end date you want to get the data from (unix)
+ * @return obj array[]
+ */
 function dashboard_locationtable($initialdate = null, $enddate = null) {
 	global $DB;
 	
 	$parameters = array();
 	
+	//query that gets cities, countries and total users
 	$query = "SELECT
 			id, city, country, COUNT(userid) as usersid
 			FROM {dashboard_users_location}";
 	
+	//check if there is any date
 	if($initialdate !== null AND $enddate !== null){
 		$parameters[] = $initialdate;
 		$parameters[] = $enddate;
 		$query .= " WHERE timecreated BETWEEN ? AND ? ";
 	}
 	
+	//concat the group by to the query
 	$query = $query." GROUP BY city";
 	
 	$locationdata = $DB->get_records_sql($query, $parameters);
@@ -192,19 +239,32 @@ function dashboard_locationtable($initialdate = null, $enddate = null) {
 	return $locationdata;
 }
 
-//GET LOCATION COORDINATES FOR MARKERS CLUSTERING (MAP)
+/**
+ * Return latitud and longitude to make the clustering of markers in map
+ * @return obj array[]
+ */
 function dashboard_locationmap() {
 	global $DB;
 
+	//query that gets the latitude and longitude
 	$coordinates = $DB->get_records_sql("SELECT id, latitude, longitude FROM {dashboard_users_location}");
 	
 
 	return $coordinates;
 }
 
-//FILL USERS/DATES CHART OF USERS PAGE WITH ANY DISPERSION AND DATE OF CALENDAR
+/**
+ * Return all users data for the main chart
+ * @param int $select the id of the users select (sessions, average session time, users, new users, course views)
+ * @param int $dispersion the dispersion value (1=month,2=day,3=hour)
+ * @param int $initialdate the initial date you want to get the data from (unix)
+ * @param int $initialdate the end date you want to get the data from (unix)
+ * @return array[array[]]
+*/
 function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate = null) {
 	global $DB;
+	
+	//set the dispersion
 	if($dispersion == 1){
 		$datetypesql = '%b-%Y';
 		$dateadd = "+1 month";
@@ -219,6 +279,7 @@ function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate
 		$datetypephp = "d-M-Y H:00:00";
 	}
 
+	//set the select
 	if ($select == 1) {
 		$dataquery = "SUM(sessions) as totalsessions";
 		$name = "totalsessions";
@@ -237,12 +298,14 @@ function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate
 	}
 
 	$timeparameters = array();
-
+	
+	//query that gets time on db
 	$timequery = "SELECT
 				DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
 				DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
 			    FROM {dashboard_data}";
 
+	//check if there is any date
 	if($initialdate !== null AND $enddate !== null){
 		$timeparameters[] = $initialdate;
 		$timeparameters[] = $enddate;
@@ -255,20 +318,24 @@ function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate
 
 	$parameters = array();
 
+	//query that gets all the users data 
 	$query = "SELECT
 			DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,".$dataquery."
 			FROM {dashboard_data}";
-
+	
+	//check if there is any date
 	if($initialdate !== null AND $enddate !== null){
 		$parameters[] = $initialdate;
 		$parameters[] = $enddate;
 		$query .= " WHERE time BETWEEN ? AND ? ";
 	}
 
+	//concat the group by
 	$query = $query." GROUP BY times";
 
 	$usersdata = $DB->get_records_sql($query, $parameters);
 	
+	//check for calendar dates to show on the main chart
 	if($initialdate !== null){
 		$time = date($datetypephp,$initialdate);
 	}else{
@@ -283,6 +350,7 @@ function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate
 	$usersviewsdata = array();
 	$positioncount = 0;
 
+	//fill array with the data
 	while(strtotime($time)<=$maxtime) {
 		if(array_key_exists($time,$usersdata)) {
 			$usersviewsdata[$positioncount][0] = $time;
