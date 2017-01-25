@@ -20,42 +20,6 @@
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
-//FILL USERS INFO CHART LABELS USERS PAGE
-function dashboard_usersinfolabels() {
-	global $DB;
-	$totalsessions = $DB->get_record_sql('SELECT SUM(sessions) as totalsessions
-										  FROM {dashboard_data}');
-	$avgsessions = $DB->get_record_sql('SELECT ROUND(AVG(avgsessiontime),0) as avgsessions
-										  FROM {dashboard_data}');
-	$newusers = $DB->get_record_sql('SELECT SUM(newusers) as newusers
-									 FROM {dashboard_data}');
-	$users = $DB->get_record_sql('SELECT SUM(users) as users
-								  FROM {dashboard_data}');
-	$courseviews = $DB->get_record_sql('SELECT SUM(courseviews) as courseviews
-									 	FROM {dashboard_data}');
-	$coursepersession = $DB->get_record_sql('SELECT ROUND(AVG(courseviews/sessions),3) as coursesessions
-											 FROM {dashboard_data}');
-	$labels = array($totalsessions->totalsessions,$avgsessions->avgsessions,$newusers->newusers,$users->users,$courseviews->courseviews,$coursepersession->coursesessions);
-	return $labels;
-}
-//FILL LOCATION TABLE USERS PAGE
-function dashboard_locationtable() {
-	global $DB;
-	$regions = $DB->get_records_sql("SELECT city, COUNT(userid) as usersid
-									 FROM {dashboard_users_location}
-									 GROUP BY city");
-	
-	return $regions;
-}
-//GET LOCATION COORDINATES FOR MARKERS CLUSTERING (MAP)
-function dashboard_locationmap() {
-	global $DB;
-
-	$coordinates = $DB->get_records_sql("SELECT id, latitude, longitude FROM {dashboard_users_location}");
-	
-
-	return $coordinates;
-}
 //FILL USERS INFO SPARKLINE CHARTS WITH ANY DISPERSION
 function dashboard_usersinfodispersion($dispersion) {
 	global $DB;
@@ -187,6 +151,57 @@ function dashboard_usersinfodispersion($dispersion) {
 	return $usersdata;
 }
 
+//FILL USERS INFO CHART LABELS USERS PAGE
+function dashboard_usersinfolabels() {
+	global $DB;
+	$totalsessions = $DB->get_record_sql('SELECT SUM(sessions) as totalsessions
+										  FROM {dashboard_data}');
+	$avgsessions = $DB->get_record_sql('SELECT ROUND(AVG(avgsessiontime),0) as avgsessions
+										  FROM {dashboard_data}');
+	$newusers = $DB->get_record_sql('SELECT SUM(newusers) as newusers
+									 FROM {dashboard_data}');
+	$users = $DB->get_record_sql('SELECT SUM(users) as users
+								  FROM {dashboard_data}');
+	$courseviews = $DB->get_record_sql('SELECT SUM(courseviews) as courseviews
+									 	FROM {dashboard_data}');
+	$coursepersession = $DB->get_record_sql('SELECT ROUND(AVG(courseviews/sessions),3) as coursesessions
+											 FROM {dashboard_data}');
+	$labels = array($totalsessions->totalsessions,$avgsessions->avgsessions,$newusers->newusers,$users->users,$courseviews->courseviews,$coursepersession->coursesessions);
+	return $labels;
+}
+//FILL LOCATION TABLE USERS PAGE
+function dashboard_locationtable($initialdate = null, $enddate = null) {
+	global $DB;
+	
+	$parameters = array();
+	
+	$query = "SELECT
+			id, city, country, COUNT(userid) as usersid
+			FROM {dashboard_users_location}";
+	
+	if($initialdate !== null AND $enddate !== null){
+		$parameters[] = $initialdate;
+		$parameters[] = $enddate;
+		$query .= " WHERE timecreated BETWEEN ? AND ? ";
+	}
+	
+	$query = $query." GROUP BY city";
+	
+	$locationdata = $DB->get_records_sql($query, $parameters);
+	
+	return $locationdata;
+}
+
+//GET LOCATION COORDINATES FOR MARKERS CLUSTERING (MAP)
+function dashboard_locationmap() {
+	global $DB;
+
+	$coordinates = $DB->get_records_sql("SELECT id, latitude, longitude FROM {dashboard_users_location}");
+	
+
+	return $coordinates;
+}
+
 //FILL USERS/DATES CHART OF USERS PAGE WITH ANY DISPERSION AND DATE OF CALENDAR
 function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate = null) {
 	global $DB;
@@ -235,6 +250,8 @@ function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate
 	}
 
 	$timevalues = $DB->get_record_sql($timequery, $timeparameters);
+	
+	$time = $timevalues->mintime;
 
 	$parameters = array();
 
@@ -251,11 +268,22 @@ function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate
 	$query = $query." GROUP BY times";
 
 	$usersdata = $DB->get_records_sql($query, $parameters);
-	$positioncount = 0;
-	$time = $timevalues->mintime;
+	
+	if($initialdate !== null){
+		$time = date($datetypephp,$initialdate);
+	}else{
+		$time = $timevalues->mintime;
+	}
+	if($enddate !== null){
+		$maxtime = $enddate;
+	}else{
+		$maxtime = strtotime($timevalues->maxtime);
+	}
+	
 	$usersviewsdata = array();
+	$positioncount = 0;
 
-	while(strtotime($time)<=strtotime($timevalues->maxtime)) {
+	while(strtotime($time)<=$maxtime) {
 		if(array_key_exists($time,$usersdata)) {
 			$usersviewsdata[$positioncount][0] = $time;
 			$usersviewsdata[$positioncount][1] = (int)$usersdata[$time]->$name;

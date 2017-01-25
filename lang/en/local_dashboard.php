@@ -43,6 +43,7 @@ $string ['coursesession'] = 'Courses/Session';
 $string ['userinfo'] = 'User Information';
 $string ['uservisit'] = 'User Visits';
 $string ['cities'] = 'Cities';
+$string ['country'] = 'Country';
 $string ['date'] = 'Date';
 $string ['seconds'] = 'Seconds';
 $string ['resource_tittle'] = '<b>Resources</b>';
