@@ -55,13 +55,13 @@ require_once(dirname(__FILE__) . '/header.php');
         </div>
         
 	<!-- Location Maps-->
-	<script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>
-    	<div id="maps" class="row"></div> 
+	<!-- <script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>
+    	<div id="maps" class="row"></div>
         
-    <!-- Location Table --> 
+     Location Table 
     	<div class="row">
     		<div id="locationtable" class="col s12 hoverable widget" overflow:auto;></div>
-    	</div>      
+    	</div>  -->    
 	</main>
 <!-- CONTENT -->
 <!-- FOOTER -->
@@ -106,7 +106,7 @@ $(document).ready(function () {
 			  	$("#userinfo").html(output);
 		  	}
 	  	});
-	  	$.ajax({
+	  /*	$.ajax({
 	  		url: 'charts/locationtable.php',
 	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
 	        method: 'POST',
@@ -114,14 +114,14 @@ $(document).ready(function () {
 	        	$( "#locationtable" ).html(output);
 	        }
 	  	});
-	  	$.ajax({
+	  		$.ajax({
 	  		url: 'charts/ubicationmap.php',
 	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
 	        method: 'POST',
 	        success: function (output) {
 	        	$( "#maps" ).html(output);
 	        }
-	  	});
+	  	});*/
     $('#dispersionselect').change(function () {
   	  var datos  = $('#dataselect :selected').val();
   	  var dispersion = $('#dispersionselect :selected').val();
@@ -171,7 +171,7 @@ $(document).ready(function () {
  	           	$('#userschart').html(output);
  	      }
  		});
-	  	$.ajax({
+	  /*	$.ajax({
 	  		url: 'charts/locationtable.php',
 	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
 	        method: 'POST',
@@ -186,7 +186,7 @@ $(document).ready(function () {
 	        success: function (output) {
 	        	$( "#maps" ).html(output);
 	        }
-	  	});
+	  	});*/
  	});
   //Get data on change of the initial date datepicker
     $datepickerone.change(function () { 
@@ -203,7 +203,7 @@ $(document).ready(function () {
   	           	$('#userschart').html(output);
   	      }
   		});
-	  	$.ajax({
+	 /* 	$.ajax({
 	  		url: 'charts/locationtable.php',
 	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
 	        method: 'POST',
@@ -218,7 +218,7 @@ $(document).ready(function () {
 	        success: function (output) {
 	        	$( "#maps" ).html(output);
 	        }
-	  	});
+	  	}); */
   	});
     //Redraw the chart on the window change
     $( window ).resize(function() {

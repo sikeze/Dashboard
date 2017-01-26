@@ -61,10 +61,10 @@ include('header.php');
         	</div>
 		</div>
 	<!-- Ubication charts -->
-		<div class="row">
+	<!--  <div class="row">
 			<script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>
 			<div id="maps" class="col s12" overflow:auto;></div>
-        </div>
+        </div>-->
 
 	<!-- Facebok data -->
         <div class="row">
@@ -98,14 +98,14 @@ include('header.php');
 		        	$( "#userinfo" ).html(output);
 		        }
 		  	});
-			$.ajax({
+			/*$.ajax({
 		  		url: 'charts/ubicationmap.php',
 		        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
 		        method: 'POST',
 		        success: function (output) {
 		        	$( "#maps" ).html(output);
 		        }
-		  	});
+		  	});*/
 			$('#dispersionselect').change(function () {
 			  	var dispersion = $('#dispersionselect :selected').val();
 			  	$.ajax({
@@ -121,27 +121,27 @@ include('header.php');
 		    $datepickertwo.change(function () { 
 		 	  var datepickerone = $datepickerone.val();
 		 	  var datepickertwo = $datepickertwo.val();
-		 	 $.ajax({
+		 	/* $.ajax({
 			  		url: 'charts/ubicationmap.php',
 			        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
 			        method: 'POST',
 			        success: function (output) {
 			        	$( "#maps" ).html(output);
 			        }
-			  	});
+			  	});*/
 		    });
 		  //Get data on change of the initial date datepicker
 		    $datepickerone.change(function () { 
 		  	  var datepickerone = $datepickerone.val();
 		  	  var datepickertwo = $datepickertwo.val();
-		  		$.ajax({
+		  	/*	$.ajax({
 		  			url: 'charts/ubicationmap.php',
 		        	data: {'initialdate': datepickerone, 'enddate': datepickertwo},
 		        	method: 'POST',
 		       	 	success: function (output) {
 		        		$( "#maps" ).html(output);
 		        	}
-		  		});
+		  		});*/
 		    });
 	    });
 </script>
