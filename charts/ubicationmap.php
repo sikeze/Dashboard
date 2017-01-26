@@ -2,7 +2,17 @@
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
-$coordinates = dashboard_locationmap();
+$initialdate = $_POST['initialdate'];
+$enddate = $_POST['enddate'];
+if($enddate == '' OR $initialdate == ''){
+	$enddate = null;
+	$initialdate = null;
+}else{
+	$initialdate = strtotime($initialdate);
+	$enddate = strtotime($enddate);
+}
+
+$coordinates = dashboard_locationmap($initialdate,$enddate);
 
 echo "
 		<div class='col s12'>
