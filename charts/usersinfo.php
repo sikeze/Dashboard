@@ -40,6 +40,10 @@ $(document).ready(function () {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: true});
+	$('#sessionduration').sparkline(data_dispersion[1], {
+		type: 'line',
+		tooltipFormat: null,
+		drawNormalOnTop: false});
 	$('#users').sparkline(data_dispersion[2], {
 		type: 'line',
 		tooltipFormat: null,
@@ -49,10 +53,6 @@ $(document).ready(function () {
 		tooltipFormat: null,
 		drawNormalOnTop: false});
 	$('#coursesession').sparkline(data_dispersion[4], {
-		type: 'line',
-		tooltipFormat: null,
-		drawNormalOnTop: false});
-	$('#sessionduration').sparkline(data_dispersion[1], {
 		type: 'line',
 		tooltipFormat: null,
 		drawNormalOnTop: false});
