@@ -2,7 +2,7 @@
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
-$fbusers = (dashboard_getfacebookusers()*100);
+$fbusers = round((dashboard_getfacebookusers()*100),2);
 
 echo "
 <div class='row'>

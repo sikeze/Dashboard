@@ -242,14 +242,26 @@ function dashboard_locationtable($initialdate = null, $enddate = null) {
 
 /**
  * Return latitud and longitude to make the clustering of markers in map
+ * @param int $initialdate the initial date you want to get the data from (unix)
+ * @param int $initialdate the end date you want to get the data from (unix)
  * @return obj array[]
  */
-function dashboard_locationmap() {
+function dashboard_locationmap($initialdate = null, $enddate = null) {
 	global $DB;
 
-	//query that gets the latitude and longitude
-	$coordinates = $DB->get_records_sql("SELECT id, latitude, longitude FROM {dashboard_users_location}");
+	$parameters = array();
 	
+	//query that gets the latitude and longitude
+	$query = "SELECT id, latitude, longitude FROM {dashboard_users_location}";
+	
+	//check if there is any date
+	if($initialdate !== null AND $enddate !== null){
+		$parameters[] = $initialdate;
+		$parameters[] = $enddate;
+		$query .= " WHERE timecreated BETWEEN ? AND ? ";
+	}
+	
+	$coordinates = $DB->get_records_sql($query, $parameters);
 
 	return $coordinates;
 }

@@ -114,6 +114,14 @@ $(document).ready(function () {
 	        	$( "#locationtable" ).html(output);
 	        }
 	  	});
+	  	$.ajax({
+	  		url: 'charts/ubicationmap.php',
+	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
+	        method: 'POST',
+	        success: function (output) {
+	        	$( "#maps" ).html(output);
+	        }
+	  	});
     $('#dispersionselect').change(function () {
   	  var datos  = $('#dataselect :selected').val();
   	  var dispersion = $('#dispersionselect :selected').val();
@@ -171,6 +179,14 @@ $(document).ready(function () {
 	        	$( "#locationtable" ).html(output);
 	        }
 	  	});
+	  	$.ajax({
+	  		url: 'charts/ubicationmap.php',
+	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
+	        method: 'POST',
+	        success: function (output) {
+	        	$( "#maps" ).html(output);
+	        }
+	  	});
  	});
   //Get data on change of the initial date datepicker
     $datepickerone.change(function () { 
@@ -195,6 +211,14 @@ $(document).ready(function () {
 	        	$( "#locationtable" ).html(output);
 	        }
 	  	});
+	  	$.ajax({
+	  		url: 'charts/ubicationmap.php',
+	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
+	        method: 'POST',
+	        success: function (output) {
+	        	$( "#maps" ).html(output);
+	        }
+	  	});
   	});
     //Redraw the chart on the window change
     $( window ).resize(function() {
@@ -212,7 +236,6 @@ $(document).ready(function () {
    	      }
    	});
    });
-    $( "#maps" ).load( "charts/ubicationmap.php" );
 });
 </script>
 </html>
