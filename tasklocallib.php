@@ -395,104 +395,133 @@ function dashboard_getusersdata(){
 	}
 }
 function dashboard_allresources (){
-	global $DB;
+	global $DB, $CFG;
 	$time = time();
 
-	$lasttimeturnitin = $DB->get_record_sql( "SELECT 	MAX(time) AS time
-											 FROM 	{dashboard_turnitin}")->time;
-	if ($lasttimeturnitin==null){
-		$lasttimeturnitin=1;
-	}
-	
-
-	/*$querypaper="SELECT CONCAT(d.lastmodified,d.courseid),d.lastmodified AS time,d.courseid AS courseid,activity,IFNULL(amountcreated,0) AS amountcreated
-	 FROM (SELECT count(*) AS activity, courseid, lastmodified
-	 FROM (SELECT count(*) AS activity, courseid, lastmodified
-	 FROM (SELECT s.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session as s
-	 UNION ALL
-	 SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session AS s1
-	 INNER JOIN mdl_paperattendance_presence AS p1 ON (s1.id=p1.sessionid)
-	 UNION ALL
-	 SELECT s2.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d2.timecreated),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session AS s2
-	 INNER JOIN mdl_paperattendance_presence AS p2 ON (s2.id=p2.sessionid)
-	 INNER JOIN mdl_paperattendance_discussion AS d2 ON (p2.id=d2.presenceid)
-	 UNION ALL
-	 SELECT s3.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d3.timemodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session AS s3
-	 INNER JOIN mdl_paperattendance_presence AS p3 ON (s3.id=p3.sessionid)
-	 INNER JOIN mdl_paperattendance_discussion AS d3 ON (p3.id=d3.presenceid)) AS a
-	 GROUP BY courseid,lastmodified) as d
-	 LEFT JOIN
-	 (SELECT count(*) AS amountcreated,courseid,lastmodified
-	 FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session as s5) as b
-	 GROUP BY courseid,lastmodified)
-	 AS c ON (c.courseid=d.courseid) AND (c.lastmodified=d.lastmodified)";
-	*/
-	/*AMOUNTCREATED
-	SELECT count(*) AS amountcreated,courseid,lastmodified
-	FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	FROM mdl_paperattendance_session as s5) as b
-	GROUP BY courseid,lastmodified*/
-	/*PRESENCE
-	 SELECT count(*) AS presence,courseid,lastmodified
-	 FROM (SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session AS s1
-	 INNER JOIN mdl_paperattendance_presence AS p1 ON (s1.id=p1.sessionid)) as b
-	 GROUP BY courseid,lastmodified*/
-	/*DISCUSSION
-	 SELECT count(*) AS discussion,courseid,lastmodified
-	 FROM (SELECT s2.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d2.timecreated),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session AS s2
-	 INNER JOIN mdl_paperattendance_presence AS p2 ON (s2.id=p2.sessionid)
-	 INNER JOIN mdl_paperattendance_discussion AS d2 ON (p2.id=d2.presenceid)
-	 UNION ALL
-	 SELECT s3.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d3.timemodified),'%d-%c-%Y %H:00:00') AS lastmodified
-	 FROM mdl_paperattendance_session AS s3
-	 INNER JOIN mdl_paperattendance_presence AS p3 ON (s3.id=p3.sessionid)
-	 INNER JOIN mdl_paperattendance_discussion AS d3 ON (p3.id=d3.presenceid)) as b
-	 GROUP BY courseid,lastmodified*/
-	
-	
-	/*
-	$paperdata =$DB->get_records_sql($querypaper);
+	if($CFG->dashboard_resourcetypes && in_array('paperattendance',explode(',',$CFG->dashboard_resourcetypes))) {
+		
+		$lasttimepaper = $DB->get_record_sql( "SELECT 	MAX(time) AS time
+											 FROM 	{dashboard_paperattendance}")->time;
+		if ($lasttimepaper==null){
+			$lasttimepaper=1;
+		}
+		
+	$querypaperdata="SELECT CONCAT(IFNULL(AUB.lastmodified,C.lastmodified),IFNULL(AUB.courseid,C.courseid)) AS id,IFNULL(AUB.lastmodified,C.lastmodified) AS time,IFNULL(AUB.courseid,C.courseid) AS courseid, IFNULL(amountcreated,0) AS amountcreated, IFNULL(presence,0) AS presence, IFNULL(discussion,0) AS discussion
+	FROM (SELECT IFNULL(a.lastmodified,b.lastmodified) AS lastmodified,IFNULL(a.courseid,b.courseid) AS courseid,IFNULL(amountcreated,0) AS amountcreated,IFNULL(presence,0) AS presence
+		FROM (SELECT count(*) AS amountcreated,courseid,lastmodified
+		FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session as s5) as alpha
+		GROUP BY courseid,lastmodified) AS a
+		RIGHT JOIN 
+		(SELECT count(*) AS presence,courseid,lastmodified
+		FROM (SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session AS s1
+		INNER JOIN mdl_paperattendance_presence AS p1 ON (s1.id=p1.sessionid)) as beta
+		GROUP BY courseid,lastmodified) as b ON (a.lastmodified=b.lastmodified) AND (a.courseid=b.courseid)
+		UNION
+		SELECT IFNULL(a.lastmodified,b.lastmodified) AS lastmodified,IFNULL(a.courseid,b.courseid) AS courseid,IFNULL(amountcreated,0),IFNULL(presence,0)
+		FROM (SELECT count(*) AS amountcreated,courseid,lastmodified
+		FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session as s5) as alpha
+		GROUP BY courseid,lastmodified) AS a
+		LEFT JOIN 
+		(SELECT count(*) AS presence,courseid,lastmodified
+		FROM (SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session AS s1
+		INNER JOIN mdl_paperattendance_presence AS p1 ON (s1.id=p1.sessionid)) as beta
+		GROUP BY courseid,lastmodified) as b ON (a.lastmodified=b.lastmodified) AND (a.courseid=b.courseid)) AS AUB
+	LEFT JOIN 
+		(SELECT count(*) AS discussion,courseid,lastmodified
+		FROM (SELECT s2.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d2.timecreated),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session AS s2
+		INNER JOIN mdl_paperattendance_presence AS p2 ON (s2.id=p2.sessionid)
+		INNER JOIN mdl_paperattendance_discussion AS d2 ON (p2.id=d2.presenceid)
+		UNION ALL
+		SELECT s3.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d3.timemodified),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session AS s3
+		INNER JOIN mdl_paperattendance_presence AS p3 ON (s3.id=p3.sessionid)
+		INNER JOIN mdl_paperattendance_discussion AS d3 ON (p3.id=d3.presenceid)
+		WHERE d3.timemodified IS NOT NULL) as b
+		GROUP BY courseid,lastmodified) AS C ON (AUB.lastmodified=C.lastmodified) AND (AUB.courseid=C.courseid)
+UNION 
+		SELECT CONCAT(IFNULL(AUB.lastmodified,C.lastmodified),IFNULL(AUB.courseid,C.courseid)) AS id,IFNULL(AUB.lastmodified,C.lastmodified) AS time,IFNULL(AUB.courseid,C.courseid) AS courseid, IFNULL(amountcreated,0) AS amountcreated, IFNULL(presence,0) AS presence, IFNULL(discussion,0) AS discussion
+	FROM (SELECT IFNULL(a.lastmodified,b.lastmodified) AS lastmodified,IFNULL(a.courseid,b.courseid) AS courseid,IFNULL(amountcreated,0) AS amountcreated,IFNULL(presence,0) AS presence
+		FROM (SELECT count(*) AS amountcreated,courseid,lastmodified
+		FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session as s5) as alpha
+		GROUP BY courseid,lastmodified) AS a
+		RIGHT JOIN 
+		(SELECT count(*) AS presence,courseid,lastmodified
+		FROM (SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session AS s1
+		INNER JOIN mdl_paperattendance_presence AS p1 ON (s1.id=p1.sessionid)) as beta
+		GROUP BY courseid,lastmodified) as b ON (a.lastmodified=b.lastmodified) AND (a.courseid=b.courseid)
+		UNION
+		SELECT IFNULL(a.lastmodified,b.lastmodified) AS lastmodified,IFNULL(a.courseid,b.courseid) AS courseid,IFNULL(amountcreated,0),IFNULL(presence,0)
+		FROM (SELECT count(*) AS amountcreated,courseid,lastmodified
+		FROM (SELECT s5.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(s5.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session as s5) as alpha
+		GROUP BY courseid,lastmodified) AS a
+		LEFT JOIN 
+		(SELECT count(*) AS presence,courseid,lastmodified
+		FROM (SELECT s1.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(p1.lastmodified),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session AS s1
+		INNER JOIN mdl_paperattendance_presence AS p1 ON (s1.id=p1.sessionid)) as beta
+		GROUP BY courseid,lastmodified) as b ON (a.lastmodified=b.lastmodified) AND (a.courseid=b.courseid)) AS AUB
+	RIGHT JOIN 
+		(SELECT count(*) AS discussion,courseid,lastmodified
+		FROM (SELECT s2.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d2.timecreated),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session AS s2
+		INNER JOIN mdl_paperattendance_presence AS p2 ON (s2.id=p2.sessionid)
+		INNER JOIN mdl_paperattendance_discussion AS d2 ON (p2.id=d2.presenceid)
+		UNION ALL
+		SELECT s3.courseid AS courseid,DATE_FORMAT(FROM_UNIXTIME(d3.timemodified),'%d-%c-%Y %H:00:00') AS lastmodified
+		FROM mdl_paperattendance_session AS s3
+		INNER JOIN mdl_paperattendance_presence AS p3 ON (s3.id=p3.sessionid)
+		INNER JOIN mdl_paperattendance_discussion AS d3 ON (p3.id=d3.presenceid)
+		WHERE d3.timemodified IS NOT NULL) as b
+		GROUP BY courseid,lastmodified) AS C ON (AUB.lastmodified=C.lastmodified) AND (AUB.courseid=C.courseid)";
+	$paperdata =$DB->get_records_sql($querypaperdata);
+	$insertpaperdata=array();
+	$paperupdate=array();
 	foreach ($paperdata AS $data){
 		$currentdata = new stdClass();
-		$currentdata->courseid=(int)$data->courseid;
 		$currentdata->time=(int)strtotime($data->time)+60*60;
-		$currentdata->resourceid=RESOURCES_TYPE_PAPERATTENDANCE;
-		$currentdata->activity=(int)$data->activity;
+		$currentdata->courseid=(int)$data->courseid;
 		$currentdata->amountcreated=(int)$data->amountcreated;
-		if($currentdata->time>$lasttimebasicresourcesdata){
+		$currentdata->presence=(int)$data->presence;
+		$currentdata->discussion=(int)$data->discussion;
+		if($currentdata->time>$lasttimepaper){
 			$insertpaperdata[]=$currentdata;
-		}else if ($currentdata->time==$lasttimebasicresourcesdata){
+		}else if ($currentdata->time==$lasttimepaper){
 			$paperupdate[] = $currentdata;
 		}
 	}
 	
-	echo '<br>COMIENZO DE TURNITIN';
-	var_dump($insertturnitindata);
-	
-	if(count($insertturnitindata)>0){
-		if($DB->insert_records('dashboard_turnitin',$insertturnitindata)){
+	echo '<br>COMIENZO DE PAPERATTENDANCE';
+	echo '<br>insert <br>';
+	var_dump($insertpaperdata);
+	if(count($insertpaperdata)>0){
+		if($DB->insert_records('dashboard_paperattendance',$insertpaperdata)){
 			echo "insert completed";
 		}
 	}
-	var_dump($arrayturnitinupdate);
-	if(count($arrayturnitinupdate) >0){
-		foreach($arrayturnitinupdate as $update){
+	echo '<br>update <br>';
+	
+	var_dump($paperupdate);
+	if(count($paperupdate) >0){
+		foreach($paperupdate as $update){
 			$params= array(
-					$update->useramount,
 					$update->amountcreated,
+					$update->presence,
+					$update->discussion,
 					$update->courseid,
 					$update->time
 			);
-			$query="UPDATE {dashboard_turnitin}
-					 SET useramount = ?,
-					 amountcreated = ?
+			$query="UPDATE {dashboard_paperattendance}
+					 SET amountcreated = ?,
+					 presence = ?,
+					 discussion = ?
 					 WHERE courseid = ? AND
 					 time = ?";
 			if($DB->execute($query,$params)){
@@ -500,11 +529,15 @@ function dashboard_allresources (){
 			}
 		}
 	}
-	echo '<br>FIN DE TURNITIN <br>';
-	*/
+	echo '<br>FIN DE PAPERATTENDANCE <br>';
+	
 
+	}
+	
+	
 	//TURNITIN
 	//activity means the amount of different users who uses turnitin in a time
+	if($CFG->dashboard_resourcetypes && in_array('turnitin',explode(',',$CFG->dashboard_resourcetypes))) {
 	
 	$lasttimeturnitin = $DB->get_record_sql( "SELECT 	MAX(time) AS time
 											 FROM 	{dashboard_turnitin}")->time;
@@ -516,14 +549,14 @@ function dashboard_allresources (){
 					FROM 
 						(SELECT count(id) AS useramount, time, course
 						FROM (SELECT ts.id AS id, DATE_FORMAT(FROM_UNIXTIME(ts.submission_modified),'%d-%c-%Y %H:00:00') AS time, t.course AS course,ts.userid
-						FROM mdl_turnitintooltwo AS t
-						INNER JOIN mdl_turnitintooltwo_submissions AS ts ON (t.id=ts.turnitintooltwoid)
+						FROM {turnitintooltwo} AS t
+						INNER JOIN {turnitintooltwo_submissions} AS ts ON (t.id=ts.turnitintooltwoid)
 						WHERE ts.submission_modified BETWEEN ? AND ?
 						GROUP BY time,userid) AS alpha
 						GROUP BY course,time) AS a
 					LEFT JOIN
 						(SELECT COUNT(t.id) as amountcreated, DATE_FORMAT(FROM_UNIXTIME(t.timecreated),'%d-%c-%Y %H:00:00') as time, t.course as course
-						FROM mdl_turnitintooltwo AS t
+						FROM {turnitintooltwo} AS t
 						WHERE t.timecreated BETWEEN ? AND ?
 						GROUP BY time,course) AS b
 					ON (a.course=b.course) AND (a.time=b.time)";
@@ -570,7 +603,7 @@ function dashboard_allresources (){
 		}
 	}
 	echo '<br>FIN DE TURNITIN <br>';
-	
+	}
 	//EMARKING
 
 	/*
@@ -611,15 +644,15 @@ function dashboard_allresources (){
 	$querybasicresources = "SELECT CONCAT(a.resource,a.date,a.course) AS id,a.date AS time,a.resource AS resourceid,a.course AS courseid,IFNULL(amountcreated,0) AS amountcreated ,activity
 						FROM	
 							(SELECT 	l2.id as id2, COUNT(l2.id) as activity, DATE_FORMAT(FROM_UNIXTIME(l2.timecreated),'%d-%c-%Y %H:00:00') as date, cm2.course as course, m2.id AS resource
-							FROM 		mdl_logstore_standard_log AS l2
-							INNER JOIN	mdl_course_modules AS cm2 ON (l2.contextinstanceid=cm2.id)
-							INNER JOIN	mdl_modules AS m2 ON (cm2.module=m2.id) AND target= ? AND l2.timecreated BETWEEN ? AND ?
+							FROM 		{logstore_standard_log} AS l2
+							INNER JOIN	{course_modules} AS cm2 ON (l2.contextinstanceid=cm2.id)
+							INNER JOIN	{modules} AS m2 ON (cm2.module=m2.id) AND target= ? AND l2.timecreated BETWEEN ? AND ?
 							GROUP BY 	date,resource,course) AS a
 						LEFT JOIN
 							(SELECT 	l1.id as id2, COUNT(l1.id) as amountcreated, DATE_FORMAT(FROM_UNIXTIME(l1.timecreated),'%d-%c-%Y %H:00:00') as date, cm1.course as course, m1.id AS resource
-							FROM 		mdl_logstore_standard_log AS l1
-							INNER JOIN	mdl_course_modules AS cm1 ON (l1.contextinstanceid=cm1.id)
-							INNER JOIN	mdl_modules AS m1 ON (cm1.module=m1.id) AND target= ? AND action= ? AND l1.timecreated BETWEEN ? AND ?
+							FROM 		{logstore_standard_log} AS l1
+							INNER JOIN	{course_modules} AS cm1 ON (l1.contextinstanceid=cm1.id)
+							INNER JOIN	{modules} AS m1 ON (cm1.module=m1.id) AND target= ? AND action= ? AND l1.timecreated BETWEEN ? AND ?
 							GROUP BY 	date,resource,course) AS b
 						ON (a.date=b.date) AND (a.course=b.course) AND (a.resource=b.resource)
 						ORDER BY time,activity ASC";
@@ -648,7 +681,7 @@ function dashboard_allresources (){
 	echo 'FIN DE BASIC RESOURCES';
 
 	if(count($insertbasicresourcedata)>0){
-		if(	 $DB->insert_records('dashboard_resources',$insertresourcedata)){
+		if(	 $DB->insert_records('dashboard_resources',$insertbasicresourcedata)){
 			echo "insert completed";
 		}
 	}
