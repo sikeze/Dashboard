@@ -27,6 +27,7 @@ echo "<table class='striped bordered responsive-table'>
 foreach($location_table as $location){
 	if ($location->city == "" || $location->city == NULL) {
 		$location->city = get_string('nolocation','local_dashboard');
+		$location->country = "";
 	}
 	echo " <tr>
 	<td> $location->city</td>
