@@ -55,7 +55,8 @@ function dashboard_usersinfodispersion($dispersion) {
 	$avgsessions = $DB->get_records_sql("SELECT id, DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as times,
 										 ROUND(AVG(avgsessiontime),0) as avgtime
 										 FROM {dashboard_data}
-										 GROUP BY time DESC
+										 GROUP BY times 
+										 ORDER BY time DESC
 										 LIMIT 80");
 	
 	//query that gets the total users group by the time
