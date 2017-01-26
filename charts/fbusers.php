@@ -1,12 +1,15 @@
 <?php 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
+
+$fbusers = (dashboard_getfacebookusers()*100);
+
 echo "
 <div class='row'>
 	<div class='col s2'>
 		<img class='responsive-img' src='images/fblogo.png'>
 	</div>
-	<div id='fbusers' class='col s10'><h5>".dashboard_getfacebookusers()."%</h5></div>
+	<div id='fbusers' class='col s10'><h5>".$fbusers."%</h5></div>
 </div>
 
 <script>
