@@ -4,6 +4,7 @@ require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
 $initialdate = $_POST['initialdate'];
 $enddate = $_POST['enddate'];
+
 if($enddate == '' OR $initialdate == ''){
 	$enddate = null;
 	$initialdate = null;
