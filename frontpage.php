@@ -63,7 +63,7 @@ include('header.php');
 	<!-- Ubication charts -->
 		<div class="row">
 			<script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>
-			<div id="ubicationmap" class="col s12" overflow:auto;></div>
+			<div id="maps" class="col s12" overflow:auto;></div>
         </div>
 
 	<!-- Facebok data -->
@@ -82,18 +82,28 @@ include('header.php');
 	</footer>
 <!-- FOOTER -->
 </body>
-<script src="js/turnitinchart.js"></script>
-<script src="js/resourcebarchart.js"></script>
 <script>
 	var users_labels = <?php echo json_encode(dashboard_usersinfolabels());?>;
 	var dispersion = $('#dispersionselect :selected').val();
+	var $datepickerone = $('#datepickerone');
+	var $datepickertwo = $('#datepickertwo');
 		$(document).ready(function () {
+			var datepickerone = $datepickerone.val();
+			var datepickertwo = $datepickertwo.val();
 			$.ajax({
 		        url: 'charts/usersinfo.php',
 		        data: {'dispersion': dispersion, 'labels': users_labels},
 		        method: 'POST',
 		        success: function (output) {
 		        	$( "#userinfo" ).html(output);
+		        }
+		  	});
+			$.ajax({
+		  		url: 'charts/ubicationmap.php',
+		        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
+		        method: 'POST',
+		        success: function (output) {
+		        	$( "#maps" ).html(output);
 		        }
 		  	});
 			$('#dispersionselect').change(function () {
@@ -107,7 +117,32 @@ include('header.php');
 		  	        }
 		  	  	});
 			});
-	        $( "#ubicationmap" ).load( "charts/ubicationmap.php" );
+			//Get data on change of the end date datepicker
+		    $datepickertwo.change(function () { 
+		 	  var datepickerone = $datepickerone.val();
+		 	  var datepickertwo = $datepickertwo.val();
+		 	 $.ajax({
+			  		url: 'charts/ubicationmap.php',
+			        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
+			        method: 'POST',
+			        success: function (output) {
+			        	$( "#maps" ).html(output);
+			        }
+			  	});
+		    });
+		  //Get data on change of the initial date datepicker
+		    $datepickerone.change(function () { 
+		  	  var datepickerone = $datepickerone.val();
+		  	  var datepickertwo = $datepickertwo.val();
+		  		$.ajax({
+		  			url: 'charts/ubicationmap.php',
+		        	data: {'initialdate': datepickerone, 'enddate': datepickertwo},
+		        	method: 'POST',
+		       	 	success: function (output) {
+		        		$( "#maps" ).html(output);
+		        	}
+		  		});
+		    });
 	    });
 </script>
 </html>
