@@ -98,14 +98,14 @@ $(document).ready(function () {
 	        	$( "#userschart" ).html(output);
 	        }
 	  	});
-	  	/*$.ajax({
+	  	$.ajax({
 		  	url: 'charts/usersinfo.php',
 		  	data: {'dispersion': dispersion, 'labels': users_labels},
 		  	method: 'POST',
 		  	success: function (output) {
 			  	$("#userinfo").html(output);
 		  	}
-	  	});*/
+	  	});
 	  	$.ajax({
 	  		url: 'charts/locationtable.php',
 	        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
@@ -135,14 +135,14 @@ $(document).ready(function () {
   	        	$( "#userschart" ).html(output);
   	        }
   	  	});
-  	  	/*$.ajax({
+  	  	$.ajax({
   	  	  	url: 'charts/usersinfo.php',
   	        data: {'dispersion': dispersion, 'labels':users_labels},
   	        method: 'POST',
   	        success: function (output) {
   	        	$( "#userinfo" ).html(output);
   	        }
-  	  	});*/
+  	  	});
     });
     $("#dataselect").change(function () { //Change div of charts
   	  var datos  = $("#dataselect :selected").val();

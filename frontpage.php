@@ -90,14 +90,14 @@ include('header.php');
 		$(document).ready(function () {
 			var datepickerone = $datepickerone.val();
 			var datepickertwo = $datepickertwo.val();
-			/*$.ajax({
+			$.ajax({
 		        url: 'charts/usersinfo.php',
 		        data: {'dispersion': dispersion, 'labels': users_labels},
 		        method: 'POST',
 		        success: function (output) {
 		        	$( "#userinfo" ).html(output);
 		        }
-		  	});*/
+		  	});
 			$.ajax({
 		  		url: 'charts/ubicationmap.php',
 		        data: {'initialdate': datepickerone, 'enddate': datepickertwo},
@@ -108,14 +108,14 @@ include('header.php');
 		  	});
 			$('#dispersionselect').change(function () {
 			  	var dispersion = $('#dispersionselect :selected').val();
-			  	/*$.ajax({
+			  	$.ajax({
 		  	  	  	url: 'charts/usersinfo.php',
 		  	        data: {'dispersion': dispersion, 'labels':users_labels},
 		  	        method: 'POST',
 		  	        success: function (output) {
 		  	        	$( "#userinfo" ).html(output);
 		  	        }
-		  	  	});*/
+		  	  	});
 			});
 			//Get data on change of the end date datepicker
 		    $datepickertwo.change(function () { 
