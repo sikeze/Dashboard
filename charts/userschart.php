@@ -31,6 +31,7 @@ if ($select == 1) {
 }
 
 echo "<script>
+		$(document).ready(function () {
 				google.charts.load('current', {packages: ['corechart', 'line']});
 				google.charts.setOnLoadCallback(drawBasic);
 				function drawBasic() {
@@ -40,11 +41,7 @@ echo "<script>
 					var datos =".json_encode(dashboard_userschart($select,$dispersion,$initialdate,$enddate))."
 					console.log(datos[0]);
 					console.log('El largo es: ' + datos.length);
-					$.each(datos, function( key, value ) {
-		  				value[1]= parseFloat(value[1]);
-					});
-					console.log(datos[0]);
-					console.log('El largo es: ' + datos.length);
+					
 					data.addRows(datos);
 					var options = {
 						chartArea: {
@@ -62,4 +59,5 @@ echo "<script>
 					var chart = new google.visualization.LineChart(document.getElementById('userschart'));
 					chart.draw(data, options);
 				}
+		});
 			</script>";
