@@ -47,11 +47,11 @@ ob_start();
 		<!--Import jQuery before materialize.js-->
 		<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui.js"></script>
-			<script type="text/javascript" src="js/jquery.sparkline.js"></script>
+		<script type="text/javascript" src="js/jquery.sparkline.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/materialize.min.js"></script>
 		<!--  google chart loader -->
-		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script type="text/javascript" src="js/loader.js"></script>
 		<script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/1.0.0/dist/progressbar.js"></script>
 		<script>
 			$(document).ready(function () {
@@ -93,7 +93,7 @@ $logouturl = new moodle_url("/login/logout.php?");
 // Initial time generation
 $time = time();
 $timenow =  gmdate("d-m-Y", $time);
-$timemonthless = date('d-m-Y',strtotime($timenow . "-1 month"));
+$timemonthless = date('d-m-Y',strtotime($timenow . "-4 month"));
 ?>
 <!-- TOP NAV -->
 	<div class="navbar-fixed">

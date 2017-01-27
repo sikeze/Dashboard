@@ -29,6 +29,7 @@ if ($select == 1) {
 	$dataname = get_string('courses','local_dashboard');
 	$vaxisname = get_string('courses','local_dashboard');
 }
+
 echo "<script>
 				google.charts.load('current', {packages: ['corechart', 'line']});
 				google.charts.setOnLoadCallback(drawBasic);
