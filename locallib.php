@@ -361,17 +361,17 @@ function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate
 	}
 	
 	$usersviewsdata = array();
-	$usersviewsdata ["0"]["0"] = 0;
+	$usersviewsdata ["0"] = 0;
 	$positioncount = 0;
 
 	//fill array with the data
 	while(strtotime($time)<=$maxtime) {
 		if(array_key_exists($time,$usersdata)) {
-			$usersviewsdata[$positioncount][0] = $time;
-			$usersviewsdata[$positioncount][1] = (int)$usersdata[$time]->$name;
+			$usersviewsdata[$positioncount] = array($time, (int)$usersdata[$time]->$name);
+			//$usersviewsdata[$positioncount][1] = (int)$usersdata[$time]->$name;
 		} else {
-			$usersviewsdata[$positioncount][0] = $time;
-			$usersviewsdata[$positioncount][1] = (int)0;
+			$usersviewsdata[$positioncount] = array($time, (int)0);
+			//$usersviewsdata[$positioncount][1] = (int)0;
 		}
 		$time = date($datetypephp,strtotime($time.$dateadd));
 		$positioncount++;
