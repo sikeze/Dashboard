@@ -38,9 +38,11 @@ echo "<script>
 					data.addColumn('string', 'X');
 					data.addColumn('number', '".$vaxisname."');
 					var datos =".json_encode(dashboard_userschart($select,$dispersion,$initialdate,$enddate))."
+					alert(datos);
 					$.each(datos, function( key, value ) {
 		  				value[1]= parseFloat(value[1]);
 					});
+					alert(datos);
 					data.addRows(datos);
 					var options = {
 						chartArea: {
