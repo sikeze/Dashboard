@@ -38,11 +38,7 @@ echo "<script>
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', 'X');
 					data.addColumn('number', '".$vaxisname."');
-					var datos =".json_encode(dashboard_userschart($select,$dispersion,$initialdate,$enddate))."
-					console.log(datos[0]);
-					console.log('El largo es: ' + datos.length);
-					
-					data.addRows(datos);
+					data.addRows(".json_encode(dashboard_userschart($select,$dispersion,$initialdate,$enddate)).");
 					var options = {
 						chartArea: {
 			       			top: 28,
@@ -60,4 +56,4 @@ echo "<script>
 					chart.draw(data, options);
 				}
 		});
-			</script>";
+	</script>";
