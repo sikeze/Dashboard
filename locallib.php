@@ -361,7 +361,7 @@ function dashboard_userschart($select,$dispersion, $initialdate = null, $enddate
 	}
 	
 	$usersviewsdata = array();
-	$usersviewsdata ["0"] = 0;
+	$usersviewsdata ["0"]["0"] = 0;
 	$positioncount = 0;
 
 	//fill array with the data
