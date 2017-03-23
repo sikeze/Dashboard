@@ -29,6 +29,10 @@ require_once(dirname(__FILE__) . '/header.php');
     			foreach($modulesdata as $module){
         			echo "<option value=".$module->id."><span class='blue-text'>".get_string("$module->name", 'local_dashboard')."</span></option>";
         		}
+        		//case for paperattendance
+        		if(in_array('paperattendance',$modules)){
+        			echo "<option value='paper'><span class='blue-text'>".get_string("papperattendance", 'local_dashboard')."</span></option>";
+        		}
         		?>
     			</select>
     			<label>Selección de Datos</label>
@@ -140,7 +144,7 @@ $(document).ready(function () {
     	$.ajax({
         	url: 'charts/changeresourceschart.php',
         	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
-        	method: 'POST',
+        	method: 'GET',
         	success: function (output) {
             	$('#utimechart').html(output);
         	}
