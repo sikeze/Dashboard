@@ -4,10 +4,10 @@ require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/locallib.php');
 
 //recibe the ajax data
-$select = $_REQUEST['select'];
-$disperssion = $_REQUEST['disperssion'];
-$initialdate = $_REQUEST['initialdate'];
-$enddate = $_REQUEST['enddate'];
+$select = $_POST['select'];
+$disperssion = $_POST['disperssion'];
+$initialdate = $_POST['initialdate'];
+$enddate = $_POST['enddate'];
 
 //verify if there is a date selected
 if($enddate == '' OR $initialdate == ''){

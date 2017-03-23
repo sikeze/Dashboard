@@ -144,7 +144,7 @@ $(document).ready(function () {
     	$.ajax({
         	url: 'charts/changeresourceschart.php',
         	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
-        	method: 'GET',
+        	method: 'POST',
         	success: function (output) {
             	$('#utimechart').html(output);
         	}
