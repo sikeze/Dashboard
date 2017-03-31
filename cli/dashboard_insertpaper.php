@@ -30,4 +30,4 @@ global $DB;
 
 dashboard_fillpaperattendance();
 mtrace("succesfully inserted");
-//exit(0); // 0 means success
+exit(0); // 0 means success
