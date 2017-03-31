@@ -711,6 +711,28 @@ UNION
 
 
 }
+function dashboard_fillpaperattendance(){
+	global $DB;
+	$paperquery = "SELECT sm.date as time,
+				c.category,
+				COUNT(s.id) AS sesscount
+				FROM {paperattendance_session} s
+				INNER JOIN {paperattendance_sessmodule} sm ON (s.id = sm.sessionid)
+				INNER JOIN {course} c ON (c.id = s.courseid)
+				GROUP BY c.category, time";
+	$paperdata = $DB->get_records_sql($paperquery);
+	$dashboardpaperdata = array();
+	foreach($paperdata as $pdata){
+		$dashpaper = new stdClass();
+		$dashpaper->categoryid = $pdata->category;
+		$dashpaper->time = $pdata->time;
+		$dashpaper->sessionsnumber = $pdata->sesscount;
+		$dashboardpaperdata[] = $dashpaper;
+	}
+	if(count($dashboardpaperdata)>0){
+		$DB->insert_records('dashboard_paperattendance', $dashboardpaperdata);
+	}
+}
 
 
 ?>
