@@ -589,3 +589,73 @@ function dashboard_getfacebookusers() {
 	return $facebookusers->facebookusers/$moodleusers->totalusers;
 	
 }
+//Function that returns paperattendance data
+function dashboard_getpaperdata($dispersion, $initialdate = null, $enddate = null) {
+	global $DB;
+	// set the dispersion
+	if($dispersion == '1'){
+		$datetypesql = '%b-%Y';
+		$dateadd = "+1 month";
+		$datetypephp = "M-Y";
+	} elseif($dispersion == '2'){
+		$datetypesql = '%d-%b-%Y';
+		$dateadd = "+1 day";
+		$datetypephp = "d-M-Y";
+	} else{
+		$datetypesql = '%d-%b-%Y %H:00:00';
+		$dateadd = "+1 hour";
+		$datetypephp = "d-M-Y H:00:00";
+	}
+	// Check if there is any date
+	if($initialdate !== null && $enddate !== null){
+		$timeparameters[] = $initialdate;
+		$timeparameters[] = $enddate;
+	}
+	// Query to get the max and min times in the table
+	$timequery = "SELECT
+				DATE_FORMAT(FROM_UNIXTIME(MAX(time)),'".$datetypesql."') as maxtime,
+				DATE_FORMAT(FROM_UNIXTIME(MIN(time)),'".$datetypesql."') as mintime
+			    FROM {dashboard_paperattendance}
+				WHERE time BETWEEN ? AND ? ";
+	//Get the time values from the database
+	$timevalues = $DB->get_record_sql($timequery, $timeparameters);
+	if(count($timevalues)>0){
+		//add here the case if there is no data on the database
+	}
+	// Query to get the count of uploaded lists (number of sessions in the database)
+	$query = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),'".$datetypesql."') as roundtime,
+			COUNT(id) AS sesscount
+			FROM {dashboard_paperattendance}
+			WHERE time BETWEEN ? AND ?
+			GROUP BY roundtime";
+	//Get the resource data
+	$paperdata = $DB->get_records_sql($query, $timeparameters);
+	if($initialdate !== null){
+		$time = date($datetypephp,$initialdate);
+	}else{
+		$time = $timevalues->mintime;
+	}
+	if($enddate !== null){
+		$maxtime = $enddate;
+	}else{
+		$maxtime = strtotime($timevalues->maxtime);
+	}
+	//paper array used to store all dates with their printed lists
+	$paperarray = array();
+	// Position count used to get the array in google chart format
+	$positioncount = 0;
+	//go throw each day,hour,month depending on dispersion, until it reach the maxtime
+	while(strtotime($time)<=$maxtime) {
+		if(array_key_exists($time,$paperdata)) {
+			$paperarray[$positioncount][0] = $time;
+			$paperarray[$positioncount][1] = (int)$paperdata[$time]->sesscount;
+		} else {
+			$paperarray[$positioncount][0] = $time;
+			$paperarray[$positioncount][1] = (int)0;
+		}
+		//add a hour, day, month depending on dispersion
+		$time = date($datetypephp,strtotime($time.$dateadd));
+		$positioncount++;
+	}
+	return $paperarray;
+}

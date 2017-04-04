@@ -115,6 +115,30 @@ function xmldb_local_dashboard_upgrade($oldversion) {
 		// Dashboard savepoint reached.
 		upgrade_plugin_savepoint(true, 2017012305, 'local', 'dashboard');
 	}
+	if ($oldversion < 2017032801) {
+	
+		// Rename field courseid on table dashboard_paperattendance to categoryid.
+		$table = new xmldb_table('dashboard_paperattendance');
+		$field = new xmldb_field('courseid', XMLDB_TYPE_INTEGER, '20', null, null, null, null, 'time');
+	
+		// Launch rename field courseid.
+		$dbman->rename_field($table, $field, 'categoryid');
+	
+		// Dashboard savepoint reached.
+		upgrade_plugin_savepoint(true, 2017032801, 'local', 'dashboard');
+	}
+	if ($oldversion < 2017032802) {
+	
+		// Rename field amountcreated on table dashboard_paperattendance to sessionsnumber.
+		$table = new xmldb_table('dashboard_paperattendance');
+		$field = new xmldb_field('amountcreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null, 'courseid');
+	
+		// Launch rename field amountcreated.
+		$dbman->rename_field($table, $field, 'sessionsnumber');
+	
+		// Dashboard savepoint reached.
+		upgrade_plugin_savepoint(true, 2017032802, 'local', 'dashboard');
+	}
 	
 	return true;
 	}
