@@ -25,13 +25,15 @@ require_once(dirname(__FILE__) . '/header.php');
         		list ( $sqlin, $parametros ) = $DB->get_in_or_equal ( $modules );
         		
         		$modulesdata = $DB->get_records_sql("SELECT * FROM {modules} WHERE name $sqlin",$parametros);
-        		echo "<option value='0'><span class='blue-text'>".get_string('all', 'local_dashboard')."</span></option>";
+        		echo "<option value='0' modname='all'><span class='blue-text'>".get_string('all', 'local_dashboard')."</span></option>";
     			foreach($modulesdata as $module){
-        			echo "<option value=".$module->id."><span class='blue-text'>".get_string("$module->name", 'local_dashboard')."</span></option>";
-        		}
+    				$name = get_string("$module->name", 'local_dashboard');
+    				echo "<option value=".$module->id." modname=".$module->name."><span class='blue-text'>".$name."</span></option>";
+    			}
+				//paraver las weas var_dump($modulesdata);
         		//case for paperattendance
         		if(in_array('paperattendance',$modules)){
-        			echo "<option value='paper'><span class='blue-text'>".get_string("papperattendance", 'local_dashboard')."</span></option>";
+        			echo "<option value='paper' modname='paper'><span class='blue-text'>".get_string("papperattendance", 'local_dashboard')."</span></option>";
         		}
         		?>
     			</select>
@@ -45,12 +47,20 @@ require_once(dirname(__FILE__) . '/header.php');
 		</div>
 		
 		<!-- Divider line -->
-		<div class="row">
+		<div class="row" id="dividerline">
        		<hr width=95% align="middle" color="black">
         </div>
         
+        <!-- PaperAttendance Charts -->
+        <div class="row hideresources" id="paper">
+        </div>
+        
+        <!-- Turnitin Charts -->
+        <div class="row hideresources" id="turnitin">
+        </div>
+        
         <!-- Resources and costs texts and charts-->
-        <div class="row">
+        <div class="row showallways">
         	<div class="col s6">
         		<div class="col s12">
         			<h5><b>Recursos v/s % de Utilización</b></h5>
@@ -97,110 +107,60 @@ require_once(dirname(__FILE__) . '/header.php');
 <script>
 // Wait for the document to load
 $(document).ready(function () {
-	// Define variables for the initial ajax charge
-	 var $dispersionselect = $('#dispersionselect');
-	 var $dataselect = $("#dataselect");
-	 var $datepickerone = $('#datepickerone');
-	 var $datepickertwo = $('#datepickertwo');
-
-	// Get initial values for both datepickers	
-	 var datos  = $('#dataselect :selected').val();
- 	  var dispersion = $('#dispersionselect :selected').val();
- 	  var datepickerone = $datepickerone.val();
- 	  var datepickertwo = $datepickertwo.val();
- 	  //Send ajax call to get the main chart
- 	  	$.ajax({
- 	  	  	url: 'charts/changeresourceschart.php',
- 	        data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
- 	        method: 'POST',
- 	        success: function (output) {
- 	        	$( "#utimechart" ).html(output);
- 	        }
- 	  	});
-
-    //Get data on change of the dispersion select
-      $dispersionselect.change(function () {
-  	  var datos  = $('#dataselect :selected').val();
-  	  var dispersion = $('#dispersionselect :selected').val();
-  	  var datepickerone = $datepickerone.val();
-  	  var datepickertwo = $datepickertwo.val();
-  	 //Send ajax call to get the main chart 
-  	  	$.ajax({
-  	  	  	url: 'charts/changeresourceschart.php',
-  	        data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
-  	        method: 'POST',
-  	        success: function (output) {
-  	        	$( "#utimechart" ).html(output);
-  	        }
-  	  	});
-    });
-      //Get data on change of the data type select
-       $dataselect.change(function () { //Change div of charts
-    	var datos  = $('#dataselect :selected').val();
+	
+	function getdata(){
+		var id  = $('#dataselect :selected').val();
+    	var datos  = $('#dataselect :selected').attr("modname");
     	var dispersion = $('#dispersionselect :selected').val();
-    	var datepickerone = $datepickerone.val();
-    	var datepickertwo = $datepickertwo.val();
+    	var datepickerone = $('#datepickerone').val();
+    	var datepickertwo = $('#datepickertwo').val();
+    	var url = 'charts/changeresourceschart'+datos+'.php';
+    	if (datos != "paper" && datos != "all"){	
+    		url = 'charts/changeresourceschart.php';
+		}
+    	else{
+    		url = 'charts/changeresourceschart'+datos+'.php';
+        }
+      	
     	 //Send ajax call to get the main chart
     	$.ajax({
-        	url: 'charts/changeresourceschart.php',
-        	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
+        	url: url,
+        	data: {'select': id, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
         	method: 'POST',
         	success: function (output) {
             	$('#utimechart').html(output);
         	}
   		});
-    });
-       //Get data on change of the end date datepicker
-       $datepickertwo.change(function () { 
-    	  var datos  = $('#dataselect :selected').val();
-    	  var dispersion = $('#dispersionselect :selected').val();
-    	  var datepickerone = $datepickerone.val();
-    	  var datepickertwo = $datepickertwo.val();
-    	  //Send ajax call to get the main chart
-    	   	$.ajax({
-    	       	url: 'charts/changeresourceschart.php',
-    	       	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
-    	       	method: 'POST',
-    	       	success: function (output) {
-    	           	$('#utimechart').html(output);
-    	      }
-    	});
-    });
-       //Get data on change of the initial date datepicker
-       $datepickerone.change(function () { 
-     	  var datos  = $('#dataselect :selected').val();
-     	  var dispersion = $('#dispersionselect :selected').val();
-     	  var datepickerone = $datepickerone.val();
-     	  var datepickertwo = $datepickertwo.val();
-     	 //Send ajax call to get the main chart
-     	   	$.ajax({
-     	       	url: 'charts/changeresourceschart.php',
-     	       	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
-     	       	method: 'POST',
-     	       	success: function (output) {
-     	           	$('#utimechart').html(output);
-     	      }
-     	});
-     });
-       //Redraw the chart on the window change
-       $( window ).resize(function() {
-    	   var datos  = $('#dataselect :selected').val();
-      	  var dispersion = $('#dispersionselect :selected').val();
-      	  var datepickerone = $datepickerone.val();
-      	  var datepickertwo = $datepickertwo.val();
-      	 //Send ajax call to get the main chart
-      	   	$.ajax({
-      	       	url: 'charts/changeresourceschart.php',
-      	       	data: {'select': datos, 'disperssion': dispersion, 'initialdate': datepickerone, 'enddate': datepickertwo},
-      	       	method: 'POST',
-      	       	success: function (output) {
-      	           	$('#utimechart').html(output);
-      	           	alert(output);
-      	      }
-      	});
-      });	
+          
+  }
+	
+    //Get data on change of the dispersion select
+$("#dispersionselect, #dataselect, #datepickerone, #datepickertwo").on("change", function () {
+	getdata();
+});
+
+//Redraw the chart on the window change
+$( window ).resize(function() {
+	getdata();
+});	
     //load the facebook users chart
-    $( "#facebookusers" ).load( "charts/fbusers.php" );
+$( "#facebookusers" ).load( "charts/fbusers.php" );
+getdata();
+});
+</script>
+<script>
+var $dataselect = $("#dataselect");
+$dataselect.on('change', function () { //Change div of charts
+	var datos  = $('#dataselect :selected').attr("modname");
+		//console.log(datos);
+		$('.hideresources').empty();
+		$('#'+datos+'').show();
+	if(datos == "paper" || datos == "emarking" || datos == "turnitin"){
+		$('.showallways').hide();
+	}
+	else{
+		$('.showallways').show();
+	}
 });
 </script>
 </html>
